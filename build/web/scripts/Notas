@@ -1,0 +1,9 @@
+
+Archivo que contiene notas, comentarios , obeservaciones sobre el proyecto
+
+Héctor  26-10-2015
+
+Se elimino la tabla empleado , todo se manejara desde Usuario.
+Por la premura se quedara el negocio igual, en todas las clases 
+que utilicen empleado no seran renombradas, solamnete se setearan datos de Usuario
+para no modificar el negocio.
