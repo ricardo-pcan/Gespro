@@ -4,27 +4,25 @@
  */
 package com.tsp.gespro.hibernate.dao;
 
+import com.tsp.gespro.hibernate.pojo.HibernateUtil;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import com.tsp.gespro.hibernate.pojo.UsuarioMonitor;
-import com.tsp.gespro.hibernate.pojo.HibernateUtil;
-import com.tsp.gespro.mail.TspMailBO;
+import com.tsp.gespro.hibernate.pojo.Moneda;
 import java.util.List;
 
 /**
  *
  * @author gloria
  */
-public class UsuarioMonitorDAO {
-    
+public class MonedaDAO {
     private Session sesion; 
     private Transaction tx;  
     
-    public UsuarioMonitorDAO(){
+    public MonedaDAO(){
     }
     
-    public Integer guardar(UsuarioMonitor object) throws HibernateException 
+    public Integer guardar(Moneda object) throws HibernateException 
     { 
         Integer id = 0;  
         try 
@@ -32,12 +30,8 @@ public class UsuarioMonitorDAO {
             iniciaOperacion();
             id= (Integer) sesion.save(object); 
             tx.commit(); 
-            
-            enviarCorreoConCredenciales(object);
         } catch (HibernateException he) 
         { 
-            System.out.println("error");
-            System.out.println(he.getMessage());
             manejaExcepcion(he); 
             throw he; 
         } finally 
@@ -48,27 +42,18 @@ public class UsuarioMonitorDAO {
         return id; 
     }  
 
-    public void actualizar(UsuarioMonitor object) throws HibernateException 
+    public void actualizar(Moneda object) throws HibernateException 
     { 
         try 
         { 
-            System.out.println("Actualizando...");
+            
             iniciaOperacion(); 
-            UsuarioMonitor old= (UsuarioMonitor) sesion.get(UsuarioMonitor.class,object.getId());
-            sesion.close(); 
-            iniciaOperacion();
             sesion.update(object); 
-            if(old.getPassword()!= object.getPassword()){
-                System.out.println("Mandandp correo 1");
-                enviarCorreoConCredenciales(object);
-                System.out.println("Mandandp correo 2");
-            }
             tx.commit(); 
             
         } catch (HibernateException he) 
         { 
             manejaExcepcion(he); 
-            System.out.println("error hibernate " + he.getMessage());
             throw he; 
         } finally 
         { 
@@ -81,7 +66,7 @@ public class UsuarioMonitorDAO {
         try 
         { 
             iniciaOperacion(); 
-            UsuarioMonitor object = (UsuarioMonitor) sesion.get(UsuarioMonitor.class,id); 
+            Moneda object = (Moneda) sesion.get(Moneda.class,id); 
             sesion.delete(object); 
             tx.commit(); 
         } catch (HibernateException he) 
@@ -94,14 +79,14 @@ public class UsuarioMonitorDAO {
         } 
     }  
 
-    public UsuarioMonitor getById(int id) throws HibernateException 
+    public Moneda getById(int id) throws HibernateException 
     { 
        
-        UsuarioMonitor object = null;  
+        Moneda object = null;  
         try 
         { 
             iniciaOperacion(); 
-            object = (UsuarioMonitor) sesion.get(UsuarioMonitor.class,id);
+            object = (Moneda) sesion.get(Moneda.class,id);
         } finally 
         { 
             sesion.close(); 
@@ -112,12 +97,12 @@ public class UsuarioMonitorDAO {
 
     public List lista() throws HibernateException 
     { 
-        List<UsuarioMonitor> lista = null;  
+        List<Moneda> lista = null;  
 
         try 
         { 
             iniciaOperacion(); 
-            lista = sesion.createQuery("from UsuarioMonitor").list(); 
+            lista = sesion.createQuery("from Moneda").list(); 
         }
         finally 
         { 
@@ -132,22 +117,6 @@ public class UsuarioMonitorDAO {
         return lista(); 
     }    
      
-    private void enviarCorreoConCredenciales(UsuarioMonitor obj){
-        try {
-            TspMailBO mail = new TspMailBO();
-            String contenido ="<b>Tus credenciales :</b><br/><br/>Usuario: <h3>"+ obj.getEmail() +"</h3><br/>Password: <h3>"+ obj.getPassword()+"</h3>";
-            try {
-                String correoContacto = obj.getEmail();
-                mail.addTo(correoContacto, correoContacto);
-            }catch(Exception e){}
-            mail.setConfigurationMovilpyme(); 
-            mail.addMessageMovilpyme(contenido,1);
-            mail.setFrom(mail.getUSER(), mail.getFROM_NAME());            
-            mail.send("Hola, tenemos tus credenciales GESPRO! " + obj.getEmail());
-        } catch (Exception ex) {
-            System.out.println("No se pudo enviar el correo de credenciales. Error: "+ ex.getMessage());
-        }
-    }
     private void iniciaOperacion() throws HibernateException 
     { 
         sesion = HibernateUtil.getSessionFactory().openSession(); 
@@ -159,5 +128,4 @@ public class UsuarioMonitorDAO {
         tx.rollback(); 
         throw new HibernateException("Ocurrió un error en la capa de acceso a datos", he); 
     }
-    
 }

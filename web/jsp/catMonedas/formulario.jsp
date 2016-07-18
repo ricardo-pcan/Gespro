@@ -7,8 +7,8 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:directive.page import="com.tsp.gespro.hibernate.dao.UsuarioMonitorDAO"/>
-<jsp:directive.page import="com.tsp.gespro.hibernate.pojo.UsuarioMonitor"/>
+<jsp:directive.page import="com.tsp.gespro.hibernate.dao.MonedaDAO"/>
+<jsp:directive.page import="com.tsp.gespro.hibernate.pojo.MonedaUsuarioMonitor"/>
 <jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 <%
 //Verifica si el usuario tiene acceso a este topico
@@ -28,35 +28,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <jsp:include page="../include/jsFunctions.jsp"/>
        
         <script type="text/javascript">
-        function crearPassword(length, special) {
-             var iteration = 0;
-             var password = "";
-             var randomNumber;
-             if(special == undefined){
-                 var special = false;
-             }
-             while(iteration < length){
-               randomNumber = (Math.floor((Math.random() * 100)) % 94) + 33;
-               if(!special){
-
-                 if ((randomNumber >=33) && (randomNumber <=47)) { continue; }
-
-                 if ((randomNumber >=58) && (randomNumber <=64)) { continue; }
-
-                 if ((randomNumber >=91) && (randomNumber <=96)) { continue; }
-
-                 if ((randomNumber >=123) && (randomNumber <=126)) { continue; }
-
-               }
-
-               iteration++;
-               password += String.fromCharCode(randomNumber);
-             }
-
-             $('#password').val(password);                      
-             return password;
-           }
-            
             function guardar(){ 
                     $.ajax({
                         type: "POST",
@@ -92,9 +63,9 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     </head>
     <body>
         <!--- Inicialización de variables --->
-        <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.UsuarioMonitorDAO"/>
-        <!--- @obj : Objeto de usuario a editar --->
-        <c:set var="obj" value="${UsuarioMonitor}"/>
+        <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.MonedaDAO"/>
+        <!--- @obj : Objeto de moneda a editar --->
+        <c:set var="obj" value="${Moneda}"/>
         <c:if test="${not empty param.id}">
             <fmt:parseNumber var="id" integerOnly="true" type="number" value="${param.id}" />
             <c:set var="obj" value="${helper.getById(id)}"/>
@@ -106,7 +77,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
             <!-- Inicio de Contenido -->
             <div id="content">
                 <div class="inner"id="leito">
-                    <h1>Usuario monitor</h1>
+                    <h1>Moneda</h1>
 
                     <div id="ajax_loading" class="alert_info" style="display: none;"></div>
                     <div id="ajax_message" class="alert_warning" style="display: none;"></div>
@@ -118,7 +89,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                             <div class="header">
                                 <span>                                    
                                     <img src="../../images/icon_users.png" alt="icon"/>
-                                    ${not empty param.id ? "Editar usuario:" : "Usuario"}
+                                    ${not empty param.id ? "Editar moneda:" : "Moneda"}
                                     ${not empty param.id ? param.id : ""}
                                 </span>
                             </div>
@@ -126,49 +97,34 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                             <div class="content">
                                     <input type="hidden" id="id" name="id" value="${ not empty obj.id ? obj.id :"0"}" />
                                     <p>
-                                        <label>Nombre:</label><br/>
-                                        <input maxlength="50" type="text" id="nombre" name="nombre" style="width:300px"
+                                        <label>* Nombre:</label><br/>
+                                        <input maxlength="45" type="text" id="nombre" name="nombre" style="width:300px"
                                                value="${not empty obj.nombre ? obj.nombre : ""}"
                                                data-validation="length"
-                                               data-validation-length="1-50"
-                                               data-validation-error-msg="El nombre debe tener de 1 a 50 caracteres."
+                                               data-validation-length="1-45"
+                                               data-validation-error-msg="El nombre debe tener de 1 a 45 caracteres."
+                                               required
                                                />
                                     </p>
                                     <br/>
                                     <p>
-                                        <label>Apellido Paterno:</label><br/>
-                                        <input maxlength="70" type="text" id="apellidoPaterno" name="apellidoPaterno" style="width:300px;"
-                                               value="${not empty obj.apellidoPaterno ? obj.apellidoPaterno : ""}"
+                                        <label>*Simbolo:</label><br/>
+                                        <input maxlength="1" type="text" id="simbolo" name="simbolo" style="width:300px;"
+                                               value="${not empty obj.simbolo ? obj.simbolo : ""}"
                                                data-validation="length"
-                                               data-validation-length="1-50"
-                                               data-validation-error-msg="El apellido paterno debe tener de 1 a 50 caracteres."
+                                               data-validation-length="min1"
+                                               data-validation-error-msg="El simbolo es requerido y ingrese uno."
+                                               required=""
                                                />
                                     </p>
                                     <br/>                                    
                                     <p>
-                                        <label>Apellido Materno:</label><br/>
-                                        <input maxlength="70" type="text" id="apellidoMaterno" name="apellidoMaterno" style="width:300px;"
-                                               value="${not empty obj.apellidoMaterno ? obj.apellidoMaterno : ""}"
+                                        <label>Codigo:</label><br/>
+                                        <input maxlength="45" type="text" id="codigo" name="codigo" style="width:300px;"
+                                               value="${not empty obj.codigo ? obj.codigo : ""}"
                                                />
                                     </p>
                                     <br/> 
-                                    <p>
-                                        <label>*email:</label><br/>
-                                        <input maxlength="100" type="text" id="email" name="email" style="width:300px"
-                                               value="${not empty obj.email ? obj.email : ""}"
-                                               class="required"
-                                               data-validation="email"
-                                               data-validation-error-msg="Formato de email incorrecto."
-                                               required/>
-                                    </p>  
-                                    <br/>                                                                                                                                            
-                                    <p>
-                                       <label>* Contraseña:</label><br/>
-                                       <input type="text" id="password" name="password" value="${ not empty obj.password ? obj.password :""}" required/>
-                                       <br/><br/>
-                                       <input type="button" id="generarPassword" value="Generar contraseña" onClick="crearPassword(10);"/>
-                                    </p>
-                                    <br>
                                     <p>
                                         <input type="checkbox" class="checkbox" ${ obj.activo ? "checked":""} 
                                                id="checkActivo" name="checkActivo">

@@ -25,80 +25,14 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <jsp:include page="../include/keyWordSEO.jsp" />
         <jsp:include page="../include/skinCSS.jsp" />
         <jsp:include page="../include/jsFunctions.jsp"/>
-        <script type="text/javascript">
-        function crearPassword(length, special) {
-             var iteration = 0;
-             var password = "";
-             var randomNumber;
-             if(special == undefined){
-                 var special = false;
-             }
-             while(iteration < length){
-               randomNumber = (Math.floor((Math.random() * 100)) % 94) + 33;
-               if(!special){
-
-                 if ((randomNumber >=33) && (randomNumber <=47)) { continue; }
-
-                 if ((randomNumber >=58) && (randomNumber <=64)) { continue; }
-
-                 if ((randomNumber >=91) && (randomNumber <=96)) { continue; }
-
-                 if ((randomNumber >=123) && (randomNumber <=126)) { continue; }
-
-               }
-
-               iteration++;
-               password += String.fromCharCode(randomNumber);
-             }
-
-             $('#password').val(password);                      
-             return password;
-           }
-            
-            function guardar(obj){            
-                    var id=$(obj).attr("id");
-                    $.ajax({
-                        type: "POST",
-                        url: "crearCredenciales.jsp",
-                        data: {
-                            id:id,
-                            password:crearPassword(10),
-                        },
-                        beforeSend: function(objeto){
-                            $("#action_buttons").fadeOut("slow");
-                            $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
-                            $("#ajax_loading").fadeIn("slow");
-                        },
-                        success: function(datos){
-                            console.log("Datos");
-                            console.log(datos);
-                            if(datos.indexOf("--EXITO-->", 0)>0){
-                               $("#ajax_message").html("Credenciales generadas.");
-                               $("#ajax_loading").fadeOut("slow");
-                               $("#ajax_message").fadeIn("slow");
-                               apprise('<center><img src=../../images/info.png> <br/>Credenciales generadas.</center>',{'animate':true},
-                                        function(r){
-                                                javascript:window.location.href = "lista.jsp";
-                                                parent.$.fancybox.close();  
-                                        });
-                           }else{
-                               $("#ajax_loading").fadeOut("slow");
-                               $("#ajax_message").html("Ocurrió un error al intentar generar las crendeciales.");
-                               $("#ajax_message").fadeIn("slow");
-                               $("#action_buttons").fadeIn("slow");
-                           }
-                        }
-                    });   
-                }                               
-        </script>
     </head>
     <body>
         <!--- Inicialización de variables --->
-        <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.UsuarioMonitorDAO"/>
+        <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.MonedaDAO"/>
         <!--- @lista --->
         <c:set var="lista" value="${helper.lista}"/>
         <!--- @formulario --->
-        <c:set var="formulario" value="../catUsuariosMonitor/formulario.jsp"/>
+        <c:set var="formulario" value="../catMoneda/formulario.jsp"/>
         
         <div class="content_wrapper">
 
@@ -123,7 +57,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                         <div class="header">
                             <span>
                                 <img src="../../images/icon_users.png" alt="icon"/>
-                                Usuarios monitor
+                                Moneda
                             </span>
                             <div class="switch" style="width:500px">
                                 <table width="500px" cellpadding="0" cellspacing="0">
@@ -151,9 +85,8 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                     <thead>
                                         <tr>
                                             <th>Nombre</th>
-                                            <th>Apellido Paterno</th>
-                                            <th>Apellido Materno</th>
-                                            <th>email</th>
+                                            <th>Código</th>
+                                            <th>Simbolo</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -161,14 +94,10 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                        <c:forEach items="${lista}" var="item">
                                          <tr class="${ item.activo ? "" : "inactive"}">
                                             <td>${item.nombre}</td>
-                                            <td>${item.apellidoPaterno}</td>
-                                            <td>${item.apellidoMaterno}</td>
-                                            <td>${item.email}</td>
+                                            <td>${item.simbolo}</td>
                                             <td>
                                                <a href="${formulario}?id=${item.id}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
                                                 &nbsp;&nbsp;
-                                                <a href="#" onclick="guardar(this);" id="${item.id}">
-                                                    <img src="../../images/icon_email.png" alt="reestablecer" class="help" title="Generar nueva credencial"/></a>
                                             </td>
                                           </tr>
                                        </c:forEach>

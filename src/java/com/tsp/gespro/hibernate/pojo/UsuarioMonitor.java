@@ -84,9 +84,6 @@ public class UsuarioMonitor  implements java.io.Serializable {
         this.activo = activo;
     }
 
-
-
-
 }
 
 
