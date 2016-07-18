@@ -7,3 +7,11 @@ CREATE TABLE `gespro`.`usuarios_monitor` (
   `password` VARCHAR(250) NOT NULL,
   `activo` BIT NULL,
   PRIMARY KEY (`id`));
+  
+  CREATE TABLE `gespro`.`moneda` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NOT NULL,
+  `codigo` VARCHAR(45) NULL,
+  `simbolo` VARCHAR(1) NOT NULL,
+  `activo` BIT NULL,
+  PRIMARY KEY (`id`));
