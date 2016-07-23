@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 18/07/2016 05:13:09 AM by Hibernate Tools 3.2.1.GA -->
+<!-- Generated 18/07/2016 09:46:10 AM by Hibernate Tools 3.2.1.GA -->
 <hibernate-mapping>
     <class name="com.tsp.gespro.hibernate.pojo.Moneda" table="moneda" catalog="gespro">
         <id name="id" type="java.lang.Integer">

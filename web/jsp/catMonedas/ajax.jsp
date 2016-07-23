@@ -22,8 +22,9 @@
         // UsuarioMonitor para poder actulizarlos o crearlos.
         obj.setNombre(request.getParameter("nombre") != null ? new String(request.getParameter("nombre").getBytes("ISO-8859-1"), "UTF-8"): "");
         obj.setCodigo(request.getParameter("codigo") != null ? new String(request.getParameter("codigo").getBytes("ISO-8859-1"), "UTF-8"): "");
-        obj.setSimbolo(request.getParameter("simbolo") != null ? new String(request.getParameter("simbolo")): "");
-
+        if(request.getParameter("simbolo") != null ){
+            obj.setSimbolo(new String(request.getParameter("simbolo").getBytes("ISO-8859-1"), "UTF-8"));
+        }
         if(request.getParameter("activo") != null)
         {
           obj.setActivo(new Boolean(request.getParameter("activo")));
@@ -32,13 +33,16 @@
         out.print("<--ERROR-->" + ex.getMessage());
     }
     
-    
     if(id!=0){
        try{ 
+           obj.setId(id);
            if(obj.getNombre()=="" || obj.getSimbolo()==""){
                out.print("<--ERROR-->" + "Simbolo y nombre son obligatorios.");
            }
            else{
+            out.print("<--mmmm--> obj");
+            out.print(obj.getSimbolo());
+            out.print(obj.getId());
             moneda.actualizar(obj);
             out.print("<--EXITO-->" +"La actualización fue exitosa.");
            }

@@ -26,7 +26,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <jsp:include page="../include/skinCSS.jsp" />
         <jsp:include page="../include/jsFunctions.jsp"/>
         <script type="text/javascript">
-        function crearPassword(length, special) {
+         function crearPassword(length, special) {
              var iteration = 0;
              var password = "";
              var randomNumber;
@@ -54,42 +54,39 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
              $('#password').val(password);                      
              return password;
            }
-            
-            function guardar(obj){            
-                    var id=$(obj).attr("id");
-                    $.ajax({
-                        type: "POST",
-                        url: "crearCredenciales.jsp",
-                        data: {
-                            id:id,
-                            password:crearPassword(10),
-                        },
-                        beforeSend: function(objeto){
-                            $("#action_buttons").fadeOut("slow");
-                            $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
-                            $("#ajax_loading").fadeIn("slow");
-                        },
-                        success: function(datos){
-                            console.log("Datos");
-                            console.log(datos);
-                            if(datos.indexOf("--EXITO-->", 0)>0){
-                               $("#ajax_message").html("Credenciales generadas.");
-                               $("#ajax_loading").fadeOut("slow");
-                               $("#ajax_message").fadeIn("slow");
-                               apprise('<center><img src=../../images/info.png> <br/>Credenciales generadas.</center>',{'animate':true},
-                                        function(r){
-                                                javascript:window.location.href = "lista.jsp";
-                                                parent.$.fancybox.close();  
-                                        });
-                           }else{
-                               $("#ajax_loading").fadeOut("slow");
-                               $("#ajax_message").html("Ocurrió un error al intentar generar las crendeciales.");
-                               $("#ajax_message").fadeIn("slow");
-                               $("#action_buttons").fadeIn("slow");
-                           }
-                        }
-                    });   
-                }                               
+           function guardar(obj){            
+            var id=$(obj).attr("id");
+            $.ajax({
+                type: "POST",
+                url: "crearCredenciales.jsp",
+                data: {
+                    id:id,
+                    password:crearPassword(10)
+                },
+                beforeSend: function(){
+                    $("#action_buttons").fadeOut("slow");
+                    $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
+                    $("#ajax_loading").fadeIn("slow");
+                },
+                success: function(datos){
+                    if(datos.indexOf("--EXITO-->", 0)>0){
+                       $("#ajax_message").html("Credenciales generadas.");
+                       $("#ajax_loading").fadeOut("slow");
+                       $("#ajax_message").fadeIn("slow");
+                       apprise('<center><img src=../../images/info.png> <br/>Credenciales generadas.</center>',{'animate':true},
+                                function(r){
+                                        javascript:window.location.href = "lista.jsp";
+                                        parent.$.fancybox.close();  
+                                });
+                   }else{
+                       $("#ajax_loading").fadeOut("slow");
+                       $("#ajax_message").html("Ocurrió un error al intentar generar las crendeciales.");
+                       $("#ajax_message").fadeIn("slow");
+                       $("#action_buttons").fadeIn("slow");
+                   }
+                }
+            });   
+           }                               
         </script>
     </head>
     <body>
@@ -109,7 +106,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
             <!-- Inicio de Contenido -->
             <div id="content">
 
-                <div class="inner">
+                <div class="inner" id="leito">
                     <h1>Administración</h1>
                     
                     <div id="ajax_loading" class="alert_info" style="display: none;"></div>

@@ -21,7 +21,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title><jsp:include page="../include/titleApp.jsp" /></title>
-        
         <jsp:include page="../include/keyWordSEO.jsp" />
         <jsp:include page="../include/skinCSS.jsp" />
         <jsp:include page="../include/jsFunctions.jsp"/>
@@ -32,7 +31,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <!--- @lista --->
         <c:set var="lista" value="${helper.lista}"/>
         <!--- @formulario --->
-        <c:set var="formulario" value="../catMoneda/formulario.jsp"/>
+        <c:set var="formulario" value="formulario.jsp"/>
         
         <div class="content_wrapper">
 
@@ -85,8 +84,8 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                     <thead>
                                         <tr>
                                             <th>Nombre</th>
-                                            <th>Código</th>
                                             <th>Simbolo</th>
+                                            <th>Código</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -95,6 +94,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                          <tr class="${ item.activo ? "" : "inactive"}">
                                             <td>${item.nombre}</td>
                                             <td>${item.simbolo}</td>
+                                            <td>${item.codigo}</td>
                                             <td>
                                                <a href="${formulario}?id=${item.id}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
                                                 &nbsp;&nbsp;

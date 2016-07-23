@@ -8,7 +8,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:directive.page import="com.tsp.gespro.hibernate.dao.MonedaDAO"/>
-<jsp:directive.page import="com.tsp.gespro.hibernate.pojo.MonedaUsuarioMonitor"/>
+<jsp:directive.page import="com.tsp.gespro.hibernate.pojo.Moneda"/>
 <jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 <%
 //Verifica si el usuario tiene acceso a este topico
@@ -113,7 +113,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                value="${not empty obj.simbolo ? obj.simbolo : ""}"
                                                data-validation="length"
                                                data-validation-length="min1"
-                                               data-validation-error-msg="El simbolo es requerido y ingrese uno."
+                                               data-validation-error-msg="El simbolo es requerido,ingrese uno."
                                                required=""
                                                />
                                     </p>
