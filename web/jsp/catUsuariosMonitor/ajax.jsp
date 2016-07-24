@@ -38,11 +38,11 @@
     
     if(id!=0){
        try{
-           out.print("<--ERROR-->" + obj.getNombre());
            if(obj.getEmail()=="" || obj.getPassword()==""){
                out.print("<--ERROR-->" + "Email y password son obligatorios.");
            }
            else{
+            obj.setId(id);
             usuarioMonitor.actualizar(obj);
             out.print("<--EXITO-->" +"La actualización fue exitosa.");
            }
