@@ -9,7 +9,7 @@
     <property name="hibernate.connection.password">cruzade</property>
     <property name="show_sql">true</property>
     <property name="hbm2ddl.auto">update</property>
-    <mapping class="" file="" jar="" package="" resource="com/tsp/gespro/hibernate/pojo/UsuarioMonitor.hbm.xml"/>
+    <mapping resource="com/tsp/gespro/hibernate/pojo/UsuarioMonitor.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/Moneda.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
