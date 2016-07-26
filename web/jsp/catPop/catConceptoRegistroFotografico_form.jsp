@@ -1,4 +1,4 @@
-<%-- 
+<%--
     Document   : catConceptoRegistroFotografico_form
     Created on : 29/10/2015, 10:35:08 AM
     Author     : leonardo
@@ -28,14 +28,14 @@
         response.sendRedirect("../../jsp/inicio/login.jsp?action=loginRequired&urlSource=" + request.getRequestURI() + "?" + request.getQueryString());
         response.flushBuffer();
     } else {
-        
+
         int paginaActual = 1;
         try{
             paginaActual = Integer.parseInt(request.getParameter("pagina"));
         }catch(Exception e){}
 
         int idEmpresa = user.getUser().getIdEmpresa();
-        
+
         /*
          * Parámetros
          */
@@ -44,7 +44,7 @@
             idConceptoRegistroFotografico = Integer.parseInt(request.getParameter("idConceptoRegistroFotografico"));
         } catch (NumberFormatException e) {
         }
-        
+
         int idCliente = -1;
         try{ idCliente = Integer.parseInt(request.getParameter("idCliente")); }catch(NumberFormatException e){}
         int idConcepto = -1;
@@ -54,7 +54,7 @@
 
         Empresa empresaDto = new EmpresaBO(user.getConn()).getEmpresaMatriz(user.getUser().getIdEmpresa());
         String rfcEmpresaMatriz = empresaDto.getRfc();
-        
+
         String buscar_fechamin = "";
         String buscar_fechamax = "";
         Date fechaMin=null;
@@ -99,9 +99,9 @@
             Calendar c = Calendar.getInstance();
             c.add(Calendar.DATE, -2);//lo enviamos como día de ante ayer
             Date date = c.getTime(); //dia de ante ayer
-            filtroBusqueda += " AND " + " (CAST(FECHA_HORA AS DATE) BETWEEN '"+DateManage.formatDateToSQL(date)+"' AND '"+DateManage.formatDateToSQL(new Date())+"') ";                     
+            filtroBusqueda += " AND " + " (CAST(FECHA_HORA AS DATE) BETWEEN '"+DateManage.formatDateToSQL(date)+"' AND '"+DateManage.formatDateToSQL(new Date())+"') ";
         }
-        
+
         int planoEntrada = -1;
         try{ planoEntrada = Integer.parseInt(request.getParameter("planoEntrada")); }catch(NumberFormatException e){}
         int planoSalida = -1;
@@ -112,9 +112,9 @@
         try{ competencia = Integer.parseInt(request.getParameter("competencia")); }catch(NumberFormatException e){}
         int premios = -1;
         try{ premios = Integer.parseInt(request.getParameter("premios")); }catch(NumberFormatException e){}
-        
+
         String filtroTipoFoto = "";
-        
+
         if(planoEntrada > 0){
            filtroTipoFoto += " ID_TIPO_FOTO = 1 ";
         }
@@ -125,7 +125,7 @@
         }
         if(pop > 0){
             if(!filtroTipoFoto.trim().equals(""))
-                filtroTipoFoto += " OR ";        
+                filtroTipoFoto += " OR ";
             filtroTipoFoto += " ID_TIPO_FOTO = 3 ";
         }
         if(competencia > 0){
@@ -138,33 +138,33 @@
                 filtroTipoFoto += " OR ";
            filtroTipoFoto += " ID_TIPO_FOTO = 5 ";
         }
-        
+
         if (!filtroTipoFoto.trim().equals("")){
             filtroBusqueda += " AND ( " + filtroTipoFoto + ") ";
         }
-           
+
         /*
          *   0/"" = nuevo
          *   1 = editar/consultar
-         *   2 = eliminar  
+         *   2 = eliminar
          */
         String mode = request.getParameter("acc") != null ? request.getParameter("acc") : "";
-                
+
         ConceptoRegistroFotograficoBO conceptoRegistroFotograficoBO = new ConceptoRegistroFotograficoBO(user.getConn());
 /*        ConceptoRegistroFotografico conceptoRegistroFotograficosDto = null;
         if (idConceptoRegistroFotografico > 0){
             conceptoRegistroFotograficoBO = new ConceptoRegistroFotograficoBO(idConceptoRegistroFotografico,user.getConn());
             conceptoRegistroFotograficosDto = conceptoRegistroFotograficoBO.getConceptoRegistroFotografico();
         }
-*/        
+*/
         //ConceptoRegistroFotograficoBO conceptoRegistroFotograficoBO = new ConceptoRegistroFotograficoBO(user.getConn());
-        ConceptoRegistroFotografico[] conceptoRegistroFotograficosDto2 = new ConceptoRegistroFotografico[0];        
+        ConceptoRegistroFotografico[] conceptoRegistroFotograficosDto2 = new ConceptoRegistroFotografico[0];
         try{
             conceptoRegistroFotograficosDto2 = conceptoRegistroFotograficoBO.findConceptoRegistroFotograficos(idConceptoRegistroFotografico, idEmpresa, idCliente, idConcepto, idUsuario, 0, 0, filtroBusqueda);
-            
+
         }catch(Exception ex){
             ex.printStackTrace();
-        }  
+        }
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
@@ -180,9 +180,13 @@
         <jsp:include page="../include/skinCSS.jsp" />
 
         <jsp:include page="../include/jsFunctions.jsp"/>
-        
+
+        <link href="../../../css/slick-carousel/slick.css" rel="stylesheet" type="text/css" media="all"/>
+        <link href="../../../css/slick-carousel/slick-theme.css" rel="stylesheet" type="text/css" media="all"/>
+        <link href="../../../css/slick-carousel/slick-lightbox.css" rel="stylesheet" type="text/css" media="all"/>
+
         <script type="text/javascript">
-            
+
             function grabar(){
                 if(validar()){
                     $.ajax({
@@ -225,7 +229,7 @@
                 */
                 return true;
             }
-            
+
             function mostrarCalendario(){
                 //fh_min
                 //fh_max
@@ -251,7 +255,7 @@
 		});
 
             }
-            
+
         </script>
     </head>
     <body>
@@ -270,7 +274,7 @@
                     <div id="ajax_loading" class="alert_info" style="display: none;"></div>
                     <div id="ajax_message" class="alert_warning" style="display: none;"></div>
 
-                    
+
                     <div class="onecolumn">
                         <div class="header">
                             <span>
@@ -291,7 +295,7 @@
                                         value="" readonly/>
                                 </p>
                                 <br/>
-                                
+
                                 <!--<p>
                                 <label>Cliente:</label><br/>
                                 <select id="q_idcliente" name="q_idcliente" class="flexselect">
@@ -299,8 +303,8 @@
                                     </%= new ClienteBO(user.getConn()).getClientesByIdHTMLCombo(idEmpresa, -1," AND ID_ESTATUS <> 2 " +  ) %>
                                 </select>
                                 </p>
-                                <br/>-->                                
-                                
+                                <br/>-->
+
                                 <p>
                                 <label>Promotor:</label><br/>
                                 <select id="idUsuario" name="idUsuario" class="flexselect">
@@ -309,7 +313,7 @@
                                 </select>
                                 </p>
                                 <br/>
-                                
+
                                 <p>
                                 <input type="checkbox" class="checkbox" id="planoEntrada" name="planoEntrada" value="1"> <label for="planoEntrada">Foto planograma de entrada</label>
                                 </p><p>
@@ -317,25 +321,25 @@
                                 </p><p>
                                 <input type="checkbox" class="checkbox" id="pop" name="pop" value="3"> <label for="pop">Foto pop (material promocional)</label>
                                 </p><p>
-                                <input type="checkbox" class="checkbox" id="competencia" name="competencia" value="4"> <label for="competencia">Foto competencia</label> 
+                                <input type="checkbox" class="checkbox" id="competencia" name="competencia" value="4"> <label for="competencia">Foto competencia</label>
                                 </p><p>
-                                <input type="checkbox" class="checkbox" id="premios" name="premios" value="5"> <label for="premios">Foto give ways (premios)</label>                                    
-                                </p>    
+                                <input type="checkbox" class="checkbox" id="premios" name="premios" value="5"> <label for="premios">Foto give ways (premios)</label>
+                                </p>
                                 <br/>
-                                
+
                                 <div id="action_buttons">
                                     <p>
                                         <input type="button" id="buscar" value="Buscar" onclick="$('#search_form_advance').submit();"/>
                                     </p>
                                 </div>
-                                
+
                             </form>
                         </div>
                     </div>
-                    
-                    
+
+
                     <!--TODO EL CONTENIDO VA AQUÍ-->
-                    <form action="" method="post" id="frm_action">
+                    <form action="" method="post" id="frm_action" class="slick-gallery">
                     <table class="data" width="100%" cellpadding="0" cellspacing="0">
                                         <!--<div class="header">
                                             <span>
@@ -343,18 +347,18 @@
                                                 Imágenes del producto
                                             </span>
                                         </div>-->
-                        
+
                         <tr>
-                        <%if(conceptoRegistroFotograficosDto2 != null){                            
+                        <%if(conceptoRegistroFotograficosDto2 != null){
                             int columna = 0;
                             Concepto concepto = null;
-                            for(ConceptoRegistroFotografico registro : conceptoRegistroFotograficosDto2){                                
+                            for(ConceptoRegistroFotografico registro : conceptoRegistroFotograficosDto2){
                                 concepto = null;
                                 try{concepto = new ConceptoBO(registro.getIdConcepto(), user.getConn()).getConcepto();}catch(Exception e){}
                             if(columna == 0){%>
                                 <tr>
-                            <%}%>                           
-                                                
+                            <%}%>
+
                             <td>
                                  <% if (registro!=null){ %>
                                 <p>
@@ -365,7 +369,9 @@
                                     <label><%=registro.getComentario()%></label>
                                     <br/>
                                     <% if (!StringManage.getValidString(registro.getNombreFoto()).equals("")) { %>
-                                    <img src='showImageConcepto.jsp?image=<%=registro.getNombreFoto()%>&rfc=<%=rfcEmpresaMatriz%>' alt="Foto Producto" style="width: 250px">
+                                    <div class="thumbnail">
+                                        <img src='showImageConcepto.jsp?image=<%=registro.getNombreFoto()%>&rfc=<%=rfcEmpresaMatriz%>' alt="Foto Producto" data-caption="" style="width: 250px">
+                                    </div>
                                     <% } else{ %>
                                         <br/>
                                         <i>&lt;&lt; Sin imágen registrada &gt;&gt;</i>
@@ -373,21 +379,21 @@
                                 </p>
                                 <%
                                     }
-                                %>                               
-                            </td>                            
-                        
+                                %>
+                            </td>
+
                             <%if(columna == 2){
                                 columna = 0;
                             %>
                                 </tr>
-                            <%}%>    
-                        
+                            <%}%>
+
                             <%columna++;
-                            } 
+                            }
                         }%>
                         <!-- End left column window -->
-                        
-                        
+
+
                     </table>
                     </form>
                     <!--TODO EL CONTENIDO VA AQUÍ-->
@@ -399,10 +405,22 @@
             <!-- Fin de Contenido-->
         </div>
 
-            <script>
+        <script>
             mostrarCalendario();
             $("select.flexselect").flexselect();
         </script>
+
+        <script type="text/javascript" src="../../../js/slick-carousel/slick-min.js"></script>
+        <script type="text/javascript" src="../../../js/slick-carousel/slick-lightbox.min.js"></script>
+        <script type="text/javascript">
+          $('.slick-gallery').slick();
+          $('.slick-gallery').slickLightbox({
+            src: 'src',
+            itemSelector: '.thumbnail img',
+            caption: 'caption'
+          });
+        </script>
+
     </body>
 </html>
 <%}%>
