@@ -237,6 +237,21 @@ public class Cliente implements Serializable
 	 */
 	protected boolean idUsuarioAltaModified = false;
 
+	/** 
+	 * This attribute maps to the column MATRIZ in the cliente table.
+	 */
+	protected int matriz;
+
+	/** 
+	 * This attribute represents whether the primitive attribute matriz is null.
+	 */
+	protected boolean matrizNull = true;
+
+	/** 
+	 * This attribute represents whether the attribute matriz has been modified since being read from the database.
+	 */
+	protected boolean matrizModified = false;
+
 	/**
 	 * Method 'Cliente'
 	 * 
@@ -1072,7 +1087,66 @@ public class Cliente implements Serializable
 	{
 		return idUsuarioAltaModified;
 	}
+        
+	/**
+	 * Method 'getMatriz'
+	 * 
+	 * @return int
+	 */
+	public int getMatriz()
+	{
+		return matriz;
+	}
 
+	/**
+	 * Method 'setIdUsuarioAlta'
+	 * 
+	 * @param matriz
+	 */
+	public void setMatriz(int matriz)
+	{
+		this.matriz = matriz;
+		this.matrizNull = false;
+		this.matrizModified = true;
+	}
+
+	/**
+	 * Method 'setMatrizNull'
+	 * 
+	 * @param value
+	 */
+	public void setMatrizNull(boolean value)
+	{
+		this.matrizNull = value;
+		this.matrizModified = true;
+	}
+
+	/**
+	 * Method 'isMatrizNull'
+	 * 
+	 * @return boolean
+	 */
+	public boolean isMatrizNull()
+	{
+		return matrizNull;
+	}
+
+	/** 
+	 * Sets the value of matrizModified
+	 */
+	public void setMatrizModified(boolean matrizModified)
+	{
+		this.matrizModified = matrizModified;
+	}
+
+	/** 
+	 * Gets the value of matrizModified
+	 */
+	public boolean isMatrizModified()
+	{
+		return matrizModified;
+	}
+        
 	/**
 	 * Method 'equals'
 	 * 
@@ -1269,6 +1343,10 @@ public class Cliente implements Serializable
 		if (idUsuarioAltaModified != _cast.idUsuarioAltaModified) {
 			return false;
 		}
+                
+		if (matriz != _cast.matriz) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -1366,6 +1444,7 @@ public class Cliente implements Serializable
 		_hashCode = 29 * _hashCode + idUsuarioAlta;
 		_hashCode = 29 * _hashCode + (idUsuarioAltaNull ? 1 : 0);
 		_hashCode = 29 * _hashCode + (idUsuarioAltaModified ? 1 : 0);
+                _hashCode = 29 * _hashCode + matriz;
 		return _hashCode;
 	}
 
@@ -1408,6 +1487,7 @@ public class Cliente implements Serializable
 		ret.append( ", longitud=" + longitud );
 		ret.append( ", fechaRegistro=" + fechaRegistro );
 		ret.append( ", idUsuarioAlta=" + idUsuarioAlta );
+		ret.append( ", matriz=" + matriz );
 		return ret.toString();
 	}
 
