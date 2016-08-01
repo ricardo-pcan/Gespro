@@ -37,7 +37,7 @@ calls to this DAO, otherwise a new Connection will be allocated for each operati
 	/** 
 	 * All finder methods in this class use this SELECT constant to build their queries
 	 */
-	protected final String SQL_SELECT = "SELECT ID_CLIENTE, ID_EMPRESA, ID_CATEGORIA, ID_ESTATUS, NOMBRE_COMERCIAL, CONTACTO, TELEFONO, CALLE, NUMERO, NUMERO_INTERIOR, COLONIA, CODIGO_POSTAL, PAIS, ESTADO, MUNICIPIO, CORREO, LATITUD, LONGITUD, FECHA_REGISTRO, ID_USUARIO_ALTA, MATRIZ FROM " + getTableName() + "";
+	protected final String SQL_SELECT = "SELECT ID_CLIENTE, ID_EMPRESA, ID_CATEGORIA, ID_ESTATUS, NOMBRE_COMERCIAL, CONTACTO, TELEFONO, CALLE, NUMERO, NUMERO_INTERIOR, COLONIA, CODIGO_POSTAL, PAIS, ESTADO, MUNICIPIO, CORREO, LATITUD, LONGITUD, FECHA_REGISTRO, ID_USUARIO_ALTA FROM " + getTableName() + "";
 
 	/** 
 	 * Finder methods will pass this value to the JDBC setMaxRows method
@@ -47,12 +47,12 @@ calls to this DAO, otherwise a new Connection will be allocated for each operati
 	/** 
 	 * SQL INSERT statement for this table
 	 */
-	protected final String SQL_INSERT = "INSERT INTO " + getTableName() + " ( ID_CLIENTE, ID_EMPRESA, ID_CATEGORIA, ID_ESTATUS, NOMBRE_COMERCIAL, CONTACTO, TELEFONO, CALLE, NUMERO, NUMERO_INTERIOR, COLONIA, CODIGO_POSTAL, PAIS, ESTADO, MUNICIPIO, CORREO, LATITUD, LONGITUD, FECHA_REGISTRO, ID_USUARIO_ALTA, MATRIS ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+	protected final String SQL_INSERT = "INSERT INTO " + getTableName() + " ( ID_CLIENTE, ID_EMPRESA, ID_CATEGORIA, ID_ESTATUS, NOMBRE_COMERCIAL, CONTACTO, TELEFONO, CALLE, NUMERO, NUMERO_INTERIOR, COLONIA, CODIGO_POSTAL, PAIS, ESTADO, MUNICIPIO, CORREO, LATITUD, LONGITUD, FECHA_REGISTRO, ID_USUARIO_ALTA ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 
 	/** 
 	 * SQL UPDATE statement for this table
 	 */
-	protected final String SQL_UPDATE = "UPDATE " + getTableName() + " SET ID_CLIENTE = ?, ID_EMPRESA = ?, ID_CATEGORIA = ?, ID_ESTATUS = ?, NOMBRE_COMERCIAL = ?, CONTACTO = ?, TELEFONO = ?, CALLE = ?, NUMERO = ?, NUMERO_INTERIOR = ?, COLONIA = ?, CODIGO_POSTAL = ?, PAIS = ?, ESTADO = ?, MUNICIPIO = ?, CORREO = ?, LATITUD = ?, LONGITUD = ?, FECHA_REGISTRO = ?, ID_USUARIO_ALTA = ?, MATRIZ = ? WHERE ID_CLIENTE = ?";
+	protected final String SQL_UPDATE = "UPDATE " + getTableName() + " SET ID_CLIENTE = ?, ID_EMPRESA = ?, ID_CATEGORIA = ?, ID_ESTATUS = ?, NOMBRE_COMERCIAL = ?, CONTACTO = ?, TELEFONO = ?, CALLE = ?, NUMERO = ?, NUMERO_INTERIOR = ?, COLONIA = ?, CODIGO_POSTAL = ?, PAIS = ?, ESTADO = ?, MUNICIPIO = ?, CORREO = ?, LATITUD = ?, LONGITUD = ?, FECHA_REGISTRO = ?, ID_USUARIO_ALTA = ? WHERE ID_CLIENTE = ?";
 
 	/** 
 	 * SQL DELETE statement for this table
@@ -160,14 +160,9 @@ calls to this DAO, otherwise a new Connection will be allocated for each operati
 	protected static final int COLUMN_ID_USUARIO_ALTA = 20;
 
 	/** 
-	 * Index of column MATRIZ
-	 */
-	protected static final int COLUMN_MATRIZ = 21;
-        
-	/** 
 	 * Number of columns
 	 */
-	protected static final int NUMBER_OF_COLUMNS = 21;
+	protected static final int NUMBER_OF_COLUMNS = 20;
         
 	/** 
 	 * Index of primary-key column ID_CLIENTE
@@ -414,17 +409,6 @@ calls to this DAO, otherwise a new Connection will be allocated for each operati
 				modifiedCount++;
 			}
                         
-			if (dto.isMatrizModified()) {
-				if (modifiedCount>0) {
-					sql.append( ", " );
-					values.append( ", " );
-				}
-		
-				sql.append( "MATRIZ" );
-				values.append( "?" );
-				modifiedCount++;
-			}
-                        
 			if (modifiedCount==0) {
 				// nothing to insert
 				throw new IllegalStateException( "Nothing to insert" );
@@ -531,15 +515,6 @@ calls to this DAO, otherwise a new Connection will be allocated for each operati
 					stmt.setNull( index++, java.sql.Types.INTEGER );
 				} else {
 					stmt.setInt( index++, dto.getIdUsuarioAlta() );
-				}
-		
-			}
-		
-			if (dto.isMatrizModified()) {
-				if (dto.isMatrizNull()) {
-					stmt.setNull( index++, java.sql.Types.INTEGER );
-				} else {
-					stmt.setInt( index++, dto.getMatriz());
 				}
 		
 			}
@@ -770,15 +745,6 @@ calls to this DAO, otherwise a new Connection will be allocated for each operati
 				modified=true;
 			}
 		
-			if (dto.isMatrizModified()) {
-				if (modified) {
-					sql.append( ", " );
-				}
-		
-				sql.append( "MATRIZ=?" );
-				modified=true;
-			}
-		
 			if (!modified) {
 				// nothing to update
 				return;
@@ -884,15 +850,6 @@ calls to this DAO, otherwise a new Connection will be allocated for each operati
 					stmt.setNull( index++, java.sql.Types.INTEGER );
 				} else {
 					stmt.setInt( index++, dto.getIdUsuarioAlta() );
-				}
-		
-			}
-		
-			if (dto.isMatrizModified()) {
-				if (dto.isMatrizNull()) {
-					stmt.setNull( index++, java.sql.Types.INTEGER );
-				} else {
-					stmt.setInt( index++, dto.getMatriz());
 				}
 		
 			}
@@ -1138,14 +1095,6 @@ calls to this DAO, otherwise a new Connection will be allocated for each operati
 		return findByDynamicSelect( SQL_SELECT + " WHERE ID_USUARIO_ALTA = ? ORDER BY ID_USUARIO_ALTA", new Object[] {  new Integer(idUsuarioAlta) } );
 	}
 
-	/** 
-	 * Returns all rows from the cliente table that match the criteria 'MATRIZ = :matriz'.
-	 */
-	public Cliente[] findWhereMatrizEquals(int matriz) throws ClienteDaoException
-	{
-		return findByDynamicSelect( SQL_SELECT + " WHERE MATRIZ = ? ORDER BY MATRIZ", new Object[] {  new Integer(matriz) } );
-	}
-        
 	/**
 	 * Method 'ClienteDaoImpl'
 	 * 
@@ -1263,11 +1212,6 @@ calls to this DAO, otherwise a new Connection will be allocated for each operati
 			dto.setIdUsuarioAltaNull( true );
 		}
                 
-		dto.setMatriz( rs.getInt( COLUMN_MATRIZ ) );
-		if (rs.wasNull()) {
-			dto.setMatrizNull( true );
-		}
-		
 		reset(dto);
 	}
 
@@ -1296,7 +1240,6 @@ calls to this DAO, otherwise a new Connection will be allocated for each operati
 		dto.setLongitudModified( false );
 		dto.setFechaRegistroModified( false );
 		dto.setIdUsuarioAltaModified( false );
-		dto.setMatrizModified( false );
 	}
 
 	/** 

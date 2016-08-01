@@ -23,7 +23,6 @@
 <%@page import="com.tsp.gespro.jdbc.ClienteDaoImpl"%>
 <%@page import="com.tsp.gespro.dto.Cliente"%>
 <%@page import="com.tsp.gespro.util.GenericValidator"%>
-<%@page import="com.google.gson.Gson"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 <%
@@ -37,7 +36,6 @@
     int idCliente = -1;
     int idClienteCategoria = 0;
     int periodoVisita = 1;
-    int matriz = -1;
     String rfc ="";
     String razonSocial ="";
     String nombre ="";
@@ -81,14 +79,6 @@
     }catch(NumberFormatException ex){}
     try{
         idClienteCategoria = Integer.parseInt(request.getParameter("idClienteCategoria"));
-    }catch(NumberFormatException ex){}
-    try{
-        matriz = Integer.parseInt(request.getParameter("matriz"));
-        // Validar que el id de la matriz exista
-        Cliente clienteDto = new ClienteBO(matriz,user.getConn()).getCliente();
-        if( clienteDto == null) {
-            matriz = -1;
-        }
     }catch(NumberFormatException ex){}
     rfc = request.getParameter("rfc")!=null?new String(request.getParameter("rfc").getBytes("ISO-8859-1"),"UTF-8"):"";
     razonSocial = request.getParameter("razonSocial")!=null?new String(request.getParameter("razonSocial").getBytes("ISO-8859-1"),"UTF-8"):"";
@@ -479,41 +469,6 @@
                 
         }
         
-    }else if(mode.equals("recargar_select_clientes")){ //Seleccionar Cliente (obtener datos)
-        int idClienteMatriz;
-        String nombreComercialMatriz;
-        try{
-            idClienteMatriz = Integer.parseInt(request.getParameter("id_cliente"));
-            Cliente clienteMatrizDto = new ClienteBO(idClienteMatriz,user.getConn()).getCliente();
-            nombreComercialMatriz = clienteMatrizDto.getNombreComercial();
-        }catch(Exception e){
-            idClienteMatriz = -1;
-            nombreComercialMatriz = "";
-        }
-        %>
-        <select size="1" id="matriz" name="matriz" class="flexselect" 
-            onchange="selectCliente(this.value)"
-            style="width: 300px;">
-            <option value="<%=idClienteMatriz%>"></option>
-            <%= new ClienteBO(user.getConn()).getClientesByIdHTMLCombo(user.getUser().getIdEmpresa(), idClienteMatriz, "") %>
-        </select>
-        <%
-        out.print("<!--EXITO-->");
-        
-    }else if(mode.equals("select_matriz")){ //Seleccionar Cliente (obtener datos)
-        idCliente = -1;
-        try{ idCliente = Integer.parseInt(request.getParameter("id_cliente")); }catch(Exception e){}
-        
-        Cliente clienteDto = new ClienteBO(idCliente,user.getConn()).getCliente();
-        Gson gson = new Gson();
-        if( clienteDto != null) {
-            String jsonOutput = gson.toJson(clienteDto);
-            out.print("<!--EXITO-->"+jsonOutput);
-        } else {
-            out.print("<!--ERROR-->La matriz seleccionada no existe");
-        }
-        
-    
     }else{
           
  /*   if(empresaPermisoAplicacionDto.getRfcPorNipCodigo() == 1 || empresaPermisoAplicacionDto.getRfcPorNipCodigo() == 2){
