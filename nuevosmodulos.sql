@@ -15,3 +15,7 @@ CREATE TABLE `gespro`.`usuarios_monitor` (
   `simbolo` VARCHAR(1) NOT NULL,
   `activo` BIT NULL,
   PRIMARY KEY (`id`));
+
+
+ALTER TABLE `gespro`.`datos_usuario` 
+ADD COLUMN `CIUDAD` VARCHAR(60) NULL AFTER `NUM_EMPLEADO`;
