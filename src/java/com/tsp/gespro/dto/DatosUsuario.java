@@ -165,6 +165,16 @@ public class DatosUsuario implements Serializable
 	}
 
 	/**
+	 * Method 'getNombreCompleto'
+	 * 
+	 * @return String
+	 */
+	public String getNombreCompleto()
+	{
+		return nombre + " " + apellidoPat + "" + apellidoMat;
+	}
+        
+	/**
 	 * Method 'setNombre'
 	 * 
 	 * @param nombre
