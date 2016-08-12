@@ -46,9 +46,16 @@
                 <li><a href="../../jsp/catUsuariosMonitor/lista.jsp"><img src="../../images/icon_users.png"/>Usuarios monitor</a></li>
                 <li><a href="../../jsp/catSucursales/catSucursales_list.jsp"><img src="../../images/icon_sucursales.png"/>Sucursales</a></li>
                 <li><a href="../../jsp/catMonedas/lista.jsp"><img src="../../images/icon_reloj.png"/>Moneda</a></li>
-                <li><a href="../../jsp/catProyectos/catProyectos.jsp"><img src="../../images/icon_validaXML.png"/>Proyectos</a></li>
                 <li><a href="../../jsp/catZonaHoraria/catZonaHoraria_form.jsp"><img src="../../images/icon_reloj.png"/>Zona Horaria</a></li>
                 <li><a href="../../jsp/catCargaManual/catCargaManual_list.jsp"><img src="../../images/icon_excel.png"/>Importar Excel</a></li>
+            </ul>	
+        </li>
+        
+        <li style="position: relative; z-index: 99;">
+            <a href="" id="idAdministracionLeftContent"><img src="../../images/icon_validaXML.png" alt="Proyectos"/>Proyectos</a>
+            <ul>
+                <li><a href="../../jsp/catProyectos/catProyectos.jsp"><img src="../../images/icon_validaXML.png"/>Ver Proyectos</a></li>
+                <li><a href="../../jsp/catProyectos/productos_list.jsp"><img src="../../images/icon_producto.png"/>Productos</a></li>
             </ul>	
         </li>
 

@@ -7,7 +7,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:directive.page import="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
+<jsp:directive.page import="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
 <jsp:directive.page import="com.tsp.gespro.hibernate.pojo.Proyecto"/>
 <jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 <%
@@ -26,12 +26,17 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <jsp:include page="../include/keyWordSEO.jsp" />
         <jsp:include page="../include/skinCSS.jsp" />
         <jsp:include page="../include/jsFunctions.jsp"/>
-       
+        
+        
+        <c:set var="redirect" value='false'/>
+        <c:if test="${not empty param.idproyecto}">
+            <c:set var="redirect" value='true'/>
+        </c:if>
         <script type="text/javascript">
             function guardar(){ 
                     $.ajax({
                         type: "POST",
-                        url: "ajax.jsp",
+                        url: "productos_ajax.jsp",
                         data: $("#frm_action").serialize(),
                         beforeSend: function(objeto){
                             $("#action_buttons").fadeOut("slow");
@@ -41,15 +46,19 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                         success: function(datos){
                             console.log("Datos");
                             console.log(datos);
-                            alert(datos);
                             if(datos.indexOf("--EXITO-->", 0)>0){
                                $("#ajax_message").html("Los datos se guardaron correctamente.");
                                $("#ajax_loading").fadeOut("slow");
                                $("#ajax_message").fadeIn("slow");
                                apprise('<center><img src=../../images/info.png> <br/>Los datos se guardaron correctamente.</center>',{'animate':true},
                                         function(r){
-                                                javascript:window.location.href = "catProyectos.jsp";
-                                                parent.$.fancybox.close();  
+                                                if(${redirect}){
+                                                    var oldURL = document.referrer;
+                                                    javascript:window.location.href = oldURL;
+                                                }else{
+                                                    javascript:window.location.href = 'productos_list.jsp';
+                                                    parent.$.fancybox.close();
+                                                }  
                                         });
                            }else{
                                $("#ajax_loading").fadeOut("slow");
@@ -64,13 +73,12 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     </head>
     <body>
         <!--- Inicialización de variables --->
-        <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
         <jsp:useBean id="productosModel" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
         <!--- @obj : Objeto de moneda a editar --->
         <c:set var="obj" value="${Proyecto}"/>
         <c:if test="${not empty param.id}">
             <fmt:parseNumber var="id" integerOnly="true" type="number" value="${param.id}" />
-            <c:set var="obj" value="${helper.getById(id)}"/>
+            <c:set var="obj" value="${productosModel.getById(id)}"/>
         </c:if>
             
            <div class="content_wrapper">
@@ -97,7 +105,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                             </div>
                             <br class="clear"/>
                             <div class="content">
-                                    <input type="hidden" id="id" name="id" value="${ not empty obj.idProyecto ? obj.idProyecto :"0"}" />
+                                    <input type="hidden" id="id" name="id" value="${ not empty obj.idProducto ? obj.idProducto :"0"}" />
                                     <p>
                                         <label>* Nombre:</label><br/>
                                         <input maxlength="45" type="text" id="nombre" name="nombre" style="width:300px"
@@ -110,74 +118,10 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                     </p>
                                     <br/>
                                     <p>
-                                        <label>* Fecha Inicio:</label><br/>
-                                        <input maxlength="10" type="text" id="fechaInicio" name="fechaInicio" style="width:300px;"
-                                               value="${not empty obj.fechaInicio ? obj.fechaInicio : ""}"
-                                               data-validation-error-msg="El simbolo es requerido,ingrese uno."
-                                               required=""
-                                               placeholder="YYYY/MM/DD"
+                                        <label>Descripcion:</label><br/>
+                                        <input  type="text" id="descripcion" name="descripcion" style="width:300px;"
+                                               value="${not empty obj.descripcion ? obj.descripcion : ""}"
                                                />
-                                    </p>
-                                    <br/>
-                                    <p>
-                                        <label>* Fecha Programada:</label><br/>
-                                        <input maxlength="10" type="text" id="fechaProgramada" name="fechaProgramada" style="width:300px;"
-                                               value="${not empty obj.fechaProgramada ? obj.fechaProgramada : ""}"
-                                               data-validation-error-msg="El simbolo es requerido,ingrese uno."
-                                               required=""
-                                               placeholder="YYYY/MM/DD"
-                                               />
-                                    </p>
-                                    <br/>
-                                    <p>
-                                        <label>* Fecha Real:</label><br/>
-                                        <input maxlength="10" type="text" id="fechaReal" name="fechaReal" style="width:300px;"
-                                               value="${not empty obj.fechaReal ? obj.fechaReal : ""}"
-                                               data-validation-error-msg="El simbolo es requerido,ingrese uno."
-                                               required=""
-                                               placeholder="YYYY/MM/DD"
-                                               />
-                                    </p>
-                                    <br/>                                    
-                                    <p>
-                                        <label>Cliente:</label><br/>
-                                        <input maxlength="45" type="text" id="idCliente" name="idCliente" style="width:300px;"
-                                               value="${not empty obj.idCliente ? obj.idCliente : ""}"
-                                               />
-                                    </p>
-                                    <br/>                                  
-                                    <p>
-                                        <label>Avance:</label><br/>
-                                        <input maxlength="45" type="text" id="avance" name="avance" style="width:300px;"
-                                               value="${not empty obj.avance ? obj.avance : ""}"
-                                               />
-                                    </p>
-                                    <br/>                                  
-                                    <p>
-                                        <label>Promotor</label><br/>
-                                        <input maxlength="45" type="text" id="idPromotor" name="idPromotor" style="width:300px;"
-                                               value="${not empty obj.idPromotor ? obj.idPromotor : ""}"
-                                               />
-                                    </p>
-                                    <br/>                   
-                                    
-                                    <c:set var="estatus" value="${not empty obj.status ? obj.status : 0}"/>
-                                    <p>
-                                        <label>Estatus</label><br/>
-                                        <input type="checkbox" id="status" name="status" ${estatus == 1 ? "checked":""}/>
-                                    </p>
-                                    <br/>    
-                                    <c:set var="productos" value="${productosModel.lista()}"/>
-                                    <c:set var="idproductos" value="${not empty obj.idProducto ? obj.idProducto : 0}"/>
-                                    <p>
-                                        <label>Producto</label><br/>
-                                        <select  id="idProducto" name="idProducto" style="width:300px;">
-                                            <option value="0">Selecciona un producto</option>
-                                            <c:forEach items="${productos}" var="item">
-                                                <option value="${item.idProducto}" ${item.idProducto == idproductos ? "selected":""}>${item.nombre}</option>
-                                            </c:forEach>
-                                        </select>
-                                        <a href="productos_form.jsp?idproyecto=true">Agregar Producto</a>
                                     </p>
                                     <br/> 
                                     <div id="action_buttons">

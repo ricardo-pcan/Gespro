@@ -1,5 +1,5 @@
 <%-- 
-    Document   : catProyectos
+    Document   : productos_list
     Created on : 07/08/2016, 07:55:43 PM
     Author     : Fabian
 --%>
@@ -27,12 +27,11 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     </head>
     <body>
         <!--- Inicialización de variables --->
-        <jsp:useBean id="proyectos" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
         <jsp:useBean id="productos" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
         <!--- @lista --->
-        <c:set var="lista" value="${proyectos.lista}"/>
+        <c:set var="lista" value="${productos.lista}"/>
         <!--- @formulario --->
-        <c:set var="formulario" value="formulario.jsp"/> 
+        <c:set var="formulario" value="productos_form.jsp"/> 
         
         <div class="content_wrapper">
 
@@ -84,35 +83,20 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                 <table class="data" width="100%" cellpadding="0" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>ID Proyecto</th>
+                                            <th>ID Producto</th>
                                             <th>Nombre</th>
-                                            <th>Inicio</th>
-                                            <th>Programada</th>
-                                            <th>Real</th>
-                                            <th>Cliente</th>
-                                            <th>Avance %</th>
-                                            <th>Promotor</th>
-                                            <th>Estatus</th>
-                                            <th>Producto</th>
+                                            <th>Descripción</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                        <c:forEach items="${lista}" var="item">
                                          <tr>
-                                            <td>${item.idProyecto}</td>
+                                            <td>${item.idProducto}</td>
                                             <td>${item.nombre}</td>
-                                            <td>${item.fechaInicio}</td>
-                                            <td>${item.fechaProgramada}</td>
-                                            <td>${item.fechaReal}</td>
-                                            <td>${item.idCliente}</td>
-                                            <td>${item.avance}</td>
-                                            <td>${item.idPromotor}</td>
-                                            <td>${item.status == 1 ? "Activo": "Inactivo"}</td>
-                                            <c:set var="producto" value="${proyectos.getById(item.idProducto)}"/>
-                                            <td>${producto.nombre}</td>
+                                            <td>${item.descripcion}</td>
                                             <td>
-                                               <a href="${formulario}?id=${item.idProyecto}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
+                                               <a href="${formulario}?id=${item.idProducto}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
                                                 &nbsp;&nbsp;
                                             </td>
                                           </tr>
