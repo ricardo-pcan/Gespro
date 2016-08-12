@@ -1,5 +1,5 @@
 package com.tsp.gespro.hibernate.pojo;
-// Generated 7/08/2016 11:50:38 PM by Hibernate Tools 3.6.0
+// Generated 12/08/2016 08:19:55 AM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -18,11 +18,13 @@ public class Proyecto  implements java.io.Serializable {
      private int idCliente;
      private float avance;
      private int idPromotor;
+     private int status;
+     private int idProducto;
 
     public Proyecto() {
     }
 
-    public Proyecto(String nombre, Date fechaInicio, Date fechaProgramada, Date fechaReal, int idCliente, float avance, int idPromotor) {
+    public Proyecto(String nombre, Date fechaInicio, Date fechaProgramada, Date fechaReal, int idCliente, float avance, int idPromotor, int status, int idProducto) {
        this.nombre = nombre;
        this.fechaInicio = fechaInicio;
        this.fechaProgramada = fechaProgramada;
@@ -30,6 +32,8 @@ public class Proyecto  implements java.io.Serializable {
        this.idCliente = idCliente;
        this.avance = avance;
        this.idPromotor = idPromotor;
+       this.status = status;
+       this.idProducto = idProducto;
     }
    
     public Integer getIdProyecto() {
@@ -87,6 +91,20 @@ public class Proyecto  implements java.io.Serializable {
     
     public void setIdPromotor(int idPromotor) {
         this.idPromotor = idPromotor;
+    }
+    public int getStatus() {
+        return this.status;
+    }
+    
+    public void setStatus(int status) {
+        this.status = status;
+    }
+    public int getIdProducto() {
+        return this.idProducto;
+    }
+    
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
     }
 
 

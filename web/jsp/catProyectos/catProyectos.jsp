@@ -27,7 +27,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     </head>
     <body>
         <!--- Inicialización de variables --->
-        <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.ProyectoDA"/>
+        <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
         <!--- @lista --->
         <c:set var="lista" value="${helper.lista}"/>
         <!--- @formulario --->
@@ -91,6 +91,8 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                             <th>Cliente</th>
                                             <th>Avance %</th>
                                             <th>Promotor</th>
+                                            <th>Estatus</th>
+                                            <th>Producto</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -105,6 +107,8 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                             <td>${item.idCliente}</td>
                                             <td>${item.avance}</td>
                                             <td>${item.idPromotor}</td>
+                                            <td>${item.status}</td>
+                                            <td>${item.idProducto}</td>
                                             <td>
                                                <a href="${formulario}?id=${item.idProyecto}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
                                                 &nbsp;&nbsp;

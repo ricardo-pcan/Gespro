@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 7/08/2016 11:50:39 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated 12/08/2016 08:19:56 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="com.tsp.gespro.hibernate.pojo.Proyecto" table="proyecto" catalog="gespro">
         <id name="idProyecto" type="java.lang.Integer">
@@ -28,6 +28,12 @@
         </property>
         <property name="idPromotor" type="int">
             <column name="ID_PROMOTOR" not-null="true" />
+        </property>
+        <property name="status" type="int">
+            <column name="STATUS" not-null="true" />
+        </property>
+        <property name="idProducto" type="int">
+            <column name="ID_PRODUCTO" not-null="true" />
         </property>
     </class>
 </hibernate-mapping>

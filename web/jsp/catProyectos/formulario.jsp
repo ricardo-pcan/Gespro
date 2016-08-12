@@ -7,7 +7,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:directive.page import="com.tsp.gespro.hibernate.dao.ProyectoDA"/>
+<jsp:directive.page import="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
 <jsp:directive.page import="com.tsp.gespro.hibernate.pojo.Proyecto"/>
 <jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 <%
@@ -64,7 +64,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     </head>
     <body>
         <!--- Inicialización de variables --->
-        <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.ProyectoDA"/>
+        <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
         <!--- @obj : Objeto de moneda a editar --->
         <c:set var="obj" value="${Proyecto}"/>
         <c:if test="${not empty param.id}">
@@ -156,6 +156,20 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                         <label>Promotor</label><br/>
                                         <input maxlength="45" type="text" id="idPromotor" name="idPromotor" style="width:300px;"
                                                value="${not empty obj.idPromotor ? obj.idPromotor : ""}"
+                                               />
+                                    </p>
+                                    <br/>                                
+                                    <p>
+                                        <label>Estatus</label><br/>
+                                        <input maxlength="45" type="text" id="status" name="status" style="width:300px;"
+                                               value="${not empty obj.status ? obj.status : ""}"
+                                               />
+                                    </p>
+                                    <br/>                                
+                                    <p>
+                                        <label>Producto</label><br/>
+                                        <input maxlength="45" type="text" id="idProducto" name="idProducto" style="width:300px;"
+                                               value="${not empty obj.idProducto ? obj.idProducto : ""}"
                                                />
                                     </p>
                                     <br/> 

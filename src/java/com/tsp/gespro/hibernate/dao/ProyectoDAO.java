@@ -15,11 +15,11 @@ import java.util.List;
  *
  * @author gloria
  */
-public class ProyectoDA {
+public class ProyectoDAO {
     private Session sesion; 
     private Transaction tx;  
     
-    public ProyectoDA(){
+    public ProyectoDAO(){
     }
     
     public Integer guardar(Proyecto object) throws HibernateException 
