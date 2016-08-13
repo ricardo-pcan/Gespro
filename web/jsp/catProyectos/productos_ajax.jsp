@@ -26,8 +26,9 @@
     try{
         // Setear los datos que vienen en el request a un objeto de el tipo
         // UsuarioMonitor para poder actulizarlos o crearlos.
-        obj.setNombre(request.getParameter("nombre") != null ? new String(request.getParameter("nombre").getBytes("ISO-8859-1"), "UTF-8"): "");
-        obj.setDescripcion(request.getParameter("nombre") != null ? new String(request.getParameter("nombre").getBytes("ISO-8859-1"), "UTF-8"): "");
+        obj.setNombre(request.getParameter("nombreProducto") != null ? new String(request.getParameter("nombreProducto").getBytes("ISO-8859-1"), "UTF-8"): "");
+        obj.setDescripcion(request.getParameter("descripcionProducto") != null ? new String(request.getParameter("descripcionProducto").getBytes("ISO-8859-1"), "UTF-8"): "");
+        obj.setIdProyecto(request.getParameter("idProyectoProducto") != null ? Integer.parseInt(new String(request.getParameter("idProyectoProducto").getBytes("ISO-8859-1"), "UTF-8")):0);
 
     }catch(Exception ex){
         message = "<--ERROR1-->" + ex.getMessage();
@@ -38,17 +39,10 @@
            if(obj.getNombre().equals("")){
                message = "<--ERROR-->" + "Simbolo y nombre son obligatorios.";
            }else{
-            if(id!=0){
-                obj.setIdProducto(id);
-                proyecto.actualizar(obj);
-                message = "<--EXITO-->" +"La actualización fue exitosa.";
-                status = true;
-            }else{
                 proyecto.guardar(obj);
                 message = "<--EXITO-->" + "Se guardó correctamente.";
                 status = true;
             }
-           }
        }catch(HibernateException e){
            message = "<--ERROR-->" + "Ocurrió un error al actualizar." + e.getMessage();
        }
