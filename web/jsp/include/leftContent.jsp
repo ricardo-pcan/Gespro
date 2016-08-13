@@ -51,6 +51,14 @@
                 <li><a href="../../jsp/catConfiguracionCampos/lista.jsp"><img src="../../images/icon_sar_config.png"/>Configuración de campos</a></li>
             </ul>	
         </li>
+        
+        <li style="position: relative; z-index: 99;">
+            <a href="" id="idAdministracionLeftContent"><img src="../../images/icon_validaXML.png" alt="Proyectos"/>Proyectos</a>
+            <ul>
+                <li><a href="../../jsp/catProyectos/catProyectos.jsp"><img src="../../images/icon_validaXML.png"/>Ver Proyectos</a></li>
+                <li><a href="../../jsp/catProyectos/productos_list.jsp"><img src="../../images/icon_producto.png"/>Productos</a></li>
+            </ul>	
+        </li>
 
         <li>
             <a id="idCatalogosLeftContent" href="" ><img src="../../images/icon_pages.png" alt="Catálogos"/>Catálogos</a>
