@@ -29,6 +29,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <!--- Inicialización de variables --->
         <jsp:useBean id="proyectos" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
         <jsp:useBean id="productos" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
+        <jsp:useBean id="clienteModel" class="com.tsp.gespro.hibernate.dao.ClienteDAO"/>
         <!--- @lista --->
         <c:set var="lista" value="${proyectos.lista}"/>
         <!--- @formulario --->
@@ -92,7 +93,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                             <th>Cliente</th>
                                             <th>Avance %</th>
                                             <th>Estatus</th>
-                                            <th>Producto</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -104,11 +104,10 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                             <td>${item.fechaInicio}</td>
                                             <td>${item.fechaProgramada}</td>
                                             <td>${item.fechaReal}</td>
-                                            <td>${item.idCliente}</td>
+                                            <c:set var="clientes" value="${clienteModel.getById(item.idCliente)}"/>
+                                            <td>${clientes.nombreComercial}</td>
                                             <td>${item.avance}</td>
                                             <td>${item.status == 1 ? "Activo": "Inactivo"}</td>
-                                            <c:set var="producto" value="${proyectos.getById(item.idProducto)}"/>
-                                            <td>${producto.nombre}</td>
                                             <td>
                                                <a href="${formulario}?id=${item.idProyecto}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
                                                 &nbsp;&nbsp;

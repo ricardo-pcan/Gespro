@@ -128,7 +128,7 @@
                 <li><a href="../../jsp/mapa/logistica.jsp" id="idPretorianoMovilLeftContentLogistica"><img src="../../images/icon_logistica.png"/>Log&iacute;stica</a></li>
                 <li><a href="../../jsp/catSeguimiento/catSeguimiento_list.jsp"><img src="../../images/icon_seguimiento.png"/>Seguimiento</a></li>
                 <li><a href="../../jsp/catHorarios/catHorarios_list.jsp"><img src="../../images/clock.png"/>Horarios</a></li>
-                <li><a href="../../jsp/catEmpleados/catEmpleados_Registro_list.jsp"><img src="../../images/icon_movimiento.png"/>Bitácora</a></li
+                <li><a href="../../jsp/catEmpleados/catEmpleados_Registro_list.jsp"><img src="../../images/icon_movimiento.png"/>Bitácora</a></li>
             </ul>	
 
         <!--<li>

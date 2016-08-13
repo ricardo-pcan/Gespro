@@ -75,7 +75,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                         success: function(datos){
                             console.log("Datos");
                             console.log(datos);
-                            alert(datos);
                             if(datos.indexOf("--EXITO-->", 0)>0){
                                $("#ajax_message").html("Los datos se guardaron correctamente.");
                                $("#ajax_loading").fadeOut("slow");
@@ -101,6 +100,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
         <jsp:useBean id="productosModel" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
         <jsp:useBean id="usuariosModel" class="com.tsp.gespro.hibernate.dao.UsuariosDAO"/>
+        <jsp:useBean id="clienteModel" class="com.tsp.gespro.hibernate.dao.ClienteDAO"/>
         <jsp:useBean id="promotorproyectoModel" class="com.tsp.gespro.hibernate.dao.PromotorproyectoDAO"/>
         <jsp:useBean id="Services" class="com.tsp.gespro.Services.Allservices"/>
         <!--- @obj : Objeto de moneda a editar --->
@@ -176,13 +176,31 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                placeholder="YYYY/MM/DD"
                                                />
                                     </p>
+                                    <c:if test="${not empty obj.idCliente }" >
                                     <br/>                                    
                                     <p>
                                         <label>Cliente:</label><br/>
-                                        <input maxlength="45" type="text" id="idCliente" name="idCliente" style="width:300px;"
-                                               value="${not empty obj.idCliente ? obj.idCliente : ""}"
-                                               />
+                                        <c:set var="cliente" value="${clienteModel.getById(obj.idCliente)}"/>
+                                        <input maxlength="45" type="text" style="width:300px;"
+                                               value="${not empty cliente.nombreComercial ? cliente.nombreComercial : ""}" 
+                                               disabled/>
+                                        <input type="hidden" id="idCliente" name="idCliente" 
+                                               value="${not empty obj.idCliente ? obj.idCliente : ""}"/>
                                     </p>
+                                    </c:if>
+                                    <c:if test="${empty obj.idCliente }" >
+                                    <br/>                                    
+                                    <p>
+                                        <label>Cliente:</label><br/>
+                                        <c:set var="clientes" value="${clienteModel.lista()}"/>
+                                        <select id="idCliente" name="idCliente" style="width:300px;">
+                                            <option value="0">Seleccione un cliente</option>
+                                            <c:forEach items="${clientes}" var="cliente">
+                                                <option value="${cliente.idCliente}">${cliente.nombreComercial}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </p>
+                                    </c:if>
                                     <br/>                                  
                                     <p>
                                         <label>Avance:</label><br/>
@@ -196,21 +214,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                     <p>
                                         <label>Estatus</label><br/>
                                         <input type="checkbox" id="status" name="status" ${estatus == 1 ? "checked":""}/>
-                                    </p>
-                                    <br/>    
-                                    <c:set var="productos" value="${productosModel.lista()}"/>
-                                    <c:set var="idproductos" value="${not empty obj.idProducto ? obj.idProducto : 0}"/>
-                                    <p>
-                                        <label>Producto</label><br/>
-                                        <select  id="idProducto" name="idProducto" style="width:300px;">
-                                            <option value="0">Selecciona un producto</option>
-                                            <c:forEach items="${productos}" var="item">
-                                                <option value="${item.idProducto}" ${item.idProducto == idproductos ? "selected":""}>${item.nombre}</option>
-                                            </c:forEach>
-                                        </select>
-                                        <br>
-                                        <br>
-                                        <a href="productos_form.jsp?idproyecto=true">Agregar Nuevo Producto</a>
                                     </p>
                                     <br/> 
                                     <div id="action_buttons">
@@ -226,6 +229,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                     
                         <!-- End left column window -->
                         
+                        <c:if test="${not empty param.id}">
                         <div class="column_right">
                             <div class="header">
                                 <span>
@@ -275,6 +279,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                 </div>
                             </div>
                         </div>
+                        </c:if>
                     </div>
                     <!--TODO EL CONTENIDO VA AQUÍ-->
 
