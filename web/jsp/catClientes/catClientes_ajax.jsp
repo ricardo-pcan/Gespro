@@ -585,11 +585,6 @@
                     Cliente clienteDto = clienteBO.getCliente();
 
                     clienteDto.setIdEstatus(estatus);
-                    /*if (matriz > 0) {
-                        clienteDto.setMatriz(matriz);
-                    } else {
-                        clienteDto.setMatrizNull(true);
-                    }*/
                     clienteDto.setIdEmpresa(idSucursalEmpresaAsignado);
                     /*clienteDto.setRfcCliente(rfc);
                     clienteDto.setRazonSocial(razonSocial);
@@ -703,12 +698,7 @@
                     //clienteDto.setIdCliente(idClienteNuevo);
 
                     clienteDto.setIdEstatus(estatus);
-                    /*if (matriz > 0) {
-                        clienteDto.setMatriz(matriz);
-                    } else {
-                        clienteDto.setMatrizNull(true);
-                    }*/
-                    
+
                     /*clienteDto.setRfcCliente(rfc);
                     clienteDto.setRazonSocial(razonSocial);
                     clienteDto.setNombreCliente(nombre);

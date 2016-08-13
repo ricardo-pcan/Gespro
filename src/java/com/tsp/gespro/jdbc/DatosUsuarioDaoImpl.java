@@ -636,7 +636,7 @@ calls to this DAO, otherwise a new Connection will be allocated for each operati
         
         public DatosUsuario[] findWhereCiudadEquals(String ciudad) throws DatosUsuarioDaoException
 	{
-		return findByDynamicSelect( SQL_SELECT + " WHERE CIUDAD = ? ORDER BY CIUDAD", new Object[] { correo } );
+		return findByDynamicSelect( SQL_SELECT + " WHERE CIUDAD = ? ORDER BY CIUDAD", new Object[] { ciudad } );
 	}
 
 	/**
