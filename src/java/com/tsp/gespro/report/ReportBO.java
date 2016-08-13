@@ -12,10 +12,12 @@ import com.tsp.gespro.dto.*;
 import com.tsp.gespro.exceptions.DatosUsuarioDaoException;
 import com.tsp.gespro.exceptions.EmpresaDaoException;
 import com.tsp.gespro.exceptions.SgfensPedidoDaoException;
+import com.tsp.gespro.exceptions.UsuariosDaoException;
 import com.tsp.gespro.jdbc.DatosUsuarioDaoImpl;
 import com.tsp.gespro.jdbc.EmpresaDaoImpl;
 import com.tsp.gespro.jdbc.SgfensPedidoDaoImpl;
 import com.tsp.gespro.jdbc.SgfensPedidoProductoDaoImpl;
+import com.tsp.gespro.jdbc.UsuariosDaoImpl;
 import com.tsp.gespro.util.DateManage;
 import com.tsp.gespro.util.Encrypter;
 import com.tsp.gespro.util.StringManage;
@@ -269,6 +271,7 @@ public class ReportBO {
                 fieldList.add(getDataInfo("DETALLE","Detalle","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("CLIENTE","Cliente","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("INCIDENCIA","Incidencia","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("PROMOTOR","Promotor","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("COMENTARIOS","Comentarios","","",""+DATA_STRING,""));
                 break;
         }
@@ -454,7 +457,7 @@ public class ReportBO {
      * @param objectDto Arreglo de objetos tipo DTO para fabricar reporte.
      * @return ArrayList<HashMap> con todos los datos para el reporte.
      */
-    private ArrayList<HashMap> getDataList(RegistroCheckin[] objectDto) {
+    private ArrayList<HashMap> getDataList(RegistroCheckin[] objectDto) throws UsuariosDaoException {
         ArrayList<HashMap> dataList = new ArrayList<HashMap>();
         HashMap<String,String> hashData = new HashMap<String, String>();
         ArrayList<HashMap> dataInfo = getFieldList(BITACORA_REPORT);        
@@ -487,6 +490,17 @@ public class ReportBO {
                 nombreCliente = clientesDto!=null?clientesDto.getNombreComercial():"NA";
             }
             
+            //Obtiene el nombre del promotor
+            String nombrePromotor = "";
+            if (dto.getIdUsuario() > 0){
+                Usuarios promotorDto = null;
+                DatosUsuario datosUsuarioPromotorDto = null;
+                promotorDto = new UsuariosDaoImpl(this.conn).findByPrimaryKey(dto.getIdUsuario());
+                datosUsuarioPromotorDto = new DatosUsuarioBO(promotorDto.getIdDatosUsuario(),this.conn).getDatosUsuario();
+                
+                nombrePromotor = datosUsuarioPromotorDto!=null?datosUsuarioPromotorDto.getNombreCompleto():"NA";
+            }
+            
             String titleIncidencia = "";
             if(dto.getIdTipoCheck() == 1  && dto.getIdDetalleCheck() == 6){
                if(dto.getIncidencia()== 0){                  
@@ -506,7 +520,8 @@ public class ReportBO {
             hashData.put((String)dataInfo.get(3).get("field"), getRealData(dataInfo.get(3), "" + nombreEstatus));
             hashData.put((String)dataInfo.get(4).get("field"), getRealData(dataInfo.get(4), "" + nombreCliente ));            
             hashData.put((String)dataInfo.get(5).get("field"), getRealData(dataInfo.get(5), "" + titleIncidencia));
-            hashData.put((String)dataInfo.get(6).get("field"), getRealData(dataInfo.get(6), "" + dto.getComentarios()));
+            hashData.put((String)dataInfo.get(6).get("field"), getRealData(dataInfo.get(6), "" + nombrePromotor));
+            hashData.put((String)dataInfo.get(7).get("field"), getRealData(dataInfo.get(7), "" + dto.getComentarios()));
 
             dataList.add(hashData);
 
