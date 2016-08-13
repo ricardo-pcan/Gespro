@@ -13,5 +13,7 @@
     <mapping resource="com/tsp/gespro/hibernate/pojo/Moneda.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/Proyecto.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/Producto.hbm.xml"/>
+    <mapping resource="com/tsp/gespro/hibernate/pojo/Promotorproyecto.hbm.xml"/>
+    <mapping resource="com/tsp/gespro/hibernate/pojo/Usuarios.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

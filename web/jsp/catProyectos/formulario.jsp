@@ -4,6 +4,8 @@
     Author     : Fabian
 --%>
 
+<%@page import="com.tsp.gespro.hibernate.pojo.HibernateUtil"%>
+<%@page import="org.hibernate.Session"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -58,14 +60,49 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                            }
                         }
                     });   
-                }                               
+                }  
+                
+            function guardarPromotor(){ 
+                    $.ajax({
+                        type: "POST",
+                        url: "promotor_ajax.jsp",
+                        data: $("#frm_promotor").serialize(),
+                        beforeSend: function(objeto){
+                            $("#action_buttons").fadeOut("slow");
+                            $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
+                            $("#ajax_loading").fadeIn("slow");
+                        },
+                        success: function(datos){
+                            console.log("Datos");
+                            console.log(datos);
+                            alert(datos);
+                            if(datos.indexOf("--EXITO-->", 0)>0){
+                               $("#ajax_message").html("Los datos se guardaron correctamente.");
+                               $("#ajax_loading").fadeOut("slow");
+                               $("#ajax_message").fadeIn("slow");
+                               apprise('<center><img src=../../images/info.png> <br/>Los datos se guardaron correctamente.</center>',{'animate':true},
+                                        function(r){
+                                                javascript:window.location.reload();
+                                                parent.$.fancybox.close();  
+                                        });
+                           }else{
+                               $("#ajax_loading").fadeOut("slow");
+                               $("#ajax_message").html("Ocurrió un error al intentar guardar los datos.");
+                               $("#ajax_message").fadeIn("slow");
+                               $("#action_buttons").fadeIn("slow");
+                           }
+                        }
+                    });   
+                }
         </script>
     </head>
     <body>
         <!--- Inicialización de variables --->
         <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
         <jsp:useBean id="productosModel" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
-        <jsp:useBean id="promotorproducto" class="com.tsp.gespro.hibernate.dao.PromotorproyectoDAO"/>
+        <jsp:useBean id="usuariosModel" class="com.tsp.gespro.hibernate.dao.UsuariosDAO"/>
+        <jsp:useBean id="promotorproyectoModel" class="com.tsp.gespro.hibernate.dao.PromotorproyectoDAO"/>
+        <jsp:useBean id="Services" class="com.tsp.gespro.Services.Allservices"/>
         <!--- @obj : Objeto de moneda a editar --->
         <c:set var="obj" value="${Proyecto}"/>
         <c:if test="${not empty param.id}">
@@ -85,7 +122,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                     <div id="ajax_message" class="alert_warning" style="display: none;"></div>
 
                     <!--TODO EL CONTENIDO VA AQUÍ-->
-                    <form action="" method="post" id="frm_action">
+                    
                     <div class="twocolumn">
                         <div class="column_left">
                             <div class="header">
@@ -96,6 +133,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                 </span>
                             </div>
                             <br class="clear"/>
+                            <form action="" method="post" id="frm_action">
                             <div class="content">
                                     <input type="hidden" id="id" name="id" value="${ not empty obj.idProyecto ? obj.idProyecto :"0"}" />
                                     <p>
@@ -181,8 +219,11 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                             <input type="button" id="regresar" value="Regresar" onclick="history.back();"/>
                                         </p>
                                     </div>                                       
-                            </div>
+                                </div>
+                                    
+                            </form>
                         </div>
+                                    
                         <!-- End left column window -->
                         
                         <div class="column_right">
@@ -192,19 +233,22 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                 </span>
                                 <br class="clear"/>
                                 <div class="content">
-                                    <form>
-                                        <input type="hidden" id="idProyecto"  value="${ not empty obj.idProyecto ? obj.idProyecto :"0"}" />
+                                    <form id="frm_promotor">
+                                        <input type="hidden" id="idProyecto" name="idProyecto"  value="${ not empty obj.idProyecto ? obj.idProyecto :"0"}" />
                                         <p>
                                         <label>Asignar Promotor:</label>
-                                        <input maxlength="45" type="text" id="nombre" name="nombre" style="width:200px"
-                                               value="${not empty obj.nombre ? obj.nombre : ""}"
-                                               data-validation="length"
-                                               data-validation-length="1-45"
-                                               data-validation-error-msg="El nombre debe tener de 1 a 45 caracteres."
-                                               required
-                                               />
-                                        <input type="button" value="Agregar" />
+                                        <c:set var="whereuser" value="where id_usuarios not in (select p.idUser from Promotorproyecto as p where p.idProyecto = ${obj.idProyecto}) and id_roles = 4"/>
+                                        <c:set var="promotoresproy" value="${Services.QueryUsuariosDAO(whereuser)}"/>
+                                        <select id="idUsuario" name="idUsuario">
+                                            <option value="0" >Seleccione un Promotor</option>
+                                            <c:forEach items="${promotoresproy}" var="item">
+                                                <option value="${item.idUsuarios}" >${item.userName}</option>
+                                            </c:forEach>
+                                        </select>
+                                        <input  value="Agregar" type="submit" id="enviar"  class="btn"/>
                                         </p>
+                                        
+                                        
                                         <br>
                                         <div style="max-height:300px;">
                                             <table class="data" width="100%" cellpadding="0" cellspacing="0">
@@ -215,6 +259,15 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    <c:set var="where" value="where idProyecto = ${obj.idProyecto}"/>
+                                                    <c:set var="promotorespro" value="${Services.QueryPromotorProyecto(where)}"/>
+                                                    <c:forEach items="${promotorespro}" var="item">
+                                                        <c:set var="usuario" value="${usuariosModel.getById(item.idUser)}"/>
+                                                        <tr>
+                                                            <td>${usuario.userName}</td>
+                                                            <td>${item.idUser}</td>
+                                                        </tr>
+                                                    </c:forEach>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -223,7 +276,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                             </div>
                         </div>
                     </div>
-                    </form>
                     <!--TODO EL CONTENIDO VA AQUÍ-->
 
                 </div>
@@ -246,6 +298,10 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
             $("#frm_action").submit(function(e){
                e.preventDefault();
                guardar();
+            });
+            $("#frm_promotor").submit(function(e){
+               e.preventDefault();
+               guardarPromotor();
             });
             $('#checkActivo').change(function() {
                 if($(this).is(":checked")) {
