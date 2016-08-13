@@ -48,6 +48,7 @@
                 <li><a href="../../jsp/catMonedas/lista.jsp"><img src="../../images/icon_reloj.png"/>Moneda</a></li>
                 <li><a href="../../jsp/catZonaHoraria/catZonaHoraria_form.jsp"><img src="../../images/icon_reloj.png"/>Zona Horaria</a></li>
                 <li><a href="../../jsp/catCargaManual/catCargaManual_list.jsp"><img src="../../images/icon_excel.png"/>Importar Excel</a></li>
+                <li><a href="../../jsp/catConfiguracionCampos/lista.jsp"><img src="../../images/icon_sar_config.png"/>Configuración de campos</a></li>
             </ul>	
         </li>
 
