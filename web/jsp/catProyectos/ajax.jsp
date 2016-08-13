@@ -32,8 +32,7 @@
         obj.setFechaReal(request.getParameter("fechaReal") != null ? formatter.parse(new String(request.getParameter("fechaInicio").getBytes("ISO-8859-1"), "UTF-8")) : null);
         obj.setIdCliente(request.getParameter("idCliente") != null ? Integer.parseInt(request.getParameter("idCliente")): 0);
         obj.setAvance(request.getParameter("avance") != null ? Float.parseFloat(request.getParameter("avance")): 0);
-        obj.setIdPromotor(request.getParameter("idPromotor") != null ? Integer.parseInt(request.getParameter("idPromotor")): 0);
-        obj.setStatus(request.getParameter("status") != null ? Integer.parseInt(request.getParameter("status")): 0);
+        obj.setStatus(request.getParameter("status") != null ? 1 : 0);
         obj.setIdProducto(request.getParameter("idProducto") != null ? Integer.parseInt(request.getParameter("idProducto")): 0);
 
     }catch(Exception ex){
@@ -42,17 +41,7 @@
      
    
        try{ 
-           out.println(obj.getNombre());
-           out.println(obj.getFechaInicio());
-           out.println(obj.getFechaInicio());
-           out.println(obj.getFechaProgramada());
-           out.println(obj.getFechaReal());
-           out.println(obj.getIdCliente());
-           out.println(obj.getAvance());
-           out.println(obj.getIdCliente());
-           out.println(obj.getStatus());
-           out.println(obj.getIdProducto());
-           if(obj.getNombre().equals("") || obj.getIdCliente()== 0 || obj.getIdPromotor() == 0 || obj.getStatus() == 0 || obj.getIdProducto() == 0){
+           if(obj.getNombre().equals("") || obj.getIdCliente()== 0 || obj.getIdProducto() == 0){
                message = "<--ERROR-->" + "Simbolo y nombre son obligatorios.";
            }else{
             if(id!=0){

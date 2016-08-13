@@ -91,7 +91,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                             <th>Real</th>
                                             <th>Cliente</th>
                                             <th>Avance %</th>
-                                            <th>Promotor</th>
                                             <th>Estatus</th>
                                             <th>Producto</th>
                                             <th>Acciones</th>
@@ -107,7 +106,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                             <td>${item.fechaReal}</td>
                                             <td>${item.idCliente}</td>
                                             <td>${item.avance}</td>
-                                            <td>${item.idPromotor}</td>
                                             <td>${item.status == 1 ? "Activo": "Inactivo"}</td>
                                             <c:set var="producto" value="${proyectos.getById(item.idProducto)}"/>
                                             <td>${producto.nombre}</td>

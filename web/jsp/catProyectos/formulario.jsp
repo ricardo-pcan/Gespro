@@ -41,7 +41,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                         success: function(datos){
                             console.log("Datos");
                             console.log(datos);
-                            alert(datos);
                             if(datos.indexOf("--EXITO-->", 0)>0){
                                $("#ajax_message").html("Los datos se guardaron correctamente.");
                                $("#ajax_loading").fadeOut("slow");
@@ -152,14 +151,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                value="${not empty obj.avance ? obj.avance : ""}"
                                                />
                                     </p>
-                                    <br/>                                  
-                                    <p>
-                                        <label>Promotor</label><br/>
-                                        <input maxlength="45" type="text" id="idPromotor" name="idPromotor" style="width:300px;"
-                                               value="${not empty obj.idPromotor ? obj.idPromotor : ""}"
-                                               />
-                                    </p>
-                                    <br/>                   
+                                    <br/>                      
                                     
                                     <c:set var="estatus" value="${not empty obj.status ? obj.status : 0}"/>
                                     <p>
@@ -177,7 +169,9 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                 <option value="${item.idProducto}" ${item.idProducto == idproductos ? "selected":""}>${item.nombre}</option>
                                             </c:forEach>
                                         </select>
-                                        <a href="productos_form.jsp?idproyecto=true">Agregar Producto</a>
+                                        <br>
+                                        <br>
+                                        <a href="productos_form.jsp?idproyecto=true">Agregar Nuevo Producto</a>
                                     </p>
                                     <br/> 
                                     <div id="action_buttons">
@@ -189,6 +183,14 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                             </div>
                         </div>
                         <!-- End left column window -->
+                        
+                        <div class="column_right">
+                            <div class="header">
+                                <span>
+                                    Promotores
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     </form>
                     <!--TODO EL CONTENIDO VA AQUÍ-->

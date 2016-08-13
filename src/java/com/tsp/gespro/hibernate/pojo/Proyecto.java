@@ -17,21 +17,19 @@ public class Proyecto  implements java.io.Serializable {
      private Date fechaReal;
      private int idCliente;
      private float avance;
-     private int idPromotor;
      private int status;
      private int idProducto;
 
     public Proyecto() {
     }
 
-    public Proyecto(String nombre, Date fechaInicio, Date fechaProgramada, Date fechaReal, int idCliente, float avance, int idPromotor, int status, int idProducto) {
+    public Proyecto(String nombre, Date fechaInicio, Date fechaProgramada, Date fechaReal, int idCliente, float avance, int status, int idProducto) {
        this.nombre = nombre;
        this.fechaInicio = fechaInicio;
        this.fechaProgramada = fechaProgramada;
        this.fechaReal = fechaReal;
        this.idCliente = idCliente;
        this.avance = avance;
-       this.idPromotor = idPromotor;
        this.status = status;
        this.idProducto = idProducto;
     }
@@ -85,13 +83,7 @@ public class Proyecto  implements java.io.Serializable {
     public void setAvance(float avance) {
         this.avance = avance;
     }
-    public int getIdPromotor() {
-        return this.idPromotor;
-    }
-    
-    public void setIdPromotor(int idPromotor) {
-        this.idPromotor = idPromotor;
-    }
+
     public int getStatus() {
         return this.status;
     }
