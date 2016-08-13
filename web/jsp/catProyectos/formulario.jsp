@@ -65,6 +65,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <!--- Inicialización de variables --->
         <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
         <jsp:useBean id="productosModel" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
+        <jsp:useBean id="promotorproducto" class="com.tsp.gespro.hibernate.dao.PromotorproyectoDAO"/>
         <!--- @obj : Objeto de moneda a editar --->
         <c:set var="obj" value="${Proyecto}"/>
         <c:if test="${not empty param.id}">
@@ -189,6 +190,36 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                 <span>
                                     Promotores
                                 </span>
+                                <br class="clear"/>
+                                <div class="content">
+                                    <form>
+                                        <input type="hidden" id="idProyecto"  value="${ not empty obj.idProyecto ? obj.idProyecto :"0"}" />
+                                        <p>
+                                        <label>Asignar Promotor:</label>
+                                        <input maxlength="45" type="text" id="nombre" name="nombre" style="width:200px"
+                                               value="${not empty obj.nombre ? obj.nombre : ""}"
+                                               data-validation="length"
+                                               data-validation-length="1-45"
+                                               data-validation-error-msg="El nombre debe tener de 1 a 45 caracteres."
+                                               required
+                                               />
+                                        <input type="button" value="Agregar" />
+                                        </p>
+                                        <br>
+                                        <div style="max-height:300px;">
+                                            <table class="data" width="100%" cellpadding="0" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Promotor</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
