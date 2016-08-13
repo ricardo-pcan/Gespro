@@ -33,7 +33,6 @@
         obj.setIdCliente(request.getParameter("idCliente") != null ? Integer.parseInt(request.getParameter("idCliente")): 0);
         obj.setAvance(request.getParameter("avance") != null ? Float.parseFloat(request.getParameter("avance")): 0);
         obj.setStatus(request.getParameter("status") != null ? 1 : 0);
-        obj.setIdProducto(request.getParameter("idProducto") != null ? Integer.parseInt(request.getParameter("idProducto")): 0);
 
     }catch(Exception ex){
         message = "<--ERROR1-->" + ex.getMessage();
@@ -41,7 +40,7 @@
      
    
        try{ 
-           if(obj.getNombre().equals("") || obj.getIdCliente()== 0 || obj.getIdProducto() == 0){
+           if(obj.getNombre().equals("") || obj.getIdCliente()== 0){
                message = "<--ERROR-->" + "Simbolo y nombre son obligatorios.";
            }else{
             if(id!=0){

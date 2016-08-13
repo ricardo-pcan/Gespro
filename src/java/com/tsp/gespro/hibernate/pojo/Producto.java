@@ -1,5 +1,5 @@
 package com.tsp.gespro.hibernate.pojo;
-// Generated 12/08/2016 04:07:48 PM by Hibernate Tools 3.6.0
+// Generated 13/08/2016 01:15:33 PM by Hibernate Tools 3.6.0
 
 
 
@@ -12,6 +12,7 @@ public class Producto  implements java.io.Serializable {
      private Integer idProducto;
      private String nombre;
      private String descripcion;
+     private Integer idProyecto;
 
     public Producto() {
     }
@@ -20,9 +21,10 @@ public class Producto  implements java.io.Serializable {
     public Producto(String nombre) {
         this.nombre = nombre;
     }
-    public Producto(String nombre, String descripcion) {
+    public Producto(String nombre, String descripcion, Integer idProyecto) {
        this.nombre = nombre;
        this.descripcion = descripcion;
+       this.idProyecto = idProyecto;
     }
    
     public Integer getIdProducto() {
@@ -45,6 +47,13 @@ public class Producto  implements java.io.Serializable {
     
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+    public Integer getIdProyecto() {
+        return this.idProyecto;
+    }
+    
+    public void setIdProyecto(Integer idProyecto) {
+        this.idProyecto = idProyecto;
     }
 
 

@@ -11,8 +11,6 @@
     <property name="hbm2ddl.auto">update</property>
     <mapping resource="com/tsp/gespro/hibernate/pojo/UsuarioMonitor.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/Moneda.hbm.xml"/>
-    <mapping resource="com/tsp/gespro/hibernate/pojo/Proyecto.hbm.xml"/>
-    <mapping resource="com/tsp/gespro/hibernate/pojo/Producto.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/Promotorproyecto.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/Usuarios.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/EtiquetaFormularioSucursal.hbm.xml"/>
@@ -24,5 +22,8 @@
     <mapping resource="com/tsp/gespro/hibernate/pojo/EtiquetaFormularioCliente.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/CampoAdicionalSucursal.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/CampoAdicionalProspectoValor.hbm.xml"/>
+    <mapping resource="com/tsp/gespro/hibernate/pojo/Proyecto.hbm.xml"/>
+    <mapping resource="com/tsp/gespro/hibernate/pojo/Producto.hbm.xml"/>
+    <mapping resource="com/tsp/gespro/hibernate/pojo/Cliente.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
