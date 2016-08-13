@@ -52,7 +52,7 @@
             </ul>	
         </li>
         
-        <li style="position: relative; z-index: 99;">
+        <li>
             <a href="" id="idAdministracionLeftContent"><img src="../../images/icon_validaXML.png" alt="Proyectos"/>Proyectos</a>
             <ul>
                 <li><a href="../../jsp/catProyectos/catProyectos.jsp"><img src="../../images/icon_validaXML.png"/>Ver Proyectos</a></li>
