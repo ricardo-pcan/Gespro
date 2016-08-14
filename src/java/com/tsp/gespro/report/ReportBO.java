@@ -590,7 +590,7 @@ public class ReportBO {
             }
             
             // Obtenemos la informacion de los productos del proyecto
-            List<Producto> productosList = allservices.queryProductoDAO("WHERE id_proyecto = " + proyecto.getIdProyecto());
+            List<Producto> productosList = allservices.QueryProductosDAO("WHERE id_proyecto = " + proyecto.getIdProyecto());
             String productos = "";
             for (Producto producto: productosList) {
                 productos += producto.getNombre() + "- ";
