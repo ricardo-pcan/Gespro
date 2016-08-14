@@ -21,12 +21,12 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title><jsp:include page="../include/titleApp.jsp" /></title>
-
+        <link rel="shortcut icon" href="../../images/favicon.ico">
         <jsp:include page="../include/keyWordSEO.jsp" />
+        <title><jsp:include page="../include/titleApp.jsp" /></title>
         <jsp:include page="../include/skinCSS.jsp" />
         <jsp:include page="../include/jsFunctions.jsp"/>
-       
+        
         <script type="text/javascript">
         function crearPassword(length, special) {
              var iteration = 0;
