@@ -7,6 +7,8 @@
 package com.tsp.gespro.ws;
 
 import com.google.gson.Gson;
+import com.tsp.gespro.hibernate.dao.ProyectoDAO;
+import com.tsp.gespro.hibernate.pojo.Proyecto;
 import com.tsp.gespro.ws.bo.InsertaActualizaWsBO;
 import com.tsp.gespro.ws.response.LoginUsuarioMovilResponse;
 import com.tsp.gespro.ws.bo.*;
@@ -26,6 +28,7 @@ import com.tsp.gespro.ws.response.WsItemConceptoRegistroFotograficoResponse;
 import com.tsp.gespro.ws.response.WsItemEstanteriaResponse;
 import com.tsp.gespro.ws.response.WsItemDegustacionResponse;
 import java.util.Arrays;
+import java.util.Date;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -418,6 +421,37 @@ public class GesproWS {
         
         return jsonResponse;
         
+    }
+    
+    // Proyectos
+    @WebMethod(operationName = "insertaActualizaProyecto", action="insertaActualizaProyecto")
+    public String insertaActualizaProyecto(
+            @WebParam(name = "proyectoJson") String proyectoJson
+            ) {
+        
+        Gson gson = new Gson();
+        System.out.println(new Date());
+        
+        System.out.println("METODO: insertaActualizaProyecto \n");
+        System.out.println("REQUEST JSON: \n" + proyectoJson);
+        
+        Proyecto proyecto= gson.fromJson(proyectoJson, Proyecto.class);
+
+        ProyectoDAO proyectoDAO= new ProyectoDAO();
+        
+        if(proyecto.getIdProyecto()!= 0 && proyecto.getIdProyecto()!= null){
+           Proyecto proyectoUpdate= proyectoDAO.getById(proyecto.getIdProyecto());
+           if(proyectoUpdate!= null){
+               proyectoDAO.actualizar(proyecto);
+               String jsonResponse = gson.toJson(proyecto);
+               return jsonResponse;
+           }else{
+               return "{status:404,error: Proyecto no encontrado}";
+           }
+        }else{
+            int proyectoId=proyectoDAO.guardar(proyecto);
+            return "{IdProyecto:"+proyectoId+"}";
+        }
     }
     
     //METODOS PARA PEDIDOS
