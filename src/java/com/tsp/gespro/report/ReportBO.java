@@ -348,12 +348,12 @@ public class ReportBO {
                 break;
              case PROYECTO_REPORT:
                 String filtroBusqueda = "";
-                if(params!=null && !params.equals("")) {
-                    filtroBusqueda += " WHERE (NOMBRE LIKE '%" + params + "%')";                    
+                if(params == null) {
+                    params = "";                    
                 }
-                String filtroBusquedaEncoded = java.net.URLEncoder.encode(filtroBusqueda, "UTF-8");
+                String filtroBusquedaEncoded = java.net.URLEncoder.encode(params, "UTF-8");
                 Allservices allservices = new Allservices();
-                List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
+                List<Proyecto> proyectos = allservices.queryProyectoDAO(params);
                 dataList = this.getDataList(proyectos);
                 break;
         }
