@@ -4,6 +4,9 @@
     Author     : Fabian
 --%>
 
+<%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
+<%@page import="com.tsp.gespro.Services.Allservices"%>
+<%@page import="com.tsp.gespro.report.ReportBO"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:directive.page import="com.tsp.gespro.hibernate.dao.*"/>
@@ -15,6 +18,17 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     response.sendRedirect("../../jsp/inicio/login.jsp?action=loginRequired&urlSource=" + request.getRequestURI() + "?" + request.getQueryString());
     response.flushBuffer();
 }
+// Obtener parametros
+String buscar = request.getParameter("q")!=null? new String(request.getParameter("q").getBytes("ISO-8859-1"),"UTF-8") :"";    //
+
+// crear consulta de filtro
+String filtroBusqueda = ""; //"AND ID_ESTATUS=1 ";
+if (!buscar.trim().equals("")) {
+    filtroBusqueda += " WHERE (NOMBRE LIKE '%" + buscar + "%')";
+}
+String filtroBusquedaEncoded = java.net.URLEncoder.encode(filtroBusqueda, "UTF-8");
+Allservices allservices = new Allservices();
+List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
 %>
 <!DOCTYPE html>
 <html>
@@ -27,11 +41,8 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     </head>
     <body>
         <!--- Inicialización de variables --->
-        <jsp:useBean id="proyectos" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
         <jsp:useBean id="productos" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
         <jsp:useBean id="clienteModel" class="com.tsp.gespro.hibernate.dao.ClienteDAO"/>
-        <!--- @lista --->
-        <c:set var="lista" value="${proyectos.lista}"/>
         <!--- @formulario --->
         <c:set var="formulario" value="formulario.jsp"/> 
         
@@ -65,7 +76,15 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                     <tbody>
                                         <tr>
                                             <td>
-                                               
+                                                <div id="search">
+                                                <form action="catProyectos.jsp" id="search_form" name="search_form" method="get">                                                                                                                                                
+
+                                                        <input type="text" id="q" name="q" title="Buscar por nombre" class="" style="width: 70%; float: left; "
+                                                               value="<%=buscar%>"/>
+                                                        <input type="image" src="../../images/Search-32_2.png" id="buscar" name="buscar"  value="" style="cursor: pointer; width: 30px; height: 25px; float: left"/>
+
+                                                </form>
+                                                </div>
                                             </td>
                                             <td class="clear">&nbsp;&nbsp;&nbsp;</td>
                                            
@@ -97,7 +116,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                         </tr>
                                     </thead>
                                     <tbody>
-                                       <c:forEach items="${lista}" var="item">
+                                        <c:forEach items="<%=proyectos%>" var="item">
                                          <tr>
                                             <td>${item.idProyecto}</td>
                                             <td>${item.nombre}</td>
@@ -117,6 +136,12 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                     </tbody>
                                 </table>
                             </form>
+                             <!-- INCLUDE OPCIONES DE EXPORTACIÓN-->
+                            <jsp:include page="../include/reportExportOptions.jsp" flush="true">
+                                <jsp:param name="idReport" value="<%= ReportBO.PROYECTO_REPORT %>" />
+                                <jsp:param name="parametrosCustom" value="<%= filtroBusquedaEncoded %>" />
+                            </jsp:include>
+                            <!-- FIN INCLUDE OPCIONES DE EXPORTACIÓN-->
                         </div>
                     </div>
 

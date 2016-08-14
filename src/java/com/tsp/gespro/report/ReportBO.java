@@ -56,6 +56,7 @@ public class ReportBO {
     public static final int PRODUCTO_REPORT = 3;
     public static final int PROSPECTO_REPORT = 4;
     public static final int BITACORA_REPORT = 5;
+    public static final int PROYECTO_REPORT = 6;
     
     
     
