@@ -56,7 +56,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                         <div class="header">
                             <span>
                                 <img src="../../images/icon_validaXML.png" alt="icon"/>
-                                Proyectos
+                                Productos
                             </span>
                             <div class="switch" style="width:500px">
                                 <table width="500px" cellpadding="0" cellspacing="0">
