@@ -12,6 +12,7 @@ import com.tsp.gespro.hibernate.pojo.Usuarios;
 import com.tsp.gespro.hibernate.pojo.Proyecto;
 import com.tsp.gespro.hibernate.dao.UsuariosDAO;
 import com.tsp.gespro.hibernate.dao.ProyectoDAO;
+import com.tsp.gespro.hibernate.pojo.Producto;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -83,6 +84,23 @@ public class Allservices {
         return lista;
     }
     
+    public List queryPromotorProyectoDAO(String where) {
+
+        List<Promotorproyecto> lista = null;
+        Session session = null;
+
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            Transaction tx = session.beginTransaction();
+            String query = "from Promotorproyecto " + where;
+            lista = session.createQuery(query).list();
+        } finally {
+            session.close();
+        }
+        
+        return lista;
+    }
+
     public List QueryProductosDAO(String where){  
         
             List<Producto> lista = null;  
