@@ -59,9 +59,7 @@ public class UsuarioMonitorDAO {
             iniciaOperacion();
             sesion.update(object); 
             if(old.getPassword()!= object.getPassword()){
-                System.out.println("Mandandp correo 1");
                 enviarCorreoConCredenciales(object);
-                System.out.println("Mandandp correo 2");
             }
             tx.commit(); 
             

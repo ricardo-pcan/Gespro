@@ -24,6 +24,17 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title><jsp:include page="../include/titleApp.jsp" /></title>
+        <style>
+            .right_position {
+                text-align: right;
+            }
+            #frm_productos p {
+                width: 100%;
+            }
+            #frm_productos p label {
+                width: 20%;
+            }
+        </style>
 
         <jsp:include page="../include/keyWordSEO.jsp" />
         <jsp:include page="../include/skinCSS.jsp" />
@@ -67,6 +78,37 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                         type: "POST",
                         url: "promotor_ajax.jsp",
                         data: $("#frm_promotor").serialize(),
+                        beforeSend: function(objeto){
+                            $("#action_buttons").fadeOut("slow");
+                            $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
+                            $("#ajax_loading").fadeIn("slow");
+                        },
+                        success: function(datos){
+                            console.log("Datos");
+                            console.log(datos);
+                            if(datos.indexOf("--EXITO-->", 0)>0){
+                               $("#ajax_message").html("Los datos se guardaron correctamente.");
+                               $("#ajax_loading").fadeOut("slow");
+                               $("#ajax_message").fadeIn("slow");
+                               apprise('<center><img src=../../images/info.png> <br/>Los datos se guardaron correctamente.</center>',{'animate':true},
+                                        function(r){
+                                                javascript:window.location.reload();
+                                                parent.$.fancybox.close();  
+                                        });
+                           }else{
+                               $("#ajax_loading").fadeOut("slow");
+                               $("#ajax_message").html("Ocurrió un error al intentar guardar los datos.");
+                               $("#ajax_message").fadeIn("slow");
+                               $("#action_buttons").fadeIn("slow");
+                           }
+                        }
+                    });   
+                }
+        function guardarProducto(){ 
+                    $.ajax({
+                        type: "POST",
+                        url: "productos_ajax.jsp",
+                        data: $("#frm_productos").serialize(),
                         beforeSend: function(objeto){
                             $("#action_buttons").fadeOut("slow");
                             $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
@@ -233,52 +275,117 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                         <div class="column_right">
                             <div class="header">
                                 <span>
-                                    Promotores
+                                    Promotores del Proyecto
                                 </span>
-                                <br class="clear"/>
-                                <div class="content">
-                                    <form id="frm_promotor">
-                                        <input type="hidden" id="idProyecto" name="idProyecto"  value="${ not empty obj.idProyecto ? obj.idProyecto :"0"}" />
-                                        <p>
-                                        <label>Asignar Promotor:</label>
-                                        <c:set var="whereuser" value="where id_usuarios not in (select p.idUser from Promotorproyecto as p where p.idProyecto = ${obj.idProyecto}) and id_roles = 4"/>
-                                        <c:set var="promotoresproy" value="${Services.QueryUsuariosDAO(whereuser)}"/>
-                                        <select id="idUsuario" name="idUsuario">
-                                            <option value="0" >Seleccione un Promotor</option>
-                                            <c:forEach items="${promotoresproy}" var="item">
-                                                <option value="${item.idUsuarios}" >${item.userName}</option>
-                                            </c:forEach>
-                                        </select>
-                                        <input  value="Agregar" type="submit" id="enviar"  class="btn"/>
-                                        </p>
-                                        
-                                        
-                                        <br>
-                                        <div style="max-height:300px;">
-                                            <table class="data" width="100%" cellpadding="0" cellspacing="0">
-                                                <thead>
+                            </div>
+                            <br class="clear"/>
+                            <div class="content">
+                                <form id="frm_promotor" class="has-validation-callback" style="display: none">
+                                    <input type="hidden" id="idProyecto" name="idProyecto"  value="${ not empty obj.idProyecto ? obj.idProyecto :"0"}" />
+                                    <p>
+                                    <label>Asignar Promotor:</label>
+                                    <c:set var="whereuser" value="where id_usuarios not in (select p.idUser from Promotorproyecto as p where p.idProyecto = ${obj.idProyecto}) and id_roles = 4"/>
+                                    <c:set var="promotoresproy" value="${Services.QueryUsuariosDAO(whereuser)}"/>
+                                    <select id="idUsuario" name="idUsuario">
+                                        <option value="0" >Seleccione un Promotor</option>
+                                        <c:forEach items="${promotoresproy}" var="item">
+                                            <option value="${item.idUsuarios}" >${item.userName}</option>
+                                        </c:forEach>
+                                    </select>
+                                    <input  value="Agregar" type="submit" id="enviar"  class="btn"/>
+                                    </p>
+
+                                </form>
+                                    <div style="max-height:300px;text-align: right;">
+                                        <a id="btnAgregarPromotor">Agregar Promotor</a><br><br>
+                                        <table class="data" width="100%" cellpadding="0" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Promotor</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <c:set var="where" value="where idProyecto = ${obj.idProyecto}"/>
+                                                <c:set var="promotorespro" value="${Services.QueryPromotorProyecto(where)}"/>
+                                                <c:forEach items="${promotorespro}" var="item">
+                                                    <c:set var="usuario" value="${usuariosModel.getById(item.idUser)}"/>
                                                     <tr>
-                                                        <th>Promotor</th>
-                                                        <th>Acciones</th>
+                                                        <td>${usuario.userName}</td>
+                                                        <td>${item.idUser}</td>
                                                     </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <c:set var="where" value="where idProyecto = ${obj.idProyecto}"/>
-                                                    <c:set var="promotorespro" value="${Services.QueryPromotorProyecto(where)}"/>
-                                                    <c:forEach items="${promotorespro}" var="item">
-                                                        <c:set var="usuario" value="${usuariosModel.getById(item.idUser)}"/>
+                                                </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="column_right">
+                            <div class="header">
+                                <span>
+                                    Productos del Proyecto
+                                </span>
+                            </div>
+                            <br class="clear"/>
+                            
+                            <div class="content">
+                                <form  style="display:none" id="frm_productos" class="has-validation-callback">
+                                    <input type="hidden" id="idProyectoProducto" name="idProyectoProducto" value="${param.id}"/>
+                                    <p>
+                                        <label>* Nombre:</label><br>
+                                        <input maxlength="45" type="text" id="nombreProducto" name="nombreProducto" style="width:300px"
+                                               data-validation="length"
+                                               data-validation-length="1-45"
+                                               data-validation-error-msg="El nombre debe tener de 1 a 45 caracteres."
+                                               required
+                                               />
+                                    </p>
+                                    <br/>
+                                    <p>
+                                        <label>Descripcion:</label><br>
+                                        <textarea  id="descripcionProducto" name="descripcionProducto" style="width:300px;">
+                                        </textarea>
+                                    </p>
+                                    <br/> 
+                                    <div id="action_buttons">
+                                        <p>
+                                            <input type="submit" value="Guardar" class="btn"/>
+                                        </p>
+                                    </div>   
+                                </form>
+                                    <div style="text-align: right">
+                                        <a id="btnAgregarProductos">Agregar Producto</a><br><br>
+                                        <table class="data" width="100%" cellpadding="0" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Producto</th>
+                                                    <th>Descripcion</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <c:set var="where" value="where id_proyecto = ${param.id}"/>
+                                                <c:set var="productosProyecto" value="${Services.QueryProductosDAO(where)}"/>
+                                                <c:if test="${empty productosProyecto}" >
+                                                    <tr>
+                                                        <td colspan="2">No se han registrado productos</td>
+                                                    </tr>
+                                                </c:if>
+                                                <c:if test="${not empty productosProyecto}" >
+                                                    <c:forEach items="${productosProyecto}" var="productoProyecto">
                                                         <tr>
-                                                            <td>${usuario.userName}</td>
-                                                            <td>${item.idUser}</td>
+                                                            <td>${productoProyecto.nombre}</td>
+                                                            <td>${productoProyecto.descripcion}</td>
                                                         </tr>
                                                     </c:forEach>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </form>
-                                </div>
+                                                </c:if>
+                                            </tbody>
+                                        </table>
+                                    </div>
                             </div>
-                        </div>
+                        </div>                      
                         </c:if>
                     </div>
                     <!--TODO EL CONTENIDO VA AQUÍ-->
@@ -300,6 +407,14 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                  disabledFormFilter : 'form.toggle-disabled',
                  showErrorDialogs : true
              });
+            $("#btnAgregarProductos").click(function(){
+                $("#frm_productos").show("slow");
+                $(this).hide("fast");
+            });
+            $("#btnAgregarPromotor").click(function(){
+                $("#frm_promotor").show("slow");
+                $(this).hide("fast");
+            });
             $("#frm_action").submit(function(e){
                e.preventDefault();
                guardar();
@@ -307,6 +422,10 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
             $("#frm_promotor").submit(function(e){
                e.preventDefault();
                guardarPromotor();
+            });
+            $("#frm_productos").submit(function(e){
+               e.preventDefault();
+               guardarProducto();
             });
             $('#checkActivo').change(function() {
                 if($(this).is(":checked")) {

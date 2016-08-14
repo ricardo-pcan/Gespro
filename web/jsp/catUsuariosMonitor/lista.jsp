@@ -20,9 +20,10 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title><jsp:include page="../include/titleApp.jsp" /></title>
-        
+        <link rel="shortcut icon" href="../../images/favicon.ico">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <jsp:include page="../include/keyWordSEO.jsp" />
+        <title><jsp:include page="../include/titleApp.jsp" /></title>
         <jsp:include page="../include/skinCSS.jsp" />
         <jsp:include page="../include/jsFunctions.jsp"/>
         <script type="text/javascript">
@@ -53,40 +54,8 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
 
              $('#password').val(password);                      
              return password;
-           }
-           function guardar(obj){            
-            var id=$(obj).attr("id");
-            $.ajax({
-                type: "POST",
-                url: "crearCredenciales.jsp",
-                data: {
-                    id:id,
-                    password:crearPassword(10)
-                },
-                beforeSend: function(){
-                    $("#action_buttons").fadeOut("slow");
-                    $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
-                    $("#ajax_loading").fadeIn("slow");
-                },
-                success: function(datos){
-                    if(datos.indexOf("--EXITO-->", 0)>0){
-                       $("#ajax_message").html("Credenciales generadas.");
-                       $("#ajax_loading").fadeOut("slow");
-                       $("#ajax_message").fadeIn("slow");
-                       apprise('<center><img src=../../images/info.png> <br/>Credenciales generadas.</center>',{'animate':true},
-                                function(r){
-                                        javascript:window.location.href = "lista.jsp";
-                                        parent.$.fancybox.close();  
-                                });
-                   }else{
-                       $("#ajax_loading").fadeOut("slow");
-                       $("#ajax_message").html("Ocurrió un error al intentar generar las crendeciales.");
-                       $("#ajax_message").fadeIn("slow");
-                       $("#action_buttons").fadeIn("slow");
-                   }
-                }
-            });   
-           }                               
+           } 
+           
         </script>
     </head>
     <body>
@@ -133,7 +102,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                            
                                             <td>
                                                 <input type="button" id="nuevo" name="nuevo" class="right_switch" value="Crear Nuevo" 
-                                                        style="float: right; width: 100px;" onclick="javascript:window.location.href='${formulario}'"/>
+                                                        style="float: right; width: 100px;" onclick="location.href='${formulario}'"/>
                                             </td>                                           
                                         </tr>
                                     </tbody>
@@ -181,6 +150,38 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
             </div>
             <!-- Fin de Contenido-->
         </div>
-        
+    <script>
+        function guardar(obj){
+                var id=$(obj).attr("id");
+                var contrasenia=crearPassword(10);
+                $.ajax({
+                    type: "POST",
+                    url: "crearCredenciales.jsp",
+                    data: { id: id, password:contrasenia },
+                    beforeSend: function(objeto){
+                        $("#ajax_loading").html('<center><img src="../../images/ajax_loader.gif" alt="Cargando.." /><h2>Generando...</h2></center>');
+                        $("#ajax_loading").fadeIn("slow");
+                    },
+                    success: function(datos){
+                        if(datos.indexOf("EXITO") != -1){
+                           $("#ajax_message").html("Credenciales generadas.");
+                           $("#ajax_loading").fadeOut("slow");
+                           $("#ajax_message").fadeIn("slow");
+                           var appriseString='<center><img src=../../images/info.png> <br/> Credenciales generadas.</center>';
+                           var appriseArgs={'animate':true};
+                           var appriseCallback=function(){
+                               location.href = "lista.jsp";
+                               parent.$.fancybox.close();
+                           };
+                           apprise(appriseString,appriseArgs,appriseCallback);
+                        }else{
+                           $("#ajax_loading").fadeOut("slow");
+                           $("#ajax_message").html("Ocurrió un error al intentar generar las crendeciales.");
+                           $("#ajax_message").fadeIn("slow");
+                        }
+                    }
+               });
+            }
+    </script>
     </body>
 </html>
