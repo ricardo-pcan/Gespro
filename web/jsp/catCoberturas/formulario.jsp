@@ -4,6 +4,9 @@
     Author     : Fabian
 --%>
 
+<%@page import="com.tsp.gespro.hibernate.dao.ProyectoDAO"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
+<%@page import="java.util.List"%>
 <%@page import="com.google.gson.Gson"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.HibernateUtil"%>
 <%@page import="org.hibernate.Session"%>
@@ -19,6 +22,20 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     response.sendRedirect("../../jsp/inicio/login.jsp?action=loginRequired&urlSource=" + request.getRequestURI() + "?" + request.getQueryString());
     response.flushBuffer();
 }
+String paramId = null;
+try {
+    paramId = request.getParameter("id");
+} catch (Exception ex) {
+    paramId = "0";
+}
+int id;
+try {
+    id = Integer.parseInt(paramId);
+} catch (NumberFormatException ex) {
+    id = 0;
+}
+List<Proyecto> proyectoList = new ProyectoDAO().lista();
+Cobertura cobertura = new CoberturaDAO().getById(id);
 %>
 <!DOCTYPE html>
 <html>
@@ -85,16 +102,16 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
             function seleccionarTipoPunto( tipoDePuntos ){
                 ocultarTipoDePuntos();
                 if (tipoDePuntos == "cliente") {
-                    $("#contenedor-cliente").show();
+                    $("#contenedor-cliente").show("slow");
                 }
                 if (tipoDePuntos == "ciudad") {
-                    $("#contenedor-pais").show();
+                    $("#contenedor-pais").show("slow");
                 }
             }
             
             function ocultarTipoDePuntos(){
-                $("#contenedor-cliente").hide();
-                $("#contenedor-pais").hide();
+                $("#contenedor-cliente").hide("slow");
+                $("#contenedor-pais").hide("slow");
             }
             
             function guardar(){ 
@@ -134,7 +151,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <!--- Inicialización de variables --->
         <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.CoberturaDAO"/>
         <jsp:useBean id="usuariosModel" class="com.tsp.gespro.hibernate.dao.UsuariosDAO"/>
-        <jsp:useBean id="proyectoModel" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
+        
         <jsp:useBean id="clienteModel" class="com.tsp.gespro.hibernate.dao.ClienteDAO"/>
         <jsp:useBean id="Services" class="com.tsp.gespro.Services.Allservices"/>
         <!--- @obj : Objeto de moneda a editar --->
@@ -185,9 +202,17 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                         <label>Proyecto:</label><br/>
                                         <select id="selector-proyecto" name="proyecto_id" style="width:300px;">
                                             <option value="0">Seleccione un proyecto</option>
-                                            <c:forEach items="${proyectoModel.lista()}" var="proyecto">
-                                                    <option value="${proyecto.idProyecto}">${proyecto.nombre}</option>
-                                            </c:forEach>
+                                            <%
+                                            for(Proyecto proyecto:proyectoList) {
+                                                String selected = "";
+                                                if( cobertura != null && cobertura.getIdProyecto() == proyecto.getIdProyecto()){
+                                                    selected = "selected";
+                                                }
+                                                %>
+                                                <option value="<%=proyecto.getIdProyecto()%>" selected="<%=selected%>"> <%=proyecto.getNombre()%> </option>
+                                                <%  
+                                            }
+                                            %>
                                         </select>
                                     </p>
                                     <br/>
@@ -199,19 +224,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                     </p>
                                     <br/>
                                     <div id="contenedor-cliente">
-                                        <c:if test="${not empty obj.idCliente }" >
-                                        <br/>                                    
-                                        <p>
-                                            <label>Cliente:</label><br/>
-                                            <c:set var="cliente" value="${clienteModel.getById(obj.idCliente)}"/>
-                                            <input maxlength="45" type="text" style="width:300px;"
-                                                   value="${not empty cliente.nombreComercial ? cliente.nombreComercial : ""}" 
-                                                   disabled/>
-                                            <input type="hidden" id="idCliente" name="idCliente" 
-                                                   value="${not empty obj.idCliente ? obj.idCliente : ""}"/>
-                                        </p>
-                                        </c:if>
-                                        <c:if test="${empty obj.idCliente }" >
                                         <br/>                                    
                                         <p>
                                             <label>Cliente:</label><br/>
@@ -223,7 +235,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                 </c:forEach>
                                             </select>
                                         </p>
-                                        </c:if>
                                         <br/>
                                     </div>
                                     <div id="contenedor-pais">
