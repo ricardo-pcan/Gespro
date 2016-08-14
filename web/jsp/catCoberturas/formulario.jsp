@@ -23,7 +23,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title><jsp:include page="../include/titleApp.jsp" /></title>
         <style>
             .right_position {
@@ -42,19 +42,61 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <jsp:include page="../include/jsFunctions.jsp"/>
        
         <script type="text/javascript">
+            $(document).ready(function(){
+                ocultarTipoDePuntos();
+                cargarPaises();
+            });
+            
             function cargarPaises() {
-                $.getJSON( "ajax/test.json", function( data ) {
-                var items = [];
-                $.each( data, function( key, val ) {
-                    items.push( "<li id='" + key + "'>" + val + "</li>" );
-                  });
-
-                  $( "<ul/>", {
-                    "class": "my-new-list",
-                    html: items.join( "" )
-                  }).appendTo( "body" );
+                $.getJSON( "/Gespro/json/countriesToCities.json", function( data ) {
+                    $.each( data, function( key, val ) {
+                        $('#selector-pais').append($('<option>', { 
+                            value: key,
+                            text : key 
+                        }));
+                    });
                 });
             }
+            
+            
+            function cargarCiudades( pais ) {
+                // limpiamos el selector
+                $('#selector-ciudad')
+                    .find('option')
+                    .remove()
+                    .end()
+                    .append('<option value="0">Seleccione una ciudad</option>');
+                //consultamos los paise y las ciudades
+                $.getJSON( "/Gespro/json/countriesToCities.json", function( data ) {
+                    $.each( data, function( key, val ) {
+                        // si encontramos el pais, obtenemos las ciudades y las agremaos
+                        if( key == pais ) {
+                            $.each(val, function( indice, ciudad ){
+                                $('#selector-ciudad').append($('<option>', { 
+                                    value: ciudad,
+                                    text : ciudad 
+                                }));                            
+                            });
+                        }
+                    });
+                });
+            }
+            
+            function seleccionarTipoPunto( tipoDePuntos ){
+                ocultarTipoDePuntos();
+                if (tipoDePuntos == "cliente") {
+                    $("#contenedor-cliente").show();
+                }
+                if (tipoDePuntos == "ciudad") {
+                    $("#contenedor-pais").show();
+                }
+            }
+            
+            function ocultarTipoDePuntos(){
+                $("#contenedor-cliente").hide();
+                $("#contenedor-pais").hide();
+            }
+            
             function guardar(){ 
                     $.ajax({
                         type: "POST",
@@ -74,7 +116,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                $("#ajax_message").fadeIn("slow");
                                apprise('<center><img src=../../images/info.png> <br/>Los datos se guardaron correctamente.</center>',{'animate':true},
                                         function(r){
-                                                javascript:window.location.href = "catCobertura_list.jsp";
+                                                javascript:window.location.href = "catCoberturas_list.jsp";
                                                 parent.$.fancybox.close();  
                                         });
                            }else{
@@ -92,6 +134,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <!--- Inicialización de variables --->
         <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.CoberturaDAO"/>
         <jsp:useBean id="usuariosModel" class="com.tsp.gespro.hibernate.dao.UsuariosDAO"/>
+        <jsp:useBean id="proyectoModel" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
         <jsp:useBean id="clienteModel" class="com.tsp.gespro.hibernate.dao.ClienteDAO"/>
         <jsp:useBean id="Services" class="com.tsp.gespro.Services.Allservices"/>
         <!--- @obj : Objeto de moneda a editar --->
@@ -137,39 +180,67 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                required
                                                />
                                     </p>
-                                    <br/>
+                                    <br/>                                
                                     <p>
-                                        <label>* Tipo de punto:</label><br/>
-                                        <input type="radio" name="punto" value="male"> Ciudad
-                                        <input type="radio" name="punto" value="female"> Cliente
-                                        <input type="radio" name="punto" value="other"> Lugar
-                                    </p>
-                                    <br/>
-                                    <c:if test="${not empty obj.idCliente }" >
-                                    <br/>                                    
-                                    <p>
-                                        <label>Cliente:</label><br/>
-                                        <c:set var="cliente" value="${clienteModel.getById(obj.idCliente)}"/>
-                                        <input maxlength="45" type="text" style="width:300px;"
-                                               value="${not empty cliente.nombreComercial ? cliente.nombreComercial : ""}" 
-                                               disabled/>
-                                        <input type="hidden" id="idCliente" name="idCliente" 
-                                               value="${not empty obj.idCliente ? obj.idCliente : ""}"/>
-                                    </p>
-                                    </c:if>
-                                    <c:if test="${empty obj.idCliente }" >
-                                    <br/>                                    
-                                    <p>
-                                        <label>Cliente:</label><br/>
-                                        <c:set var="clientes" value="${clienteModel.lista()}"/>
-                                        <select id="idCliente" name="idCliente" style="width:300px;">
-                                            <option value="0">Seleccione un cliente</option>
-                                            <c:forEach items="${clientes}" var="cliente">
-                                                <option value="${cliente.idCliente}">${cliente.nombreComercial}</option>
+                                        <label>Proyecto:</label><br/>
+                                        <select id="selector-proyecto" name="proyecto_id" style="width:300px;">
+                                            <option value="0">Seleccione un proyecto</option>
+                                            <c:forEach items="${proyectoModel.lista()}" var="proyecto">
+                                                    <option value="${proyecto.idProyecto}">${proyecto.nombre}</option>
                                             </c:forEach>
                                         </select>
                                     </p>
-                                    </c:if>
+                                    <br/>
+                                    <p>
+                                        <label>* Tipo de punto:</label><br/>
+                                        <input type="radio" name="punto" value="ciudad"> Ciudad
+                                        <input type="radio" name="punto" value="cliente"> Cliente
+                                        <input type="radio" name="punto" value="lugar"> Lugar
+                                    </p>
+                                    <br/>
+                                    <div id="contenedor-cliente">
+                                        <c:if test="${not empty obj.idCliente }" >
+                                        <br/>                                    
+                                        <p>
+                                            <label>Cliente:</label><br/>
+                                            <c:set var="cliente" value="${clienteModel.getById(obj.idCliente)}"/>
+                                            <input maxlength="45" type="text" style="width:300px;"
+                                                   value="${not empty cliente.nombreComercial ? cliente.nombreComercial : ""}" 
+                                                   disabled/>
+                                            <input type="hidden" id="idCliente" name="idCliente" 
+                                                   value="${not empty obj.idCliente ? obj.idCliente : ""}"/>
+                                        </p>
+                                        </c:if>
+                                        <c:if test="${empty obj.idCliente }" >
+                                        <br/>                                    
+                                        <p>
+                                            <label>Cliente:</label><br/>
+                                            <c:set var="clientes" value="${clienteModel.lista()}"/>
+                                            <select id="idCliente" name="idCliente" style="width:300px;">
+                                                <option value="0">Seleccione un cliente</option>
+                                                <c:forEach items="${clientes}" var="cliente">
+                                                    <option value="${cliente.idCliente}">${cliente.nombreComercial}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </p>
+                                        </c:if>
+                                        <br/>
+                                    </div>
+                                    <div id="contenedor-pais">
+                                        <p>
+                                            <label>País:</label><br/>
+                                            <select id="selector-pais" name="selector_pais" style="width:300px;">
+                                                <option value="0">Seleccione un país</option>
+                                            </select>
+                                        </p>
+                                        <p>
+                                            <label>Ciudad:</label><br/>
+                                            <select id="selector-ciudad" name="selector_ciudad" style="width:300px;">
+                                                <option value="0">Seleccione una ciudad</option>
+                                            </select>
+                                        </p>
+                                        <br/>
+                                    </div>
                                     <br/>
                                     <div id="action_buttons">
                                         <p>
@@ -204,6 +275,13 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
             $("#frm_action").submit(function(e){
                e.preventDefault();
                guardar();
+            });
+            $( "#selector-pais" ).change(function() {
+                cargarCiudades( $("#selector-pais").val() );
+            });
+            $('input[name=punto]').change(function() {
+                var tipoDePuntos = $(this).val();
+                seleccionarTipoPunto( tipoDePuntos );
             });
         });
         </script>
