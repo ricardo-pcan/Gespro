@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.tsp.gespro.hibernate.pojo.HibernateUtil;
 import org.hibernate.Session;
+import com.tsp.gespro.hibernate.dao.RepartoDAO;
+import com.tsp.gespro.hibernate.pojo.Reparto;
 import com.tsp.gespro.hibernate.pojo.Promotorproyecto;
 import com.tsp.gespro.hibernate.dao.PromotorproyectoDAO;
 import com.tsp.gespro.hibernate.pojo.Producto;
@@ -177,6 +179,26 @@ public class Allservices {
             session = HibernateUtil.getSessionFactory().openSession(); 
             Transaction tx = session.beginTransaction(); 
             String query = "from Actividad "+where;
+            lista = session.createQuery(query).list(); 
+        }
+        finally 
+        { 
+            session.close(); 
+        }  
+
+        return lista; 
+    }
+    
+     public List queryRepartoDAO(String where){  
+        
+            List<Reparto> lista = null;  
+            Session session = null;
+
+        try 
+        { 
+            session = HibernateUtil.getSessionFactory().openSession(); 
+            Transaction tx = session.beginTransaction(); 
+            String query = "from Reparto "+where;
             lista = session.createQuery(query).list(); 
         }
         finally 
