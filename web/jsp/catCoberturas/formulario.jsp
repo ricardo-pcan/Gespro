@@ -114,6 +114,18 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                 $("#contenedor-pais").hide("slow");
             }
             
+            function agregarZonaDelCliente( idCliente ) {
+                 $.getJSON( "/Gespro/jsp/catCoberturas/ajax_cliente_punto.jsp?id="+idCliente, function( data ) {
+                    $("#puntos").append(
+                            '<div class="punto">'+
+                                '<input maxlength="45" type="text" class="punto" name="puntoNombre[]" value="'+data['ciudad']+'" readonly=""/>'+
+                                '<input maxlength="45" type="text" class="punto" name="puntoLongitud[]" value="'+data['longitud']+'" readonly=""/>'+
+                                '<input maxlength="45" type="text" class="punto" name="puntoLatitud[]" value="'+data['latitud']+'" readonly=""/>'+
+                            '</div>'
+                    );
+                });
+            }
+            
             function guardar(){ 
                     $.ajax({
                         type: "POST",
@@ -438,7 +450,7 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                                     <option value="${cliente.idCliente}">${cliente.nombreComercial}</option>
                                                 </c:forEach>
                                             </select><br>
-                                            <button id="boton-agregar-punto-cliente" type="button">Agregar zona de cliente</button>
+                                            <button id="boton-agregar-punto-cliente" type="button">Agregar zona del cliente</button>
                                         </p>
                                         <br/>
                                     </div>
@@ -460,9 +472,13 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                     <div ud="contenedor-puntos">
                                         <p>
                                             <label>Zona:</label><br/>
-                                            <input maxlength="45" type="text" class="punto" name="puntoNombre[]" readonly=""/>
-                                            <input maxlength="45" type="text" class="punto" name="puntoLatitud[]" readonly=""/>
-                                            <input maxlength="45" type="text" class="punto" name="puntoLongitud[]" readonly=""/>
+                                        <div id="puntos">
+                                            <div class="punto">
+                                                <input maxlength="45" type="text" class="punto" name="puntoNombre[]" readonly=""/>
+                                                <input maxlength="45" type="text" class="punto" name="puntoLongitud[]" readonly=""/>
+                                                <input maxlength="45" type="text" class="punto" name="puntoLatitud[]" readonly=""/>
+                                            </div>
+                                        </div>
                                         </p>
                                         <br/>
                                     </div>
@@ -531,7 +547,8 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                 var tipoDePuntos = $(this).val();
                 seleccionarTipoPunto( tipoDePuntos );
             });
-            $('#boton-agregar-punto-cliente').change(function() {
+            $('#boton-agregar-punto-cliente').click(function() {
+                agregarZonaDelCliente( $( "#idCliente" ).val() );
             });
         });
         </script>
