@@ -45,6 +45,7 @@
                message = "<--ERROR-->" + "Simbolo y nombre son obligatorios.";
            }else{
             if(id!=0){
+                idCobertura = id;
                 cobertura.setIdCobertura(id);
                 coberturaDAO.actualizar(cobertura);
                 message = "<--EXITO-->" +"La actualización fue exitosa.";
@@ -58,9 +59,9 @@
        }catch(HibernateException e){
            message = "<--ERROR-->" + "Ocurrió un error al actualizar." + e.getMessage();
        }
-       json = "{ status:" + (status ? "true":"false") +", message:'" + message + "'}";
-       out.print(json);
-       if(ciudades!="" && latitudes!="" && longitudes != "" && idCobertura!=0 && guardarLugares=="1"){
+       
+
+       if(ciudades!="" && latitudes!="" && longitudes != "" && idCobertura!=0 && guardarLugares.equals("1") ){
            int countPoints=ciudades.length();
            String[] ciudad = ciudades.substring(0,countPoints).split(",");
            String[] longitud= longitudes.substring(0,countPoints).split(",");
@@ -81,5 +82,8 @@
                puntoDao.guardar(punto);
             }
        }
+       status=false;
+       json = "{ status:" + (status ? "true":"false") +", message:'" + message + "'}";
+       out.print(json);
            
 %>

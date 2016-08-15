@@ -27,5 +27,6 @@
     <mapping resource="com/tsp/gespro/hibernate/pojo/Cliente.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/Actividad.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/Cobertura.hbm.xml"/>
+    <mapping resource="com/tsp/gespro/hibernate/pojo/Punto.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

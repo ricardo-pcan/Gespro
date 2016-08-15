@@ -454,9 +454,14 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
         <c:if test="${not empty param.id}">
             <fmt:parseNumber var="id" integerOnly="true" type="number" value="${param.id}" />
             <c:set var="obj" value="${helper.getById(id)}"/>
+            <c:set var="where" value="where id_cobertura = ${id}"/>
+            <c:set var="puntoLista" value="${services.queryPuntoDAO(where)}"/>
         </c:if>
-        <c:set var="where" value="where id_cobertura = ${id}"/>
-        <c:set var="puntoLista" value="${services.queryPuntoDAO(where)}"/>
+        <c:if test="${empty param.id}">
+            <fmt:parseNumber var="id" integerOnly="true" type="number" value="${param.id}" />
+            <c:set var="obj" value="${helper.getById(0)}"/>
+            <c:set var="where" value=""/>
+        </c:if>
             
            <div class="content_wrapper">
             <jsp:include page="../include/header.jsp" flush="true"/>
