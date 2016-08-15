@@ -32,6 +32,7 @@ if (!buscar.trim().equals("")) {
 String filtroBusquedaEncoded = java.net.URLEncoder.encode(filtroBusqueda, "UTF-8");
 Allservices allservices = new Allservices();
 List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
+                                        List<Cobertura> coberturas = allservices.queryCobertura("where idProyecto = "+idProyecto);
 %>
 <!DOCTYPE html>
 <html>
@@ -120,7 +121,6 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
                                 <c:set var="reparto" value="${Services.queryRepartoDAO(where)}"/>
                                 <c:if test="${empty reparto}">
                                     <% 
-                                        List<Cobertura> coberturas = allservices.queryCobertura("where idProyecto = "+idProyecto);
                                         if(coberturas.size() > 0){
                                     %>
                                     <input type="hidden" name="id_proyecto" value="${param.idProyecto}"/>
@@ -177,7 +177,75 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
                                     <c:if test="${empty coberturas}">
                                     </c:if>
                                 </c:if>
-                                <c:if test="${not empty reparto}">a</c:if>
+                                <c:if test="${not empty reparto}">
+                                    <% 
+                                        if(coberturas.size() > 0){
+                                    %>
+                                    <input type="hidden" name="id_proyecto" value="${param.idProyecto}"/>
+                                        <table class="data" width="100%" cellpadding="0" cellspacing="0" style="text-align: center">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <% 
+                                                        for(Cobertura itemsCob : coberturas){
+                                                            List<Punto> puntos = allservices.queryPuntoDAO("where id_cobertura = "+itemsCob.getIdCobertura());
+                                                            out.print("<th colspan='"+puntos.size()+"'>"+itemsCob.getNombre()+"</th>");
+                                                        }
+                                                    %>
+
+                                                </tr>
+                                                <tr>
+                                                    <th></th>
+                                                    <% 
+                                                        for(Cobertura itemsCob : coberturas){
+                                                            List<Punto> puntos = allservices.queryPuntoDAO("where id_cobertura = "+itemsCob.getIdCobertura());
+                                                            for(Punto itemsPun : puntos){
+                                                                out.print("<th>"+itemsPun.getLugar()+"</th>");
+                                                            }
+                                                        }
+                                                    %>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <%int conPro = 1;%>
+                                                <c:set var="where" value="where id_proyecto = ${param.idProyecto}"/>
+                                                <c:set var="productosProyecto" value="${Services.QueryProductosDAO(where)}"/>
+                                                <c:forEach items="${productosProyecto}" var="productoProyecto">
+                                                    <tr>
+                                                <th>${productoProyecto.nombre}</th>
+                                                 <% 
+                                                        for(Cobertura itemsCob : coberturas){
+                                                            List<Punto> puntos = allservices.queryPuntoDAO("where id_cobertura = "+itemsCob.getIdCobertura());
+                                                            for(Punto itemsPun : puntos){
+                                                                out.print("<td>");%>
+                                                                <c:set var="punto" value="<%=itemsPun.getIdPunto()%>"/>
+                                                                <c:set var="wherereparto" value="where idProyecto = ${param.idProyecto} and idLugar = ${punto} and idProducto = ${productoProyecto.idProducto}"/>
+                                                                <c:set var="repartopunto" value="${Services.queryRepartoDAO(wherereparto)}"/>
+                                                                <c:forEach var="reparto" items="${repartopunto}">
+                                                                    <input type="hidden" name="idreparto[]" value="${reparto.idreparto}"/>
+                                                                    <input type="text" name="cantidad[]" value="${reparto.cantidad}"/>
+                                                                    <input type="hidden" name="id_producto[]" value="${productoProyecto.idProducto}"/>
+                                                                    <input type="hidden" name="id_lugar[]"value="<%=itemsPun.getIdPunto()%>"/>
+                                                                </c:forEach>
+                                                                <%out.print("</td>");
+                                                                conPro++;
+                                                            }
+                                                        }
+                                                %>
+                                                    </tr>
+                                                </c:forEach>
+                                            </tbody>
+                                        </table>
+                                                <br>
+                                                <br>
+                                                <div style="text-align: right">
+                                                <input type="submit" value="Guardar"/>
+                                                <input type="button" value="Regresar" onclick="history.back()"/>
+                                                </div>
+                                    <% } %>
+                                    <c:if test="${empty coberturas}">
+                                    </c:if>
+                                </c:if>
 
                             </form>
                              <!-- INCLUDE OPCIONES DE EXPORTACIÓN-->

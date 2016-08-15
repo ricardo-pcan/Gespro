@@ -20,7 +20,7 @@
 <jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 <%
     // Si el id viene que el request parsearlo a integer.
-    String message = "";
+    String message = "<--ERROR-->";
     String json = "";
     boolean status = false;
 
@@ -28,19 +28,38 @@
     String[] idLugar = request.getParameterValues("id_lugar[]");
     String[] idProducto = request.getParameterValues("id_producto[]");
     String[] cantidad = request.getParameterValues("cantidad[]");
+    String[] idReparto = request.getParameterValues("idreparto[]");
     RepartoDAO repartoDao = new RepartoDAO();
     // Guardamos los nuevos puntos
-    if (idProyecto != null && idLugar != null && idProducto != null && cantidad != null) {
-        for (int i = 0; i < idProducto.length; i ++) {
-            Reparto reparto = new Reparto();
-            reparto.setIdProyecto(Integer.parseInt(idProyecto.toString()));
-            reparto.setIdLugar(Integer.parseInt(idLugar[i].toString()));
-            reparto.setIdProducto(Integer.parseInt(idProducto[i].toString()));
-            reparto.setCantidad(Float.parseFloat(cantidad[i].toString()));
-            repartoDao.guardar(reparto);
+    if(idReparto != null){
+        out.print("entra");
+        if (idProyecto != null && idLugar != null && idProducto != null && cantidad != null) {
+            for (int i = 0; i < idProducto.length; i ++) {
+                Reparto reparto = repartoDao.getById(Integer.parseInt(idReparto[i]));
+                reparto.setIdProyecto(Integer.parseInt(idProyecto.toString()));
+                reparto.setIdLugar(Integer.parseInt(idLugar[i].toString()));
+                reparto.setIdProducto(Integer.parseInt(idProducto[i].toString()));
+                reparto.setCantidad(Float.parseFloat(cantidad[i].toString()));
+                repartoDao.actualizar(reparto);
+            }
+
+         status = true;
+         message = "<--EXITO-->";
         }
-        
-     status = true;
+    }else{
+        if (idProyecto != null && idLugar != null && idProducto != null && cantidad != null) {
+            for (int i = 0; i < idProducto.length; i ++) {
+                Reparto reparto = new Reparto();
+                reparto.setIdProyecto(Integer.parseInt(idProyecto.toString()));
+                reparto.setIdLugar(Integer.parseInt(idLugar[i].toString()));
+                reparto.setIdProducto(Integer.parseInt(idProducto[i].toString()));
+                reparto.setCantidad(Float.parseFloat(cantidad[i].toString()));
+                repartoDao.guardar(reparto);
+            }
+
+         status = true;
+         message = "<--EXITO-->";
+        }
     }
     json = "{ status:" + (status ? "true" : "false") + ", message:'" + message + "'}";
     out.print(json);
