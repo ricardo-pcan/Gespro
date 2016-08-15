@@ -72,6 +72,12 @@
            String[] latitud = latitudes.substring(0,countPoints).split(",");
            Punto punto= new Punto();
            PuntoDAO puntoDao = new PuntoDAO();
+           //Eliminar los puntos anteriores de esta cobertura
+           List<Punto> puntoList = new Allservices().queryPuntoDAO("where id_cobertura = "+ idCobertura);
+           for(Punto puntoEliminar:puntoList) {
+               puntoDao.eliminar(puntoEliminar.getIdPunto());
+           }
+           // Guardamos los nuevos puntos
            if(id!=0){
                idCobertura=id;
            }
