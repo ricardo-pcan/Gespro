@@ -209,7 +209,7 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                                     selected = "selected";
                                                 }
                                                 %>
-                                                <option value="<%=proyecto.getIdProyecto()%>" selected="<%=selected%>"> <%=proyecto.getNombre()%> </option>
+                                                <option value="<%=proyecto.getIdProyecto()%>" <%=selected%> > <%=proyecto.getNombre()%> </option>
                                                 <%  
                                             }
                                             %>

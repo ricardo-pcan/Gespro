@@ -77,7 +77,7 @@ List<Cobertura> coberturas = allservices.queryCobertura(filtroBusqueda);
                                         <tr>
                                             <td>
                                                 <div id="search">
-                                                <form action="catProyectos.jsp" id="search_form" name="search_form" method="get">                                                                                                                                                
+                                                <form action="catCoberturas_list.jsp" id="search_form" name="search_form" method="get">                                                                                                                                                
 
                                                         <input type="text" id="q" name="q" title="Buscar por nombre" class="" style="width: 70%; float: left; "
                                                                value="<%=buscar%>"/>
