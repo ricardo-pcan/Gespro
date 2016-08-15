@@ -86,6 +86,7 @@
                             var idAdicional = $("#" + etiqueta.replace(" ", "") + "IdAdicional").val();
                             var valorAdicional = $("#" + etiqueta.replace(" ", "") + "IdValor").val();
                             var idProspecto = $("#idProspecto").val();
+                            var idProspecto = $("#idProspecto").val()?$("#idProspecto").val():0;
                             var adicionalProspecto = {idAdicional: idAdicional, idProspecto: idProspecto, etiqueta: etiqueta, obligatorio: obligatorio, tipo: tipo, valor: valorAdicional};
                             adicionalesProspectoValidacion.push(adicionalProspecto);
                         }

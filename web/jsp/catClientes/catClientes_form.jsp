@@ -203,7 +203,7 @@
                             var obligatorio = $("#" + etiqueta.replace(" ", "") + "ObligatorioAdicional").val();
                             var idAdicional = $("#" + etiqueta.replace(" ", "") + "IdAdicional").val();
                             var valorAdicional = $("#" + etiqueta.replace(" ", "") + "IdValor").val();
-                            var idCliente = $("#idCliente").val();
+                            var idCliente = $("#idCliente").val()?$("#idCliente").val():0;
                             var adicionalCliente = {idAdicional: idAdicional, idCliente: idCliente, etiqueta: etiqueta, obligatorio: obligatorio, tipo: tipo, valor: valorAdicional};
                             adicionalesClienteValidacion.push(adicionalCliente);
                         }
