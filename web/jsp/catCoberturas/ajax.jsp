@@ -110,7 +110,7 @@
            }
            // Guardamos los nuevos puntos
            if (ciudad != null) {
-               for(int i=0;i< ciudad.length;i+=2)
+               for(int i=0;i< ciudad.length;i++)
                 {
 
                    punto.setIdCobertura(idCobertura);
@@ -140,7 +140,7 @@
            }
            // Guardamos los nuevos puntos
            if (ciudad != null) {
-               for(int i=0;i< ciudad.length;i+=2)
+               for(int i=0;i< ciudad.length;i++)
                 {
 
                    punto.setIdCobertura(idCobertura);
