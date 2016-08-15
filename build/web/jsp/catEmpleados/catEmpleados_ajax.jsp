@@ -68,6 +68,7 @@
     String apellidoPaternoEmpleado = "";
     String apellidoMaternoEmpleado = "";
     String telefono = "";
+    String ciudad = "";
     String emailEmpleado = "";
     String direccion = "";
     int idDispositivoMovilEmpleado = -1;
@@ -95,6 +96,7 @@
      */
     String msgError = "";
     GenericValidator gc = new GenericValidator();
+    ciudad = request.getParameter("ciudad") != null ? new String(request.getParameter("ciudad").getBytes("ISO-8859-1"), "UTF-8") : "";
 
     mode = request.getParameter("mode") != null ? request.getParameter("mode") : "";
     if (mode.equals("2")) { //SI ES 2 ES PARA BORRAR
@@ -143,6 +145,7 @@
         direccion = request.getParameter("direccionEmpleado") != null ? new String(request.getParameter("direccionEmpleado").getBytes("ISO-8859-1"), "UTF-8") : "";
         usuarioEmpleado = request.getParameter("usuarioEmpleado") != null ? new String(request.getParameter("usuarioEmpleado").getBytes("ISO-8859-1"), "UTF-8") : "";
         contrasenaEmpleado = request.getParameter("contrasenaEmpleado") != null ? new String(request.getParameter("contrasenaEmpleado").getBytes("ISO-8859-1"), "UTF-8") : "";
+        ciudad = request.getParameter("ciudad") != null ? new String(request.getParameter("ciudad").getBytes("ISO-8859-1"), "UTF-8") : "";
 
         try {
             idDispositivoMovilEmpleado = Integer.parseInt(request.getParameter("idDispositivoMovilEmpleado"));
@@ -264,6 +267,7 @@
                         datosUsuario.setExtension(extension);
                         datosUsuario.setCelular(celular);
                         datosUsuario.setCorreo(emailEmpleado);
+                        datosUsuario.setCiudad(ciudad);
                     
 
                         //insert datos usuario
@@ -409,6 +413,7 @@
                             datosUsuario.setExtension(extension);
                             datosUsuario.setCelular(celular);
                             datosUsuario.setCorreo(emailEmpleado);
+                            datosUsuario.setCiudad(ciudad);
 
                             //insert datos usuario
                             DatosUsuarioPk datosUsuarioPk = datosUsuarioDaoImpl.insert(datosUsuario);//INSERTAMOS EL REGISTRO DE DATOS USUARIO Y RECUPERAMOS EL OBJETO PARA TENER EL ID ASIGNADO               

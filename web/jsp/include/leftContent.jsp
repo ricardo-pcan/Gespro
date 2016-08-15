@@ -56,7 +56,7 @@
             <a href="" id="idAdministracionLeftContent"><img src="../../images/icon_validaXML.png" alt="Proyectos"/>Proyectos</a>
             <ul>
                 <li><a href="../../jsp/catProyectos/catProyectos.jsp"><img src="../../images/icon_validaXML.png"/>Ver Proyectos</a></li>
-                <li><a href="../../jsp/catProyectos/productos_list.jsp"><img src="../../images/icon_producto.png"/>Productos</a></li>
+                <li><a href="../../jsp/catCoberturas/catCoberturas_list.jsp"><img src="../../images/camion_icono_16.png"/>Cobertura</a></li>
             </ul>	
         </li>
 

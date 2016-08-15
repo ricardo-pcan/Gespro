@@ -51,6 +51,13 @@
                 <li><a href="../../jsp/catConfiguracionCampos/lista.jsp"><img src="../../images/icon_sar_config.png"/>Configuración de campos</a></li>
             </ul>	
         </li>
+        
+        <li>
+            <a href="" id="idAdministracionLeftContent"><img src="../../images/icon_validaXML.png" alt="Proyectos"/>Proyectos</a>
+            <ul>
+                <li><a href="../../jsp/catProyectos/catProyectos.jsp"><img src="../../images/icon_validaXML.png"/>Ver Proyectos</a></li>
+            </ul>	
+        </li>
 
         <li>
             <a id="idCatalogosLeftContent" href="" ><img src="../../images/icon_pages.png" alt="Catálogos"/>Catálogos</a>
@@ -120,7 +127,7 @@
                 <li><a href="../../jsp/mapa/logistica.jsp" id="idPretorianoMovilLeftContentLogistica"><img src="../../images/icon_logistica.png"/>Log&iacute;stica</a></li>
                 <li><a href="../../jsp/catSeguimiento/catSeguimiento_list.jsp"><img src="../../images/icon_seguimiento.png"/>Seguimiento</a></li>
                 <li><a href="../../jsp/catHorarios/catHorarios_list.jsp"><img src="../../images/clock.png"/>Horarios</a></li>
-                <li><a href="../../jsp/catEmpleados/catEmpleados_Registro_list.jsp"><img src="../../images/icon_movimiento.png"/>Bitácora</a></li
+                <li><a href="../../jsp/catEmpleados/catEmpleados_Registro_list.jsp"><img src="../../images/icon_movimiento.png"/>Bitácora</a></li>
             </ul>	
 
         <!--<li>

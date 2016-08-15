@@ -231,7 +231,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                value="${not empty obj.fechaInicio ? obj.fechaInicio : ""}"
                                                data-validation-error-msg="El simbolo es requerido,ingrese uno."
                                                required=""
-                                               placeholder="YYYY/MM/DD"
+                                               placeholder="YYYY-MM-DD"
                                                />
                                     </p>
                                     <br/>
@@ -241,7 +241,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                value="${not empty obj.fechaProgramada ? obj.fechaProgramada : ""}"
                                                data-validation-error-msg="El simbolo es requerido,ingrese uno."
                                                required=""
-                                               placeholder="YYYY/MM/DD"
+                                               placeholder="YYYY-MM-DD"
                                                />
                                     </p>
                                     <br/>
@@ -251,7 +251,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                value="${not empty obj.fechaReal ? obj.fechaReal : ""}"
                                                data-validation-error-msg="El simbolo es requerido,ingrese uno."
                                                required=""
-                                               placeholder="YYYY/MM/DD"
+                                               placeholder="YYYY-MM-DD"
                                                />
                                     </p>
                                     <c:if test="${not empty obj.idCliente }" >
