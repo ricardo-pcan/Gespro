@@ -165,7 +165,7 @@
                             var obligatorio = $("#" + etiqueta.replace(" ", "") + "ObligatorioAdicional").val();
                     var idAdicional = $("#" + etiqueta.replace(" ", "") + "IdAdicional").val();
                     var valorAdicional = $("#" + etiqueta.replace(" ",  "") +  "IdValor").val();
-                    var  idSucursal  =  $("#idEmpresa").val();
+                    var  idSucursal  =  $("#idEmpresa").val()?$("#idEmpresa").val():0;
                     var  adicionalSucursal  =  {idAdicional: idAdicional,  idSucursal: idSucursal,  etiqueta: etiqueta,  obligatorio: obligatorio,  tipo: tipo,  valor: valorAdicional};
                     adicionalesSucursalValidacion.push(adicionalSucursal);
                     }
