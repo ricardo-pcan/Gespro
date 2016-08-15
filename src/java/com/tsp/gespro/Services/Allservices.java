@@ -16,6 +16,7 @@ import com.tsp.gespro.hibernate.dao.ActividadDAO;
 import com.tsp.gespro.hibernate.dao.ProyectoDAO;
 import com.tsp.gespro.hibernate.pojo.Cobertura;
 import com.tsp.gespro.hibernate.pojo.Producto;
+import com.tsp.gespro.hibernate.pojo.Punto;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -143,6 +144,26 @@ public class Allservices {
             session.close(); 
         }  
 
+        return lista; 
+    }
+     public List queryPuntoDAO(String where){  
+        
+            List<Punto> lista = null;  
+            Session session = null;
+
+        try 
+        { 
+            session = HibernateUtil.getSessionFactory().openSession();  
+            String query = "from Punto "+where;
+            System.out.println("Lista punto "+query);
+            lista = session.createQuery(query).list(); 
+            System.out.println("Lista size "+lista.size());
+        }
+        finally 
+        { 
+            session.close(); 
+        }  
+        
         return lista; 
     }
     
