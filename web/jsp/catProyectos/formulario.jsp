@@ -135,9 +135,41 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                         }
                     });   
                 }
+          function eliminarPromotor(idpromotorproyecto){
+            $.ajax({
+                type: "POST",
+                url: "promotor_ajax.jsp",
+                data: {'id':idpromotorproyecto,'option':2},
+                beforeSend: function(objeto){
+                    $("#action_buttons").fadeOut("slow");
+                    $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
+                    $("#ajax_loading").fadeIn("slow");
+                },
+                success: function(datos){
+                    console.log("Datos");
+                    console.log(datos);
+                    if(datos.indexOf("--EXITO-->", 0)>0){
+                       $("#ajax_message").html("Se ha retirado el promotor correctamente correctamente");
+                       $("#ajax_loading").fadeOut("slow");
+                       $("#ajax_message").fadeIn("slow");
+                       apprise('<center><img src=../../images/info.png> <br/>Los datos se guardaron correctamente.</center>',{'animate':true},
+                                function(r){
+                                        javascript:window.location.reload();
+                                        parent.$.fancybox.close();  
+                                });
+                   }else{
+                       $("#ajax_loading").fadeOut("slow");
+                       $("#ajax_message").html("Ocurrió un error al intentar guardar los datos.");
+                       $("#ajax_message").fadeIn("slow");
+                       $("#action_buttons").fadeIn("slow");
+                   }
+                }
+            }); 
+          }
         </script>
     </head>
     <body>
+        <c:set var="usuario" value="${user.getUser()}"/>
         <!--- Inicialización de variables --->
         <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
         <jsp:useBean id="productosModel" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
@@ -172,12 +204,16 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                     <img src="../../images/icon_users.png" alt="icon"/>
                                     ${not empty param.id ? "Editar Proyecto:" : "Nuevo Proyecto"}
                                     ${not empty param.id ? param.id : ""}
+                                    
+                                    ${not empty param.id ? " Creado por: " : ""}
+                                    ${not empty param.id ? usuario.userName : ""}
                                 </span>
                             </div>
                             <br class="clear"/>
                             <form action="" method="post" id="frm_action">
                             <div class="content">
                                     <input type="hidden" id="id" name="id" value="${ not empty obj.idProyecto ? obj.idProyecto :"0"}" />
+                                    <input type="hidden" id="idUser" name="idUser" value="${ not empty usuario.idUsuarios ? usuario.idUsuarios :"0"}" />
                                     <p>
                                         <label>* Nombre:</label><br/>
                                         <input maxlength="45" type="text" id="nombre" name="nombre" style="width:300px"
@@ -282,6 +318,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                             <div class="content">
                                 <form id="frm_promotor" class="has-validation-callback" style="display: none">
                                     <input type="hidden" id="idProyecto" name="idProyecto"  value="${ not empty obj.idProyecto ? obj.idProyecto :"0"}" />
+                                    <input type="hidden" id="option" name="option"  value="1" />
                                     <p>
                                     <label>Asignar Promotor:</label>
                                     <c:set var="whereuser" value="where id_usuarios not in (select p.idUser from Promotorproyecto as p where p.idProyecto = ${obj.idProyecto}) and id_roles = 4"/>
@@ -312,7 +349,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                     <c:set var="usuario" value="${usuariosModel.getById(item.idUser)}"/>
                                                     <tr>
                                                         <td>${usuario.userName}</td>
-                                                        <td>${item.idUser}</td>
+                                                        <td><a onclick="eliminarPromotor('${item.idPromotorproyecto}')"><img src="../../images/icon_cancel.png" alt="editar" class="help" title="Eliminar Promotor"/></a></td>
                                                     </tr>
                                                 </c:forEach>
                                             </tbody>

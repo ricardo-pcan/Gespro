@@ -1,5 +1,5 @@
 <%-- 
-    Document   : catProyectos
+    Document   : proyectos_tasks
     Created on : 07/08/2016, 07:55:43 PM
     Author     : Fabian
 --%>
@@ -27,16 +27,18 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     </head>
     <body>
         <!--- Inicialización de variables --->
-        <jsp:useBean id="proyectos" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
-        <jsp:useBean id="productos" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
-        <jsp:useBean id="clienteModel" class="com.tsp.gespro.hibernate.dao.ClienteDAO"/>
+        <jsp:useBean id="actividad" class="com.tsp.gespro.hibernate.dao.ActividadDAO"/>
+        <jsp:useBean id="productoModel" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
+        <jsp:useBean id="usuariosModel" class="com.tsp.gespro.hibernate.dao.UsuariosDAO"/>"/>
+        <jsp:useBean id="services" class="com.tsp.gespro.Services.Allservices"/>
+        
         <!--- @lista --->
-        <c:set var="lista" value="${proyectos.lista}"/>
+            <c:set var="where" value="where id_proyecto = ${not empty param.idProyecto ? param.idProyecto : 0}"/>
+        <c:set var="lista" value="${services.QueryActividadDAO(where)}"/>
         <!--- @formulario --->
-        <c:set var="formulario" value="formulario.jsp"/> 
+        <c:set var="formulario" value="actividad_form.jsp"/> 
         
         <div class="content_wrapper">
-
             <jsp:include page="../include/header.jsp" flush="true"/>
 
             <jsp:include page="../include/leftContent.jsp"/>
@@ -45,7 +47,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
             <div id="content">
 
                 <div class="inner">
-                    <h1>Administración</h1>
+                    <h1>Proyecto</h1>
                     
                     <div id="ajax_loading" class="alert_info" style="display: none;"></div>
                     <div id="ajax_message" class="alert_warning" style="display: none;"></div>
@@ -58,7 +60,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                         <div class="header">
                             <span>
                                 <img src="../../images/icon_validaXML.png" alt="icon"/>
-                                Proyectos
+                                Actividades
                             </span>
                             <div class="switch" style="width:500px">
                                 <table width="500px" cellpadding="0" cellspacing="0">
@@ -70,8 +72,10 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                             <td class="clear">&nbsp;&nbsp;&nbsp;</td>
                                            
                                             <td>
+                                                <input type="button" id="nuevo" name="nuevo" class="right_switch" value="Regresar" 
+                                                        style="float: right; width: 100px;" onclick="history.back()"/>&nbsp;&nbsp;
                                                 <input type="button" id="nuevo" name="nuevo" class="right_switch" value="Crear Nuevo" 
-                                                        style="float: right; width: 100px;" onclick="javascript:window.location.href='${formulario}'"/>
+                                                        style="float: right; width: 100px;" onclick="javascript:window.location.href='${formulario}?idProyecto=${not empty param.idProyecto ? param.idProyecto : 0}'"/>
                                             </td>                                           
                                         </tr>
                                     </tbody>
@@ -79,39 +83,46 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                             </div>
                         </div>
                         <br class="clear"/>
-                        
                         <div class="content">
                             <form id="form_data" name="form_data" action="" method="post">
                                 <table class="data" width="100%" cellpadding="0" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>ID Proyecto</th>
-                                            <th>Nombre</th>
-                                            <th>Inicio</th>
-                                            <th>Programada</th>
-                                            <th>Real</th>
-                                            <th>Cliente</th>
-                                            <th>Avance %</th>
-                                            <th>Estatus</th>
+                                            <th>Actividas</th>
+                                            <th>descripcion</th>
+                                            <th>Usuario</th>
+                                            <th>Lugar</th>
+                                            <th>Avance</th>
+                                            <th>Tipo</th>
+                                            <th>Realizada</th>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Recibio</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        
                                        <c:forEach items="${lista}" var="item">
                                          <tr>
-                                            <td>${item.idProyecto}</td>
-                                            <td>${item.nombre}</td>
-                                            <td>${item.fechaInicio}</td>
-                                            <td>${item.fechaProgramada}</td>
-                                            <td>${item.fechaReal}</td>
-                                            <c:set var="clientes" value="${clienteModel.getById(item.idCliente)}"/>
-                                            <td>${clientes.nombreComercial}</td>
+                                            <td>${item.actividad}</td>
+                                            <td>${item.descripcion}</td>
+                                            <c:set var="user" value="${usuariosModel.getById(item.idUser)}"/>
+                                            <td>${user.userName}</td>
+                                            <td>${item.idPunto}</td>
                                             <td>${item.avance}</td>
-                                            <td>${item.status == 1 ? "Activo": "Inactivo"}</td>
+                                            <td>${item.tipoActividad == 1 ? "Entrega" : "Actividad"}</td>
+                                            <td>${item.checkin != null ? item.checkin  :"-"}</td>
+                                            <c:set var="producto" value="${productoModel.getById(item.idProducto)}" />
+                                            <td>${producto != null ? producto.nombre: "-"}</td>
+                                            <td>${item.cantidad != null ? (item.cantidad > 0 ? item.cantidad : "-") :"-"}</td>
+                                            <td>${item.recibio != null ? item.recibio  :"-"}</td>
                                             <td>
-                                               <a href="${formulario}?id=${item.idProyecto}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
-                                                &nbsp;&nbsp;
-                                                <a href="proyectos_tasks.jsp?idProyecto=${item.idProyecto}"><img src="../../images/icon_logistica.png" alt="editar" class="help" title="Ver Actividades"/></a>
+                                                <a href="${formulario}?idProyecto=${item.idProyecto}&id=${item.idActividad}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
+                                                <c:if test="${item.checkin == null}">
+                                                    <a href="finish_task.jsp?id=${item.idActividad}&idProyecto=${item.idProyecto}" ><img src="../../images/icon_accept.png" alt="Terminar" class="help" title="Terminar"/></a>
+                                                    <a href="change_progress.jsp?id=${item.idActividad}&idProyecto=${item.idProyecto}" ><img src="../../images/icon_inventario.png" alt="Terminar" class="help" title="Añadir Avance"/></a>
+                                                </c:if>
                                             </td>
                                           </tr>
                                        </c:forEach>
@@ -127,6 +138,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
             </div>
             <!-- Fin de Contenido-->
         </div>
-        
+
     </body>
 </html>
