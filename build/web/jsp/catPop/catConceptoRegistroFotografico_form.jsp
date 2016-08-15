@@ -335,15 +335,8 @@
                     
                     
                     <!--TODO EL CONTENIDO VA AQUÍ-->
-                    <form action="" method="post" id="frm_action">
+                    <form action="" method="post" id="frm_action" class="slick-gallery">
                     <table class="data" width="100%" cellpadding="0" cellspacing="0">
-                                        <!--<div class="header">
-                                            <span>
-                                                <img src="../../images/icon_prospecto.png" alt="icon"/>
-                                                Imágenes del producto
-                                            </span>
-                                        </div>-->
-                        
                         <tr>
                         <%if(conceptoRegistroFotograficosDto2 != null){                            
                             int columna = 0;
@@ -365,7 +358,9 @@
                                     <label><%=registro.getComentario()%></label>
                                     <br/>
                                     <% if (!StringManage.getValidString(registro.getNombreFoto()).equals("")) { %>
-                                    <img src='showImageConcepto.jsp?image=<%=registro.getNombreFoto()%>&rfc=<%=rfcEmpresaMatriz%>' alt="Foto Producto" style="width: 250px">
+                                    <div class="thumbnail">    
+                                        <img src='showImageConcepto.jsp?image=<%=registro.getNombreFoto()%>&rfc=<%=rfcEmpresaMatriz%>' alt="Foto Producto" style="width: 250px">
+                                    </div>
                                     <% } else{ %>
                                         <br/>
                                         <i>&lt;&lt; Sin imágen registrada &gt;&gt;</i>
@@ -398,10 +393,19 @@
             </div>
             <!-- Fin de Contenido-->
         </div>
-
-            <script>
+        <script type="text/javascript" src="../../js/slick-carousel/slick.min.js"></script>
+        <script type="text/javascript" src="../../js/slick-carousel/slick-lightbox.min.js"></script>
+        <script type="text/javascript">
+          $( document ).ready(function() {
             mostrarCalendario();
             $("select.flexselect").flexselect();
+            $('.slick-gallery').slick();
+            $('.slick-gallery').slickLightbox({
+               src: 'src',
+               itemSelector: '.thumbnail img',
+               caption: 'caption'
+            });
+          });
         </script>
     </body>
 </html>

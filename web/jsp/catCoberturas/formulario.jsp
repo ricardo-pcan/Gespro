@@ -158,6 +158,210 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                     });   
                 }
         </script>
+         <script type="text/javascript">
+            
+            var map;
+            var poly;
+                        
+            var directionDisplay;
+            var directionsService;
+            var directionsResult;
+            
+            var markerRoute = [];
+            var global = [];
+            var latLngRoute = [];
+            var stops = [];
+            
+            function initialize() {
+                
+                var rendererOptions = {
+                    draggable: true
+                };
+            
+                directionsService = new google.maps.DirectionsService();
+                directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+                
+                var leon = new google.maps.LatLng(21.123619,-101.680496);
+                var mexico = new google.maps.LatLng(23.634501,-102.552784);
+                var inicio = new google.maps.LatLng(19.433733654546185,-99.13178443908691);
+                var mapOptions = {
+                  zoom: 15,
+                  center: inicio,
+                  mapTypeId: google.maps.MapTypeId.ROADMAP,
+                  draggableCursor:'crosshair'
+                };
+
+                map = new google.maps.Map(document.getElementById('map_canvas'),
+                    mapOptions);
+                
+                map.controls[google.maps.ControlPosition.TOP_RIGHT].push(
+                FullScreenControl(map, 'Pantalla Completa',
+                'Salir Pantalla Completa'));
+                    
+                google.maps.event.addListener(map, 'click', function(event) {
+                    crearMarcadorBasico(event.latLng);
+                });
+                
+                directionsDisplay.setMap(map);
+                
+                
+                
+            }
+        
+            function loadScript() {
+                var script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = 'https://maps.googleapis.com/maps/api/js?v=3&' +
+                    'callback=initialize&key=AIzaSyDzMx9Abj9GxfPeqIvUc_Sh46ZmzIreljQ';
+                document.body.appendChild(script);
+            }
+
+            window.onload = loadScript;
+            var points=[];
+            function puntos() {
+                 
+                 
+                 //valida marcadores
+                 if(markerRoute.length<1){
+                    apprise('Debe agregar minimo 1 marcador al mapa.', {'animate':true});
+                    return;
+                 }
+                 //Valida marcadores;
+                 if(markerRoute.length>1){
+                    apprise('No se pueden agregar mas de 1 punto a la vez.', {'animate':true});
+                    return;
+                 }
+                
+                //Recogemos los puntos.
+                for(var i = 0, marcador; marcador = markerRoute[i]; i ++){
+                    if(marcador.getMap()!=null){
+                       var lat=marcador.getPosition().lat();
+                       var lng=marcador.getPosition().lng();
+                       var pointLocation=lat+","+lng;
+                       var ciudad="Ciudad de México";
+                       $.get( "https://maps.googleapis.com/maps/api/geocode/json?&latlng="+pointLocation, function( data ) {
+                            if(data.status=="OK"){
+                               ciudad=data.results[0].address_components[5].long_name; 
+                            }
+                        });
+
+                       points.push({"ciudad":ciudad,"latitude":lat,"longitude":lng});
+                    }
+                }  
+
+               //Quitamos markers
+                if(markerRoute){
+                    for(var i = 0, marcador; marcador = markerRoute[i]; i ++){
+                        marcador.setMap(null);
+                    }
+                    markerRoute = [];
+                    
+                }
+               
+            };
+
+            function limpiarMapa(){
+                
+                 $("#txt_marcadores_ruta").val("");
+                 $("#txt_recorrido_ruta").val("");
+                 $("#txt_clientes_ruta").val("");
+                 $("#txt_prospectos_ruta").val("");
+                 
+                var rendererOptions = {
+                    draggable: true
+                };
+                directionsDisplay.setMap(null);
+                //directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+                
+                if(markerRoute){
+                    for(var i = 0, marcador; marcador = markerRoute[i]; i ++){
+                        marcador.setMap(null);
+                    }
+                    markerRoute = [];
+                    
+                }
+            
+                $("#txt_direccion").val("");
+            }
+
+            function crearMarcadorBasico(location){
+                //alert(location.lat() +"---" + location.lng());
+                var marker = new google.maps.Marker({
+                    position: location, 
+                    map: map,
+                    
+                });
+                google.maps.event.addListener(marker, 'click', function(event) {
+                    quitarMarcador(event.latLng);
+                });
+                markerRoute.push(marker);
+            }
+        
+            function quitarMarcador(location){
+                for(var i = 0, marcador; marcador = markerRoute[i]; i ++){
+                    if(marcador.getPosition().lat()==location.lat() && marcador.getPosition().lng()==location.lng()){
+                        marcador.setMap(null);
+                    }
+                }
+            }
+            
+            function agregaMarcador(lat, lng, title){
+                var crear = 0;
+                if(global.length > 0){
+                    for(var i = 0, marcador; marcador = global[i]; i ++){
+                        var posicion = marcador.getPosition();
+                        var posicion2 = new google.maps.LatLng(lat,lng);
+                        if(posicion.lat()==posicion2.lat() && posicion.lng()==posicion2.lng()){
+                            crear = 0;
+                            if(marcador.getMap()==null){
+                                marcador.setMap(map);
+                            }else{
+                                marcador.setMap(null);
+                            }
+                        }else{
+                            crear = 1;
+                        }
+                    }
+                }else{
+                    crear = 1;
+                }
+            //crear = 1;
+                if(crear == 1){
+                    var marcadorBasico = creaMarcadorBasico(
+                            lat,
+                            lng,
+                            title
+                           
+                        )
+                    global.push(
+                      marcadorBasico  
+                    );
+                    marcadorBasico.setMap(map);
+                }
+            }
+        
+            function buscarDireccion(){
+                var address = $('#txt_direccion').val();
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ 'address': address}, geocodeResult);
+            }
+        
+            function geocodeResult(results, status) {
+                if (status == 'OK') {
+                    var mapOptions = {
+                        center: results[0].geometry.location,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+                    map.setOptions(mapOptions);
+                    map.fitBounds(results[0].geometry.viewport);
+                    
+                    crearMarcadorBasico(results[0].geometry.location);
+                    
+                } else {
+                    alert("Geocoding no tuvo éxito debido a: " + status);
+                }
+            }
+      </script>
     </head>
     <body>
         <!--- Inicialización de variables --->
@@ -289,7 +493,30 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                     
                             </form>
                         </div>
-                    </div>
+                        <div class="column_right">
+                                <div class="header">
+                                    <span>
+                                        <img src="../../images/icon_logistica.png" alt="icon"/>
+                                        Visor
+                                    </span>
+                                    <div class="switch" style="width:410px">
+
+                                    </div>
+                                </div>
+                                <br class="clear"/>
+                                <div class="content">
+                                    <div id="div_map_tool">
+                                        <input type="text" id="txt_direccion" name="txt_direccion" title="Ingresa la dirección a encontrar" style="width:200px"/>
+                                        <input type="button" onclick="buscarDireccion();" value="Buscar"/>
+                                    </div>
+                                    <input type="button" onclick="puntos();" value="Guardar puntos"/>
+                                    <input type="button" value="Limpiar" onclick="limpiarMapa();"/>
+                                    <div id="map_canvas" style="height: 400px;width: auto">
+                                        <img src="../../images/maps/ajax-loader.gif" alt="Cargando" style="margin: auto;"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     <!--TODO EL CONTENIDO VA AQUÍ-->
 
                 </div>
