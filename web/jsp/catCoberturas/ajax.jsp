@@ -4,6 +4,7 @@
     Author     : gloria
 --%>
 
+<%@page import="java.util.List"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="org.hibernate.HibernateException"%>
@@ -22,6 +23,7 @@
     Integer id = request.getParameter("id") != null ? new Integer(request.getParameter("id")): 0;
     String ciudades=(request.getParameter("ciudades") != null ? new String(request.getParameter("ciudades")) : "" );
     String guardarLugares=(request.getParameter("guardarLugares") != null ? new String(request.getParameter("guardarLugares")) : "" );
+    String guardarPuntosCliente=(request.getParameter("guardarPuntosCliente") != null ? new String(request.getParameter("guardarPuntosCliente")) : "" );
     String longitudes=(request.getParameter("longitudes") != null ? new String(request.getParameter("longitudes").getBytes("ISO-8859-1"),"UTF-8") : "" );
     String latitudes=(request.getParameter("latitudes") != null ? new String(request.getParameter("latitudes").getBytes("ISO-8859-1"),"UTF-8") : "" );
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -82,7 +84,28 @@
                puntoDao.guardar(punto);
             }
        }
-       status=false;
+       if(idCobertura!=0 && guardarPuntosCliente.equals("1") ){
+           int countPoints=ciudades.length();
+           String[] ciudad = request.getParameterValues("punto_cliente_nombre[]");
+           System.out.println(ciudad);
+           String[] longitud= request.getParameterValues("punto_cliente_longitud[]");
+           String[] latitud = request.getParameterValues("punto_cliente_latitud[]");
+           Punto punto= new Punto();
+           PuntoDAO puntoDao = new PuntoDAO();
+           if(id!=0){
+               idCobertura=id;
+           }
+           for(int i=0;i< ciudad.length;i+=2)
+            {
+               
+               punto.setIdCobertura(idCobertura);
+               punto.setLugar(ciudad[i].toString());
+               punto.setLatitud(latitud[i].toString());
+               punto.setLongitud(longitud[i].toString());
+               punto.setDescripcion("");
+               puntoDao.guardar(punto);
+            }
+       }
        json = "{ status:" + (status ? "true":"false") +", message:'" + message + "'}";
        out.print(json);
            
