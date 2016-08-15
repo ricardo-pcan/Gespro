@@ -4,6 +4,7 @@
     Author     : gloria
 --%>
 
+<%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="java.util.List"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
@@ -71,6 +72,12 @@
            String[] latitud = latitudes.substring(0,countPoints).split(",");
            Punto punto= new Punto();
            PuntoDAO puntoDao = new PuntoDAO();
+           //Eliminar los puntos anteriores de esta cobertura
+           List<Punto> puntoList = new Allservices().queryPuntoDAO("where id_cobertura = "+ idCobertura);
+           for(Punto puntoEliminar:puntoList) {
+               puntoDao.eliminar(puntoEliminar.getIdPunto());
+           }
+           // Guardamos los nuevos puntos
            if(id!=0){
                idCobertura=id;
            }
@@ -96,6 +103,12 @@
            if(id!=0){
                idCobertura=id;
            }
+           //Eliminar los puntos anteriores de esta cobertura
+           List<Punto> puntoList = new Allservices().queryPuntoDAO("where id_cobertura = "+ idCobertura);
+           for(Punto puntoEliminar:puntoList) {
+               puntoDao.eliminar(puntoEliminar.getIdPunto());
+           }
+           // Guardamos los nuevos puntos
            if (ciudad != null) {
                for(int i=0;i< ciudad.length;i+=2)
                 {
@@ -120,6 +133,12 @@
            if(id!=0){
                idCobertura=id;
            }
+           //Eliminar los puntos anteriores de esta cobertura
+           List<Punto> puntoList = new Allservices().queryPuntoDAO("where id_cobertura = "+ idCobertura);
+           for(Punto puntoEliminar:puntoList) {
+               puntoDao.eliminar(puntoEliminar.getIdPunto());
+           }
+           // Guardamos los nuevos puntos
            if (ciudad != null) {
                for(int i=0;i< ciudad.length;i+=2)
                 {
