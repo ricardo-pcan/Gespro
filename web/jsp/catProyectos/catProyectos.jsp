@@ -132,7 +132,7 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
                                                 &nbsp;&nbsp;
                                                 <a href="proyectos_tasks.jsp?idProyecto=${item.idProyecto}"><img src="../../images/icon_logistica.png" alt="editar" class="help" title="Ver Actividades"/></a>
                                                 &nbsp;&nbsp;
-                                                <a href="reparto.jsp?idProyecto=${item.idProyecto}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Ver Reparto"/></a>
+                                                <a href="reparto.jsp?idProyecto=${item.idProyecto}"><img src="../../images/clipboard_report_bar_16_ns.png" alt="editar" class="help" title="Ver Reparto"/></a>
                                              </td>
                                           </tr>
                                        </c:forEach>
