@@ -233,7 +233,8 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                                 <c:forEach items="${clientes}" var="cliente">
                                                     <option value="${cliente.idCliente}">${cliente.nombreComercial}</option>
                                                 </c:forEach>
-                                            </select>
+                                            </select><br>
+                                            <button id="boton-agregar-punto-cliente" type="button">Agregar zona de cliente</button>
                                         </p>
                                         <br/>
                                     </div>
@@ -249,6 +250,15 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                             <select id="selector-ciudad" name="selector_ciudad" style="width:300px;">
                                                 <option value="0">Seleccione una ciudad</option>
                                             </select>
+                                        </p>
+                                        <br/>
+                                    </div>
+                                    <div ud="contenedor-puntos">
+                                        <p>
+                                            <label>Zona:</label><br/>
+                                            <input maxlength="45" type="text" class="punto" name="puntoNombre[]" readonly=""/>
+                                            <input maxlength="45" type="text" class="punto" name="puntoLatitud[]" readonly=""/>
+                                            <input maxlength="45" type="text" class="punto" name="puntoLongitud[]" readonly=""/>
                                         </p>
                                         <br/>
                                     </div>
@@ -293,6 +303,8 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
             $('input[name=punto]').change(function() {
                 var tipoDePuntos = $(this).val();
                 seleccionarTipoPunto( tipoDePuntos );
+            });
+            $('#boton-agregar-punto-cliente').change(function() {
             });
         });
         </script>
