@@ -101,12 +101,20 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                 ocultarTipoDePuntos();
                 if (tipoDePuntos == "cliente") {
                     $("#contenedor-cliente").show("slow");
+                    $("#guardarPuntosCliente").val(1);
+                    $("#guardarPuntosCiudad").val(0);
+                    $("#guardarLugares").val(0);
                 }
                 if (tipoDePuntos == "ciudad") {
                     $("#contenedor-pais").show("slow");
+                    $("#guardarPuntosCiudad").val(1);
+                    $("#guardarPuntosCliente").val(0);
+                    $("#guardarLugares").val(0);
                 }
                 if (tipoDePuntos == "lugar") {
-                   $("#guardarLugares").val(1);
+                    $("#guardarLugares").val(1);
+                    $("#guardarPuntosCiudad").val(0);
+                    $("#guardarPuntosCliente").val(0);
                 }
             }
             
@@ -118,11 +126,11 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
             
             function agregarZonaDelCliente( idCliente ) {
                  $.getJSON( "/Gespro/jsp/catCoberturas/ajax_cliente_punto.jsp?id="+idCliente, function( data ) {
-                    $("#puntos").append(
+                    $("#puntos-cliente").append(
                             '<div class="punto">'+
-                                '<input maxlength="45" type="text" class="punto" name="puntoNombre[]" value="'+data['ciudad']+'" readonly=""/>'+
-                                '<input maxlength="45" type="text" class="punto" name="puntoLongitud[]" value="'+data['longitud']+'" readonly=""/>'+
-                                '<input maxlength="45" type="text" class="punto" name="puntoLatitud[]" value="'+data['latitud']+'" readonly=""/>'+
+                                '<input maxlength="45" type="text" class="punto" name="punto_cliente_nombre[]" value="'+data['ciudad']+'" readonly=""/>'+
+                                '<input maxlength="45" type="text" class="punto" name="punto_cliente_longitud[]" value="'+data['longitud']+'" readonly=""/>'+
+                                '<input maxlength="45" type="text" class="punto" name="punto_cliente_latitud[]" value="'+data['latitud']+'" readonly=""/>'+
                             '</div>'
                     );
                 });
@@ -264,7 +272,7 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                
             };
 
-            function limpiarMapa(){
+            function limpiarMapa() {
                 
                  $("#txt_marcadores_ruta").val("");
                  $("#txt_recorrido_ruta").val("");
@@ -492,6 +500,8 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                     <input type="hidden" id="longitudes" name="longitudes" value="0" />
                                     <input type="hidden" id="latitudes" name="latitudes" value="0" />
                                     <input type="hidden" id="guardarLugares" name="guardarLugares" value="0" />
+                                    <input type="hidden" id="guardarPuntosCliente" name="guardarPuntosCliente" value="0" />
+                                    <input type="hidden" id="guardarPuntosCiudad" name="guardarPuntosCiudad" value="0" />
                                     <p>
                                         <label>* Nombre:</label><br/>
                                         <input maxlength="45" type="text" id="nombre" name="nombre" style="width:300px"
@@ -542,6 +552,12 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                             <button id="boton-agregar-punto-cliente" type="button">Agregar zona del cliente</button>
                                         </p>
                                         <br/>
+                                        <p>
+                                            <label>Zona:</label><br/>
+                                        <div id="puntos-cliente">
+                                        </div>
+                                        </p>
+                                        <br/>
                                     </div>
                                     <div id="contenedor-pais">
                                         <p>
@@ -555,19 +571,6 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                             <select id="selector-ciudad" name="selector_ciudad" style="width:300px;">
                                                 <option value="0">Seleccione una ciudad</option>
                                             </select>
-                                        </p>
-                                        <br/>
-                                    </div>
-                                    <div ud="contenedor-puntos">
-                                        <p>
-                                            <label>Zona:</label><br/>
-                                        <div id="puntos">
-                                            <div class="punto">
-                                                <input maxlength="45" type="text" class="punto" name="puntoNombre[]" readonly=""/>
-                                                <input maxlength="45" type="text" class="punto" name="puntoLongitud[]" readonly=""/>
-                                                <input maxlength="45" type="text" class="punto" name="puntoLatitud[]" readonly=""/>
-                                            </div>
-                                        </div>
                                         </p>
                                         <br/>
                                     </div>
