@@ -136,6 +136,16 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                 });
             }
             
+            function agregarZonaCiudad( ciudad ) {
+                $("#puntos-ciudad").append(
+                        '<div class="punto">'+
+                            '<input maxlength="45" type="text" class="punto" name="punto_ciudad_nombre[]" value="'+ciudad+'" readonly=""/>'+
+                            '<input maxlength="45" type="hidden" class="punto" name="punto_ciudad_longitud[]" value="0" readonly=""/>'+
+                            '<input maxlength="45" type="hidden" class="punto" name="punto_ciudad_latitud[]" value="0" readonly=""/>'+
+                        '</div>'
+                );
+            }
+            
             function guardar(){ 
                     $.ajax({
                         type: "POST",
@@ -573,6 +583,14 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                             </select>
                                         </p>
                                         <br/>
+                                        <button id="boton-agregar-punto-ciudad" type="button">Agregar zona de la ciudad</button>
+                                        <br/>
+                                        <p>
+                                            <label>Zona:</label><br/>
+                                        <div id="puntos-ciudad">
+                                        </div>
+                                        </p>
+                                        <br/>
                                     </div>
                                     <br/>
                                     <div id="action_buttons">
@@ -642,6 +660,9 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
             });
             $('#boton-agregar-punto-cliente').click(function() {
                 agregarZonaDelCliente( $( "#idCliente" ).val() );
+            });
+            $('#boton-agregar-punto-ciudad').click(function() {
+                agregarZonaCiudad( $("#selector-ciudad").val() );
             });
         });
         </script>
