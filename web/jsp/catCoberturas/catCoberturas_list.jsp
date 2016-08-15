@@ -42,7 +42,7 @@ List<Cobertura> coberturas = allservices.queryCobertura(filtroBusqueda);
     <body>
         <!--- Inicialización de variables --->
         <jsp:useBean id="productos" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
-        <jsp:useBean id="clienteModel" class="com.tsp.gespro.hibernate.dao.ClienteDAO"/>
+        <jsp:useBean id="proyectoModel" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
         <!--- @formulario --->
         <c:set var="formulario" value="formulario.jsp"/> 
         
@@ -77,7 +77,7 @@ List<Cobertura> coberturas = allservices.queryCobertura(filtroBusqueda);
                                         <tr>
                                             <td>
                                                 <div id="search">
-                                                <form action="catProyectos.jsp" id="search_form" name="search_form" method="get">                                                                                                                                                
+                                                <form action="catCoberturas_list.jsp" id="search_form" name="search_form" method="get">                                                                                                                                                
 
                                                         <input type="text" id="q" name="q" title="Buscar por nombre" class="" style="width: 70%; float: left; "
                                                                value="<%=buscar%>"/>
@@ -104,31 +104,20 @@ List<Cobertura> coberturas = allservices.queryCobertura(filtroBusqueda);
                                 <table class="data" width="100%" cellpadding="0" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>ID Proyecto</th>
+                                            <th>ID Cobertura</th>
                                             <th>Nombre</th>
-                                            <th>Inicio</th>
-                                            <th>Programada</th>
-                                            <th>Real</th>
-                                            <th>Cliente</th>
-                                            <th>Avance %</th>
-                                            <th>Estatus</th>
+                                            <th>Proyecto</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <c:forEach items="<%=coberturas%>" var="item">
                                          <tr>
-                                            <td>${item.idProyecto}</td>
+                                            <td>${item.idCobertura}</td>
                                             <td>${item.nombre}</td>
-                                            <td>${item.fechaInicio}</td>
-                                            <td>${item.fechaProgramada}</td>
-                                            <td>${item.fechaReal}</td>
-                                            <c:set var="clientes" value="${clienteModel.getById(item.idCliente)}"/>
-                                            <td>${clientes.nombreComercial}</td>
-                                            <td>${item.avance}</td>
-                                            <td>${item.status == 1 ? "Activo": "Inactivo"}</td>
+                                            <td>${proyectoModel.getById(item.idProyecto).nombre}</td>
                                             <td>
-                                               <a href="${formulario}?id=${item.idProyecto}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
+                                               <a href="${formulario}?id=${item.idCobertura}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
                                                 &nbsp;&nbsp;
                                             </td>
                                           </tr>
@@ -136,12 +125,6 @@ List<Cobertura> coberturas = allservices.queryCobertura(filtroBusqueda);
                                     </tbody>
                                 </table>
                             </form>
-                             <!-- INCLUDE OPCIONES DE EXPORTACIÓN-->
-                            <jsp:include page="../include/reportExportOptions.jsp" flush="true">
-                                <jsp:param name="idReport" value="<%= ReportBO.PROYECTO_REPORT %>" />
-                                <jsp:param name="parametrosCustom" value="<%= filtroBusquedaEncoded %>" />
-                            </jsp:include>
-                            <!-- FIN INCLUDE OPCIONES DE EXPORTACIÓN-->
                         </div>
                     </div>
 
