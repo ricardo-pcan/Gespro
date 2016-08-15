@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 14/08/2016 06:44:07 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="com.tsp.gespro.hibernate.pojo.Punto" table="punto" catalog="gespro">
+        <id name="idPunto" type="java.lang.Integer">
+            <column name="id_punto" />
+            <generator class="identity" />
+        </id>
+        <property name="idCobertura" type="java.lang.Integer">
+            <column name="id_cobertura" />
+        </property>
+        <property name="lugar" type="string">
+            <column name="lugar" not-null="true" />
+        </property>
+        <property name="longitud" type="string">
+            <column name="longitud" not-null="true" />
+        </property>
+        <property name="latitud" type="string">
+            <column name="latitud" not-null="true" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="65535" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
