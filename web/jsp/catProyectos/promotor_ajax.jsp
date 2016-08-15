@@ -18,10 +18,13 @@
     PromotorproyectoDAO proyecto = new PromotorproyectoDAO();
     // Si el id viene que el request parsearlo a integer.
     Integer id = request.getParameter("id") != null ? new Integer(request.getParameter("id")): 0;
+    Integer option = request.getParameter("option") != null ? new Integer(request.getParameter("option")): 0;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     String message = "";
     String json = "";
     boolean status = false;
+    if(option==1){
+       
     
     try{
         // Setear los datos que vienen en el request a un objeto de el tipo
@@ -51,5 +54,12 @@ obj.setIdUser(request.getParameter("idUsuario") != null ? Integer.parseInt(reque
        }
        json = "{ status:" + (status ? "true":"false") +", message:'" + message + "'}";
        out.print(json);
+    }
+    if(option==2){
+        proyecto.eliminar(id);
+        
+       json = "{ status:true, message:'<--EXITO-->" + "Se guardó correctamente.'}";
+       out.print(json);
+    }
            
 %>

@@ -130,6 +130,7 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
                                             <td>
                                                <a href="${formulario}?id=${item.idProyecto}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
                                                 &nbsp;&nbsp;
+                                                <a href="proyectos_tasks.jsp?idProyecto=${item.idProyecto}"><img src="../../images/icon_logistica.png" alt="editar" class="help" title="Ver Actividades"/></a>
                                             </td>
                                           </tr>
                                        </c:forEach>
