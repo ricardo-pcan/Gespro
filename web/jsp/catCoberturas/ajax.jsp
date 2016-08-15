@@ -84,6 +84,6 @@
        }
        status=false;
        json = "{ status:" + (status ? "true":"false") +", message:'" + message + "'}";
-//       out.print(json);
+       out.print(json);
            
 %>
