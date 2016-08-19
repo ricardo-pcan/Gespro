@@ -14,7 +14,7 @@
 <jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 <%
     // Crear objeto que almacenará los datos a actulizar de el usuario.
-    Proyecto obj= new Proyecto();
+    Proyecto obj;
     ProyectoDAO proyecto = new ProyectoDAO();
     // Si el id viene que el request parsearlo a integer.
     Integer id = request.getParameter("id") != null ? new Integer(request.getParameter("id")): 0;
@@ -22,6 +22,11 @@
     String message = "";
     String json = "";
     boolean status = false;
+    if(id != 0){
+        obj = proyecto.getById(id);
+    }else{
+        obj= new Proyecto();
+    }
     
     try{
         // Setear los datos que vienen en el request a un objeto de el tipo
@@ -33,6 +38,7 @@
         obj.setIdCliente(request.getParameter("idCliente") != null ? Integer.parseInt(request.getParameter("idCliente")): 0);
         obj.setAvance(request.getParameter("avance") != null ? Float.parseFloat(request.getParameter("avance")): 0);
         obj.setStatus(request.getParameter("status") != null ? 1 : 0);
+        obj.setIdPromotor(3);
 
     }catch(Exception ex){
         message = "<--ERROR1-->" + ex.getMessage();
@@ -44,7 +50,6 @@
                message = "<--ERROR-->" + "Simbolo y nombre son obligatorios.";
            }else{
             if(id!=0){
-                obj.setIdProyecto(id);
                 proyecto.actualizar(obj);
                 message = "<--EXITO-->" +"La actualización fue exitosa.";
                 status = true;
