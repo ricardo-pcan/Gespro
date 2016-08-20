@@ -4,6 +4,8 @@
     Author     : Fabian
 --%>
 
+<%@page import="com.tsp.gespro.hibernate.pojo.Punto"%>
+<%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="com.tsp.gespro.hibernate.dao.ProyectoDAO"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
 <%@page import="java.util.List"%>
@@ -36,6 +38,8 @@ try {
 }
 List<Proyecto> proyectoList = new ProyectoDAO().lista();
 Cobertura cobertura = new CoberturaDAO().getById(id);
+Allservices allservices = new Allservices();
+List<Punto> puntosList = allservices.queryPuntoDAO("where id_cobertura = " + id);
 %>
 <!DOCTYPE html>
 <html>
@@ -101,47 +105,48 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                 ocultarTipoDePuntos();
                 if (tipoDePuntos == "cliente") {
                     $("#contenedor-cliente").show("slow");
-                    $("#guardarPuntosCliente").val(1);
-                    $("#guardarPuntosCiudad").val(0);
                     $("#guardarLugares").val(0);
                 }
                 if (tipoDePuntos == "ciudad") {
                     $("#contenedor-pais").show("slow");
-                    $("#guardarPuntosCiudad").val(1);
-                    $("#guardarPuntosCliente").val(0);
                     $("#guardarLugares").val(0);
                 }
                 if (tipoDePuntos == "lugar") {
                     $("#guardarLugares").val(1);
-                    $("#guardarPuntosCiudad").val(0);
-                    $("#guardarPuntosCliente").val(0);
                 }
             }
             
             function ocultarTipoDePuntos(){
                 $("#contenedor-cliente").hide("slow");
                 $("#contenedor-pais").hide("slow");
-                $("#ciudades").val(0);
             }
             
             function agregarZonaDelCliente( idCliente ) {
                  $.getJSON( "/Gespro/jsp/catCoberturas/ajax_cliente_punto.jsp?id="+idCliente, function( data ) {
-                    $("#puntos-cliente").append(
+                    $("#puntos").append(
                             '<div class="punto">'+
-                                '<input maxlength="45" type="text" class="punto" name="punto_cliente_nombre[]" value="'+data['ciudad']+'" readonly=""/>'+
-                                '<input maxlength="45" type="text" class="punto" name="punto_cliente_longitud[]" value="'+data['longitud']+'" readonly=""/>'+
-                                '<input maxlength="45" type="text" class="punto" name="punto_cliente_latitud[]" value="'+data['latitud']+'" readonly=""/>'+
+                                '<input type="hidden" class="punto" name="punto_id[]" value="0" readonly=""/>'+
+                                '<input type="text" class="punto" name="punto_nombre[]" value="'+data['ciudad']+'" readonly=""/>'+
+                                '<input type="text" class="punto" name="punto_longitud[]" value="'+data['longitud']+'" readonly=""/>'+
+                                '<input type="text" class="punto" name="punto_latitud[]" value="'+data['latitud']+'" readonly=""/>'+
+                                '<input type="hidden" class="punto" name="punto_tipo[]" value="1" readonly=""/>'+
+                                '<button class="boton-eliminar-punto">Eliminar</button>'+
+                                '<br>'+
                             '</div>'
                     );
                 });
             }
             
             function agregarZonaCiudad( ciudad ) {
-                $("#puntos-ciudad").append(
+                $("#puntos").append(
                         '<div class="punto">'+
-                            '<input maxlength="45" type="text" class="punto" name="punto_ciudad_nombre[]" value="'+ciudad+'" readonly=""/>'+
-                            '<input maxlength="45" type="hidden" class="punto" name="punto_ciudad_longitud[]" value="0" readonly=""/>'+
-                            '<input maxlength="45" type="hidden" class="punto" name="punto_ciudad_latitud[]" value="0" readonly=""/>'+
+                            '<input type="hidden" class="punto" name="punto_id[]" value="0" readonly=""/>'+
+                            '<input type="text" class="punto" name="punto_nombre[]" value="'+ciudad+'" readonly=""/>'+
+                            '<input type="text" class="punto" name="punto_longitud[]" value="0" readonly=""/>'+
+                            '<input type="text" class="punto" name="punto_latitud[]" value="0" readonly=""/>'+
+                            '<input type="hidden" class="punto" name="punto_tipo[]" value="2" readonly=""/>'+
+                            '<button class="boton-eliminar-punto">Eliminar</button>'+
+                            '<br>'+
                         '</div>'
                 );
             }
@@ -234,10 +239,6 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
             window.onload = loadScript;
             
            function puntos() {
-                 var ciudades="";
-                 var longitudes="";
-                 var latitudes="";
-                 
                  //valida marcadores
                  if(markerRoute.length<1){
                     apprise('Debe agregar minimo 1 marcador al mapa.', {'animate':true});
@@ -260,15 +261,19 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                             if(data.status=="OK"){
                                ciudad=data.results[0].address_components[5].long_name; 
                             }
-                        });
-                       ciudades+=ciudad+",";
-                       longitudes+=lng+",";
-                       latitudes+=lat+",";
+                       });
+                       $("#puntos").append(
+                            '<div class="punto">'+
+                                '<input type="hidden" class="punto" name="punto_id[]" value="0" readonly=""/>'+
+                                '<input type="text" class="punto" name="punto_nombre[]" value="'+ciudad+'" readonly=""/>'+
+                                '<input type="text" class="punto" name="punto_longitud[]" value="'+lng+'" readonly=""/>'+
+                                '<input type="text" class="punto" name="punto_latitud[]" value="'+lat+'" readonly=""/>'+
+                                '<input type="hidden" class="punto" name="punto_tipo[]" value="3" readonly=""/>'+
+                                '<button class="boton-eliminar-punto">Eliminar</button>'+
+                            '</div>'
+                       );
                     }
                 }
-                $("#ciudades").val(ciudades);
-                $("#longitudes").val(longitudes);
-                $("#latitudes").val(latitudes);
                 apprise("Los puntos se guardaran cuando guardes la cobertura.",{'info':true, 'animate':true});
                 
                //Quitamos markers
@@ -506,12 +511,6 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                             <form action="" method="post" id="frm_action">
                             <div class="content">
                                     <input type="hidden" id="id" name="id" value="${ not empty obj.idCobertura ? obj.idCobertura :"0"}" />
-                                    <input type="hidden" id="ciudades" name="ciudades" value="0" />
-                                    <input type="hidden" id="longitudes" name="longitudes" value="0" />
-                                    <input type="hidden" id="latitudes" name="latitudes" value="0" />
-                                    <input type="hidden" id="guardarLugares" name="guardarLugares" value="0" />
-                                    <input type="hidden" id="guardarPuntosCliente" name="guardarPuntosCliente" value="0" />
-                                    <input type="hidden" id="guardarPuntosCiudad" name="guardarPuntosCiudad" value="0" />
                                     <p>
                                         <label>* Nombre:</label><br/>
                                         <input maxlength="45" type="text" id="nombre" name="nombre" style="width:300px"
@@ -521,24 +520,6 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                                data-validation-error-msg="El nombre debe tener de 1 a 45 caracteres."
                                                required
                                                />
-                                    </p>
-                                    <br/>                                
-                                    <p>
-                                        <label>Proyecto:</label><br/>
-                                        <select id="selector-proyecto" name="proyecto_id" style="width:300px;">
-                                            <option value="0">Seleccione un proyecto</option>
-                                            <%
-                                            for(Proyecto proyecto:proyectoList) {
-                                                String selected = "";
-                                                if( cobertura != null && cobertura.getIdProyecto() == proyecto.getIdProyecto()){
-                                                    selected = "selected";
-                                                }
-                                                %>
-                                                <option value="<%=proyecto.getIdProyecto()%>" <%=selected%> > <%=proyecto.getNombre()%> </option>
-                                                <%  
-                                            }
-                                            %>
-                                        </select>
                                     </p>
                                     <br/>
                                     <p>
@@ -559,13 +540,6 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                                     <option value="${cliente.idCliente}">${cliente.nombreComercial}</option>
                                                 </c:forEach>
                                             </select><br>
-                                            <button id="boton-agregar-punto-cliente" type="button">Agregar zona del cliente</button>
-                                        </p>
-                                        <br/>
-                                        <p>
-                                            <label>Zona:</label><br/>
-                                        <div id="puntos-cliente">
-                                        </div>
                                         </p>
                                         <br/>
                                     </div>
@@ -583,16 +557,27 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                                             </select>
                                         </p>
                                         <br/>
-                                        <button id="boton-agregar-punto-ciudad" type="button">Agregar zona de la ciudad</button>
-                                        <br/>
-                                        <p>
-                                            <label>Zona:</label><br/>
-                                        <div id="puntos-ciudad">
-                                        </div>
-                                        </p>
-                                        <br/>
                                     </div>
                                     <br/>
+                                    <button id="boton-agregar-zona" type="button">Agregar zona</button>
+                                    <br/>
+                                    <br/>
+                                    <p>
+                                        <label>Zona:</label><br/>
+                                        <div id="puntos">
+                                            <c:forEach items="<%=puntosList%>" var="punto">
+                                                <div class="punto">
+                                                    <input type="hidden" class="punto" name="punto_id[]" value="${punto.idPunto}" readonly=""/>
+                                                    <input type="text" class="punto" name="punto_nombre[]" value="${punto.lugar}" readonly=""/>
+                                                    <input type="text" class="punto" name="punto_longitud[]" value="${punto.longitud}" readonly=""/>
+                                                    <input type="text" class="punto" name="punto_latitud[]" value="${punto.latitud}" readonly=""/>
+                                                    <input type="hidden" class="punto" name="punto_tipo[]" value="${punto.tipo}" readonly=""/>
+                                                    <button class="boton-eliminar-punto">Eliminar</button>
+                                                </div>
+                                                <br>
+                                            </c:forEach>
+                                        </div>
+                                    </p>
                                     <div id="action_buttons">
                                         <p>
                                             <input type="submit" id="enviar" value="Guardar" class="btn"/>
@@ -658,11 +643,17 @@ Cobertura cobertura = new CoberturaDAO().getById(id);
                 var tipoDePuntos = $(this).val();
                 seleccionarTipoPunto( tipoDePuntos );
             });
-            $('#boton-agregar-punto-cliente').click(function() {
-                agregarZonaDelCliente( $( "#idCliente" ).val() );
+            $('#boton-agregar-zona').click(function() {
+                var tipoDePunto = $("input[type='radio'][name='punto']:checked").val();
+                if ( tipoDePunto == "cliente" ) {
+                    agregarZonaDelCliente( $( "#idCliente" ).val() );
+                }
+                if ( tipoDePunto == "ciudad" ) {
+                    agregarZonaCiudad( $("#selector-ciudad").val() );
+                }
             });
-            $('#boton-agregar-punto-ciudad').click(function() {
-                agregarZonaCiudad( $("#selector-ciudad").val() );
+            $('.boton-eliminar-punto').click(function() {
+                $(this).parent().remove();
             });
         });
         </script>

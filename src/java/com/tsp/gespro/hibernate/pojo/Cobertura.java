@@ -1,5 +1,5 @@
 package com.tsp.gespro.hibernate.pojo;
-// Generated 14/08/2016 01:56:19 PM by Hibernate Tools 3.6.0
+// Generated 19/08/2016 06:34:39 PM by Hibernate Tools 3.6.0
 
 
 
@@ -10,18 +10,12 @@ public class Cobertura  implements java.io.Serializable {
 
 
      private Integer idCobertura;
-     private int idProyecto;
      private String nombre;
 
     public Cobertura() {
     }
 
-	
-    public Cobertura(int idProyecto) {
-        this.idProyecto = idProyecto;
-    }
-    public Cobertura(int idProyecto, String nombre) {
-       this.idProyecto = idProyecto;
+    public Cobertura(String nombre) {
        this.nombre = nombre;
     }
    
@@ -31,13 +25,6 @@ public class Cobertura  implements java.io.Serializable {
     
     public void setIdCobertura(Integer idCobertura) {
         this.idCobertura = idCobertura;
-    }
-    public int getIdProyecto() {
-        return this.idProyecto;
-    }
-    
-    public void setIdProyecto(int idProyecto) {
-        this.idProyecto = idProyecto;
     }
     public String getNombre() {
         return this.nombre;

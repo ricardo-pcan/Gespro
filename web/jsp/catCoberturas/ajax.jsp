@@ -22,13 +22,6 @@
     CoberturaDAO coberturaDAO = new CoberturaDAO();
     // Si el id viene que el request parsearlo a integer.
     Integer id = request.getParameter("id") != null ? new Integer(request.getParameter("id")): 0;
-    String ciudades=(request.getParameter("ciudades") != null ? new String(request.getParameter("ciudades")) : "" );
-    String guardarLugares=(request.getParameter("guardarLugares") != null ? new String(request.getParameter("guardarLugares")) : "" );
-    String guardarPuntosCliente=(request.getParameter("guardarPuntosCliente") != null ? new String(request.getParameter("guardarPuntosCliente")) : "" );
-    String guardarPuntosCiudad=(request.getParameter("guardarPuntosCiudad") != null ? new String(request.getParameter("guardarPuntosCiudad")) : "" );
-    String longitudes=(request.getParameter("longitudes") != null ? new String(request.getParameter("longitudes").getBytes("ISO-8859-1"),"UTF-8") : "" );
-    String latitudes=(request.getParameter("latitudes") != null ? new String(request.getParameter("latitudes").getBytes("ISO-8859-1"),"UTF-8") : "" );
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     String message = "";
     String json = "";
     boolean status = false;
@@ -37,7 +30,6 @@
         // Setear los datos que vienen en el request a un objeto de el tipo
         // UsuarioMonitor para poder actulizarlos o crearlos.
         cobertura.setNombre(request.getParameter("nombre") != null ? new String(request.getParameter("nombre").getBytes("ISO-8859-1"), "UTF-8"): "");
-        cobertura.setIdProyecto(request.getParameter("proyecto_id") != null ? Integer.parseInt(request.getParameter("proyecto_id")): 0);
 
     }catch(Exception ex){
         message = "<--ERROR1-->" + ex.getMessage();
@@ -64,40 +56,11 @@
            message = "<--ERROR-->" + "Ocurrió un error al actualizar." + e.getMessage();
        }
        
-
-       if(ciudades!="" && latitudes!="" && longitudes != "" && idCobertura!=0 && guardarLugares.equals("1") ){
-           int countPoints=ciudades.length();
-           String[] ciudad = ciudades.substring(0,countPoints).split(",");
-           String[] longitud= longitudes.substring(0,countPoints).split(",");
-           String[] latitud = latitudes.substring(0,countPoints).split(",");
-           Punto punto= new Punto();
-           PuntoDAO puntoDao = new PuntoDAO();
-           //Eliminar los puntos anteriores de esta cobertura
-           List<Punto> puntoList = new Allservices().queryPuntoDAO("where id_cobertura = "+ idCobertura);
-           for(Punto puntoEliminar:puntoList) {
-               puntoDao.eliminar(puntoEliminar.getIdPunto());
-           }
-           // Guardamos los nuevos puntos
-           if(id!=0){
-               idCobertura=id;
-           }
-           for(int i=0;i< ciudad.length;i+=2)
-            {
-               
-               punto.setIdCobertura(idCobertura);
-               punto.setLugar(ciudad[i].toString());
-               punto.setLatitud(latitud[i].toString());
-               punto.setLongitud(longitud[i].toString());
-               punto.setDescripcion("");
-               puntoDao.guardar(punto);
-            }
-       }
-       if(idCobertura!=0 && guardarPuntosCliente.equals("1") ){
-           int countPoints=ciudades.length();
-           String[] ciudad = request.getParameterValues("punto_cliente_nombre[]");
-           System.out.println(ciudad);
-           String[] longitud= request.getParameterValues("punto_cliente_longitud[]");
-           String[] latitud = request.getParameterValues("punto_cliente_latitud[]");
+       if (idCobertura!=0) {
+           String[] lugar = request.getParameterValues("punto_nombre[]");
+           String[] longitud= request.getParameterValues("punto_longitud[]");
+           String[] latitud = request.getParameterValues("punto_latitud[]");
+           String[] tipo = request.getParameterValues("punto_tipo[]");
            Punto punto= new Punto();
            PuntoDAO puntoDao = new PuntoDAO();
            if(id!=0){
@@ -109,49 +72,20 @@
                puntoDao.eliminar(puntoEliminar.getIdPunto());
            }
            // Guardamos los nuevos puntos
-           if (ciudad != null) {
-               for(int i=0;i< ciudad.length;i++)
+           if (lugar != null) {
+               for(int i=0;i< lugar.length;i++)
                 {
-
                    punto.setIdCobertura(idCobertura);
-                   punto.setLugar(ciudad[i].toString());
-                   punto.setLatitud(latitud[i].toString());
-                   punto.setLongitud(longitud[i].toString());
+                   punto.setLugar(lugar[i].toString());
+                   punto.setLatitud(Double.parseDouble(latitud[i]));
+                   punto.setLongitud(Double.parseDouble(longitud[i]));
                    punto.setDescripcion("");
+                   punto.setTipo(Integer.parseInt(tipo[i]));// cliente = 1, ciudad = 2, lugar = 3
                    puntoDao.guardar(punto);
                 }
            }
        }
-       if(idCobertura!=0 && guardarPuntosCiudad.equals("1") ){
-           int countPoints=ciudades.length();
-           String[] ciudad = request.getParameterValues("punto_ciudad_nombre[]");
-           System.out.println(ciudad);
-           String[] longitud= request.getParameterValues("punto_ciudad_longitud[]");
-           String[] latitud = request.getParameterValues("punto_ciudad_latitud[]");
-           Punto punto= new Punto();
-           PuntoDAO puntoDao = new PuntoDAO();
-           if(id!=0){
-               idCobertura=id;
-           }
-           //Eliminar los puntos anteriores de esta cobertura
-           List<Punto> puntoList = new Allservices().queryPuntoDAO("where id_cobertura = "+ idCobertura);
-           for(Punto puntoEliminar:puntoList) {
-               puntoDao.eliminar(puntoEliminar.getIdPunto());
-           }
-           // Guardamos los nuevos puntos
-           if (ciudad != null) {
-               for(int i=0;i< ciudad.length;i++)
-                {
-
-                   punto.setIdCobertura(idCobertura);
-                   punto.setLugar(ciudad[i].toString());
-                   punto.setLatitud(latitud[i].toString());
-                   punto.setLongitud(longitud[i].toString());
-                   punto.setDescripcion("");
-                   puntoDao.guardar(punto);
-                }
-           }
-       }
+       
        json = "{ status:" + (status ? "true":"false") +", message:'" + message + "'}";
        out.print(json);
            

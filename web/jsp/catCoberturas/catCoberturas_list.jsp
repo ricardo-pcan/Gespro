@@ -106,7 +106,6 @@ List<Cobertura> coberturas = allservices.queryCobertura(filtroBusqueda);
                                         <tr>
                                             <th>ID Cobertura</th>
                                             <th>Nombre</th>
-                                            <th>Proyecto</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -115,7 +114,6 @@ List<Cobertura> coberturas = allservices.queryCobertura(filtroBusqueda);
                                          <tr>
                                             <td>${item.idCobertura}</td>
                                             <td>${item.nombre}</td>
-                                            <td>${proyectoModel.getById(item.idProyecto).nombre}</td>
                                             <td>
                                                <a href="${formulario}?id=${item.idCobertura}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
                                                 &nbsp;&nbsp;
