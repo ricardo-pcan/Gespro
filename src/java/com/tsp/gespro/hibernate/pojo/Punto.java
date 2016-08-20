@@ -1,5 +1,5 @@
 package com.tsp.gespro.hibernate.pojo;
-// Generated 14/08/2016 06:44:07 PM by Hibernate Tools 3.2.1.GA
+// Generated 19/08/2016 06:34:39 PM by Hibernate Tools 3.6.0
 
 
 
@@ -12,26 +12,29 @@ public class Punto  implements java.io.Serializable {
      private Integer idPunto;
      private Integer idCobertura;
      private String lugar;
-     private String longitud;
-     private String latitud;
+     private double longitud;
+     private double latitud;
      private String descripcion;
+     private int tipo;
 
     public Punto() {
     }
 
 	
-    public Punto(String lugar, String longitud, String latitud, String descripcion) {
+    public Punto(String lugar, double longitud, double latitud, String descripcion, int tipo) {
         this.lugar = lugar;
         this.longitud = longitud;
         this.latitud = latitud;
         this.descripcion = descripcion;
+        this.tipo = tipo;
     }
-    public Punto(Integer idCobertura, String lugar, String longitud, String latitud, String descripcion) {
+    public Punto(Integer idCobertura, String lugar, double longitud, double latitud, String descripcion, int tipo) {
        this.idCobertura = idCobertura;
        this.lugar = lugar;
        this.longitud = longitud;
        this.latitud = latitud;
        this.descripcion = descripcion;
+       this.tipo = tipo;
     }
    
     public Integer getIdPunto() {
@@ -55,18 +58,18 @@ public class Punto  implements java.io.Serializable {
     public void setLugar(String lugar) {
         this.lugar = lugar;
     }
-    public String getLongitud() {
+    public double getLongitud() {
         return this.longitud;
     }
     
-    public void setLongitud(String longitud) {
+    public void setLongitud(double longitud) {
         this.longitud = longitud;
     }
-    public String getLatitud() {
+    public double getLatitud() {
         return this.latitud;
     }
     
-    public void setLatitud(String latitud) {
+    public void setLatitud(double latitud) {
         this.latitud = latitud;
     }
     public String getDescripcion() {
@@ -75,6 +78,13 @@ public class Punto  implements java.io.Serializable {
     
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+    public int getTipo() {
+        return this.tipo;
+    }
+    
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
     }
 
 
