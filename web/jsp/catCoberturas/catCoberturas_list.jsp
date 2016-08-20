@@ -42,7 +42,7 @@
             function eliminarCobertura(coberturaId) {
                 $.ajax({
                     type: "POST",
-                    url: "ajax.jsp?accion=eliminar&cobertura_id=" + coberturaId,
+                    url: "ajax.jsp?accion=eliminar&id=" + coberturaId,
                     data: $("#frm_action").serialize(),
                     beforeSend: function(objeto) {
                         $("#action_buttons").fadeOut("slow");
@@ -145,16 +145,18 @@
                                 </thead>
                                 <tbody>
                                     <c:forEach items="<%=coberturas%>" var="item">
-                                        <tr>
-                                            <td>${item.idCobertura}</td>
-                                            <td>${item.nombre}</td>
-                                            <td>
-                                                <a href="${formulario}?id=${item.idCobertura}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
-                                                &nbsp;&nbsp;
-                                                <a id="accion-eliminar" href="#" cobertura-id="${item.idCobertura}"><img src="../../images/icon_delete.png" alt="editar" class="help" title="Editar"/></a>
-                                                &nbsp;&nbsp;
-                                            </td>
-                                        </tr>
+                                        <c:if test="${item.activo == 1}">
+                                            <tr>
+                                                <td>${item.idCobertura}</td>
+                                                <td>${item.nombre}</td>
+                                                <td>
+                                                    <a href="${formulario}?id=${item.idCobertura}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
+                                                    &nbsp;&nbsp;
+                                                    <a class="accion-eliminar" href="#" cobertura-id="${item.idCobertura}"><img src="../../images/icon_delete.png" alt="editar" class="help" title="Editar"/></a>
+                                                    &nbsp;&nbsp;
+                                                </td>
+                                            </tr>
+                                        </c:if>
                                     </c:forEach>
                                 </tbody>
                             </table>
@@ -169,7 +171,7 @@
         <!-- Fin de Contenido-->
     </div>
     <script type="text/javascript">
-        $('#accion-eliminar').click(function() {
+        $('.accion-eliminar').click(function() {
             var coberturaId = $(this).attr("cobertura-id");
             apprise('¿Estas seguro de eliminar la cobertura?', {'verify': true, 'animate': true, 'textYes': 'Si', 'textNo': 'Cancelar'}, function(r)
             {

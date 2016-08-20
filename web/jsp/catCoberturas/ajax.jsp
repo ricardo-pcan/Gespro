@@ -45,10 +45,12 @@
                 if (id != 0) {
                     idCobertura = id;
                     cobertura.setIdCobertura(id);
+                    cobertura.setActivo(1);
                     coberturaDAO.actualizar(cobertura);
                     message = "<--EXITO-->" + "La actualización fue exitosa.";
                     status = true;
                 } else {
+                    cobertura.setActivo(1);
                     idCobertura = coberturaDAO.guardar(cobertura);
                     message = "<--EXITO-->" + "Se guardó correctamente.";
                     status = true;
@@ -88,7 +90,9 @@
         }
     } else if (accion.equalsIgnoreCase("eliminar")) {
         if (id != 0) {
-            coberturaDAO.eliminar(id);
+            cobertura = coberturaDAO.getById(id);
+            cobertura.setActivo(0);
+            coberturaDAO.actualizar(cobertura);
             message = "<--EXITO-->" + "Se eliminó correctamente.";
             status = true;
         } else {
