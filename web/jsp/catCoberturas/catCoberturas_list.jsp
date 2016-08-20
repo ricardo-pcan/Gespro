@@ -14,21 +14,21 @@
 <jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 <%
 //Verifica si el usuario tiene acceso a este topico
-if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace(request.getContextPath(), ""))) {
-    response.sendRedirect("../../jsp/inicio/login.jsp?action=loginRequired&urlSource=" + request.getRequestURI() + "?" + request.getQueryString());
-    response.flushBuffer();
-}
+    if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace(request.getContextPath(), ""))) {
+        response.sendRedirect("../../jsp/inicio/login.jsp?action=loginRequired&urlSource=" + request.getRequestURI() + "?" + request.getQueryString());
+        response.flushBuffer();
+    }
 // Obtener parametros
-String buscar = request.getParameter("q")!=null? new String(request.getParameter("q").getBytes("ISO-8859-1"),"UTF-8") :"";    //
+    String buscar = request.getParameter("q") != null ? new String(request.getParameter("q").getBytes("ISO-8859-1"), "UTF-8") : "";    //
 
 // crear consulta de filtro
-String filtroBusqueda = ""; //"AND ID_ESTATUS=1 ";
-if (!buscar.trim().equals("")) {
-    filtroBusqueda += " WHERE (NOMBRE LIKE '%" + buscar + "%')";
-}
-String filtroBusquedaEncoded = java.net.URLEncoder.encode(filtroBusqueda, "UTF-8");
-Allservices allservices = new Allservices();
-List<Cobertura> coberturas = allservices.queryCobertura(filtroBusqueda);
+    String filtroBusqueda = ""; //"AND ID_ESTATUS=1 ";
+    if (!buscar.trim().equals("")) {
+        filtroBusqueda += " WHERE (NOMBRE LIKE '%" + buscar + "%')";
+    }
+    String filtroBusquedaEncoded = java.net.URLEncoder.encode(filtroBusqueda, "UTF-8");
+    Allservices allservices = new Allservices();
+    List<Cobertura> coberturas = allservices.queryCobertura(filtroBusqueda);
 %>
 <!DOCTYPE html>
 <html>
@@ -38,100 +38,146 @@ List<Cobertura> coberturas = allservices.queryCobertura(filtroBusqueda);
         <jsp:include page="../include/keyWordSEO.jsp" />
         <jsp:include page="../include/skinCSS.jsp" />
         <jsp:include page="../include/jsFunctions.jsp"/>
-    </head>
-    <body>
-        <!--- Inicialización de variables --->
-        <jsp:useBean id="productos" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
-        <jsp:useBean id="proyectoModel" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
-        <!--- @formulario --->
-        <c:set var="formulario" value="formulario.jsp"/> 
-        
-        <div class="content_wrapper">
+        <script type="text/javascript">
+            function eliminarCobertura(coberturaId) {
+                $.ajax({
+                    type: "POST",
+                    url: "ajax.jsp?accion=eliminar&cobertura_id=" + coberturaId,
+                    data: $("#frm_action").serialize(),
+                    beforeSend: function(objeto) {
+                        $("#action_buttons").fadeOut("slow");
+                        $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
+                        $("#ajax_loading").fadeIn("slow");
+                    },
+                    success: function(datos) {
+                        console.log("Datos");
+                        console.log(datos);
+                        if (datos.indexOf("--EXITO-->", 0) > 0) {
+                            $("#ajax_message").html("La cobertura se eliminó correctamente.");
+                            $("#ajax_loading").fadeOut("slow");
+                            $("#ajax_message").fadeIn("slow");
+                            apprise('<center><img src=../../images/info.png> <br/>Los datos se guardaron correctamente.</center>', {'animate': true},
+                            function(r) {
+                                javascript:window.location.href = "catCoberturas_list.jsp";
+                                parent.$.fancybox.close();
+                            });
+                        } else {
+                            $("#ajax_loading").fadeOut("slow");
+                            $("#ajax_message").html("Ocurrió un error al intentar eliminar la cobertura.");
+                            $("#ajax_message").fadeIn("slow");
+                            $("#action_buttons").fadeIn("slow");
+                        }
+                    }
+                });
+            }
+        </script>
+    </script>
+</head>
+<body>
+    <!--- Inicialización de variables --->
+    <jsp:useBean id="productos" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
+    <jsp:useBean id="proyectoModel" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
+    <!--- @formulario --->
+    <c:set var="formulario" value="formulario.jsp"/> 
 
-            <jsp:include page="../include/header.jsp" flush="true"/>
+    <div class="content_wrapper">
 
-            <jsp:include page="../include/leftContent.jsp"/>
+        <jsp:include page="../include/header.jsp" flush="true"/>
 
-            <!-- Inicio de Contenido -->
-            <div id="content">
+        <jsp:include page="../include/leftContent.jsp"/>
 
-                <div class="inner">
-                    <h1>Proyectos</h1>
-                    
-                    <div id="ajax_loading" class="alert_info" style="display: none;"></div>
-                    <div id="ajax_message" class="alert_warning" style="display: none;"></div>
-                   
-                    <div class="onecolumn">
-                  
-                    </div>
+        <!-- Inicio de Contenido -->
+        <div id="content">
 
-                    <div class="onecolumn">
-                        <div class="header">
-                            <span>
-                                <img src="../../images/camion_icono_16.png" alt="icon"/>
-                                Coberturas
-                            </span>
-                            <div class="switch" style="width:500px">
-                                <table width="500px" cellpadding="0" cellspacing="0">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div id="search">
-                                                <form action="catCoberturas_list.jsp" id="search_form" name="search_form" method="get">                                                                                                                                                
+            <div class="inner">
+                <h1>Proyectos</h1>
 
-                                                        <input type="text" id="q" name="q" title="Buscar por nombre" class="" style="width: 70%; float: left; "
-                                                               value="<%=buscar%>"/>
-                                                        <input type="image" src="../../images/Search-32_2.png" id="buscar" name="buscar"  value="" style="cursor: pointer; width: 30px; height: 25px; float: left"/>
+                <div id="ajax_loading" class="alert_info" style="display: none;"></div>
+                <div id="ajax_message" class="alert_warning" style="display: none;"></div>
 
-                                                </form>
-                                                </div>
-                                            </td>
-                                            <td class="clear">&nbsp;&nbsp;&nbsp;</td>
-                                           
-                                            <td>
-                                                <input type="button" id="nuevo" name="nuevo" class="right_switch" value="Crear Nuevo" 
-                                                        style="float: right; width: 100px;" onclick="javascript:window.location.href='${formulario}'"/>
-                                            </td>                                           
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <br class="clear"/>
-                        
-                        <div class="content">
-                            <form id="form_data" name="form_data" action="" method="post">
-                                <table class="data" width="100%" cellpadding="0" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>ID Cobertura</th>
-                                            <th>Nombre</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach items="<%=coberturas%>" var="item">
-                                         <tr>
-                                            <td>${item.idCobertura}</td>
-                                            <td>${item.nombre}</td>
-                                            <td>
-                                               <a href="${formulario}?id=${item.idCobertura}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
-                                                &nbsp;&nbsp;
-                                            </td>
-                                          </tr>
-                                       </c:forEach>
-                                    </tbody>
-                                </table>
-                            </form>
-                        </div>
-                    </div>
+                <div class="onecolumn">
 
                 </div>
 
-                <jsp:include page="../include/footer.jsp"/>
+                <div class="onecolumn">
+                    <div class="header">
+                        <span>
+                            <img src="../../images/camion_icono_16.png" alt="icon"/>
+                            Coberturas
+                        </span>
+                        <div class="switch" style="width:500px">
+                            <table width="500px" cellpadding="0" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div id="search">
+                                                <form action="catCoberturas_list.jsp" id="search_form" name="search_form" method="get">                                                                                                                                                
+
+                                                    <input type="text" id="q" name="q" title="Buscar por nombre" class="" style="width: 70%; float: left; "
+                                                           value="<%=buscar%>"/>
+                                                    <input type="image" src="../../images/Search-32_2.png" id="buscar" name="buscar"  value="" style="cursor: pointer; width: 30px; height: 25px; float: left"/>
+
+                                                </form>
+                                            </div>
+                                        </td>
+                                        <td class="clear">&nbsp;&nbsp;&nbsp;</td>
+
+                                        <td>
+                                            <input type="button" id="nuevo" name="nuevo" class="right_switch" value="Crear Nuevo" 
+                                                   style="float: right; width: 100px;" onclick="javascript:window.location.href = '${formulario}'"/>
+                                        </td>                                           
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <br class="clear"/>
+
+                    <div class="content">
+                        <form id="form_data" name="form_data" action="" method="post">
+                            <table class="data" width="100%" cellpadding="0" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>ID Cobertura</th>
+                                        <th>Nombre</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach items="<%=coberturas%>" var="item">
+                                        <tr>
+                                            <td>${item.idCobertura}</td>
+                                            <td>${item.nombre}</td>
+                                            <td>
+                                                <a href="${formulario}?id=${item.idCobertura}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
+                                                &nbsp;&nbsp;
+                                                <a id="accion-eliminar" href="#" cobertura-id="${item.idCobertura}"><img src="../../images/icon_delete.png" alt="editar" class="help" title="Editar"/></a>
+                                                &nbsp;&nbsp;
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+
             </div>
-            <!-- Fin de Contenido-->
+
+            <jsp:include page="../include/footer.jsp"/>
         </div>
-        
-    </body>
+        <!-- Fin de Contenido-->
+    </div>
+    <script type="text/javascript">
+        $('#accion-eliminar').click(function() {
+            var coberturaId = $(this).attr("cobertura-id");
+            apprise('¿Estas seguro de eliminar la cobertura?', {'verify': true, 'animate': true, 'textYes': 'Si', 'textNo': 'Cancelar'}, function(r)
+            {
+                if (r) {
+                    eliminarCobertura(coberturaId);
+                }
+            });
+        });
+    </script>
+</body>
 </html>

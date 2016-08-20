@@ -434,7 +434,7 @@ List<Punto> puntosList = allservices.queryPuntoDAO("where id_cobertura = " + id)
             function guardar(){ 
                     $.ajax({
                         type: "POST",
-                        url: "ajax.jsp",
+                        url: "ajax.jsp?accion=guardar",
                         data: $("#frm_action").serialize(),
                         beforeSend: function(objeto){
                             $("#action_buttons").fadeOut("slow");
