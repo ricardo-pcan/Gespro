@@ -4,24 +4,32 @@
     Author     : gloria
 --%>
 
+<%@page import="java.util.List"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="org.hibernate.HibernateException"%>
 <%@page import="com.tsp.gespro.hibernate.dao.ActividadDAO"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Actividad"%>
+<%@page import="com.tsp.gespro.hibernate.dao.ProyectoDAO"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
+<%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="com.tsp.gespro.util.GenericValidator"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 <%
     // Crear objeto que almacenará los datos a actulizar de el usuario.
     Actividad obj= new Actividad();
-    ActividadDAO proyecto = new ActividadDAO();
+    Allservices services = new Allservices();
+    ActividadDAO actividadModel = new ActividadDAO();
     // Si el id viene que el request parsearlo a integer.
     Integer id = request.getParameter("idActividad") != null ? new Integer(request.getParameter("idActividad")): 0;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     String message = "";
     String json = "";
     boolean status = false;
+    if(id!=0){
+        obj = actividadModel.getById(id);
+    }
     
     try{
         // Setear los datos que vienen en el request a un objeto de el tipo
@@ -49,16 +57,27 @@
                message = "<--ERROR-->" + "Simbolo y nombre son obligatorios.";
            }else{
             if(id!=0){
-                obj.setIdActividad(id);
-                proyecto.actualizar(obj);
+                actividadModel.actualizar(obj);
                 message = "<--EXITO-->" +"La actualización fue exitosa.";
                 status = true;
             }else{
-                proyecto.guardar(obj);
+                actividadModel.guardar(obj);
                 message = "<--EXITO-->" + "Se guardó correctamente.";
                 status = true;
             }
-           }
+            List<Actividad> actividades = services.QueryActividadDAO("where idProyecto = "+obj.getIdProyecto());
+            Float promedio = Float.parseFloat("0");
+            int cantidad = actividades.size();
+            for(Actividad itemAct : actividades){
+                promedio += itemAct.getAvance();
+            }
+            promedio = promedio/cantidad;
+            Proyecto proyecto;
+            ProyectoDAO proyectoModel = new ProyectoDAO();
+            proyecto = proyectoModel.getById(obj.getIdProyecto());
+            proyecto.setAvance(promedio);
+            proyectoModel.actualizar(proyecto);
+        }
        }catch(HibernateException e){
            message = "<--ERROR-->" + "Ocurrió un error al actualizar." + e.getMessage();
        }

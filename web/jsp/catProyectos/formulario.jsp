@@ -4,6 +4,8 @@
     Author     : Fabian
 --%>
 
+<%@page import="java.util.Date"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.HibernateUtil"%>
 <%@page import="org.hibernate.Session"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -17,6 +19,14 @@
 if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace(request.getContextPath(), ""))) {
     response.sendRedirect("../../jsp/inicio/login.jsp?action=loginRequired&urlSource=" + request.getRequestURI() + "?" + request.getQueryString());
     response.flushBuffer();
+}
+
+Integer id = request.getParameter("id") != null ? new Integer(request.getParameter("id")): 0;
+SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+Date date = new Date();
+String fechaactual = "";
+if(id==0){
+    fechaactual = formatter.format(date);
 }
 %>
 <!DOCTYPE html>
@@ -167,8 +177,17 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
             }); 
           }
         </script>
+        <style>
+            .label_active {
+                color: green;
+            }
+            .label_inactive {
+                color: red;
+            }
+        </style>
     </head>
     <body>
+        
         <c:set var="usuario" value="${user.getUser()}"/>
         <!--- Inicialización de variables --->
         <jsp:useBean id="helper" class="com.tsp.gespro.hibernate.dao.ProyectoDAO"/>
@@ -246,12 +265,13 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                     </p>
                                     <br/>
                                     <p>
-                                        <label>* Fecha Real:</label><br/>
+                                        <label>* Fecha Creación</label><br/>
                                         <input maxlength="10" type="text" id="fechaReal" name="fechaReal" style="width:300px;"
-                                               value="${not empty obj.fechaReal ? obj.fechaReal : ""}"
+                                               value="${not empty obj.fechaReal ? obj.fechaReal : ""}<%=fechaactual%>"
                                                data-validation-error-msg="El simbolo es requerido,ingrese uno."
                                                required=""
                                                placeholder="YYYY-MM-DD"
+                                               readonly
                                                />
                                     </p>
                                     <c:if test="${not empty obj.idCliente }" >
@@ -283,15 +303,17 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                     <p>
                                         <label>Avance:</label><br/>
                                         <input maxlength="45" type="text" id="avance" name="avance" style="width:300px;"
-                                               value="${not empty obj.avance ? obj.avance : ""}"
+                                               value="${not empty obj.avance ? obj.avance : "0.0"}"
+                                               readonly
                                                />
                                     </p>
                                     <br/>                      
                                     
-                                    <c:set var="estatus" value="${not empty obj.status ? obj.status : 0}"/>
+                                    <c:set var="estatus" value="${not empty obj.status ? obj.status : 1}"/>
                                     <p>
                                         <label>Estatus</label><br/>
-                                        <input type="checkbox" id="status" name="status" ${estatus == 1 ? "checked":""}/>
+                                        <input type="checkbox" id="status" name="status" ${estatus == 0 ? "":"checked"}/>
+                                        <label class="${estatus == 0 ? "label_inactive":"label_active"}">${estatus == 0 ? "Inactivo":"Activo"}</label>
                                     </p>
                                     <br/> 
                                     <div id="action_buttons">
@@ -438,6 +460,13 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <script>
 
          $(document).ready(function() {
+            $("#status").click(function(){
+                if($(this).is(":checked")){
+                    $(".label_inactive").addClass("label_active").removeClass("label_inactive").html("Activo");
+                }else{
+                    $(".label_active").addClass("label_inactive").removeClass("label_active").html("Inactivo");
+                }
+            });
             $.validate({
                  lang: 'en',
                  modules : 'toggleDisabled',

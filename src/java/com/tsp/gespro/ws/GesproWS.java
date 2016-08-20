@@ -7,7 +7,9 @@
 package com.tsp.gespro.ws;
 
 import com.google.gson.Gson;
+import com.tsp.gespro.hibernate.dao.ActividadDAO;
 import com.tsp.gespro.hibernate.dao.ProyectoDAO;
+import com.tsp.gespro.hibernate.pojo.Actividad;
 import com.tsp.gespro.hibernate.pojo.Proyecto;
 import com.tsp.gespro.ws.bo.InsertaActualizaWsBO;
 import com.tsp.gespro.ws.response.LoginUsuarioMovilResponse;
@@ -453,7 +455,36 @@ public class GesproWS {
             return "{IdProyecto:"+proyectoId+"}";
         }
     }
-    
+    // Actividades
+    @WebMethod(operationName = "insertaActualizaActividad", action="insertaActualizaActividad")
+    public String insertaActualizaActividad(
+            @WebParam(name = "actividadJson") String actividadJson
+            ) {
+        
+        Gson gson = new Gson();
+        System.out.println(new Date());
+        
+        System.out.println("METODO: insertaActualizaProyecto \n");
+        System.out.println("REQUEST JSON: \n" + actividadJson);
+        
+        Actividad actividad= gson.fromJson(actividadJson, Actividad.class);
+
+        ActividadDAO actividadDAO= new ActividadDAO();
+        
+        if(actividad.getIdActividad()!= 0 && actividad.getIdActividad()!= null){
+           Actividad actividadUpdate= actividadDAO.getById(actividad.getIdActividad());
+           if(actividadUpdate!= null){
+               actividadDAO.actualizar(actividad);
+               String jsonResponse = gson.toJson(actividad);
+               return jsonResponse;
+           }else{
+               return "{status:404,error: Actividad no encontrada}";
+           }
+        }else{
+            int actividadId=actividadDAO.guardar(actividad);
+            return "{idActividad:"+actividadId+"}";
+        }
+    }
     //METODOS PARA PEDIDOS
     //-------------------------------------------------------------------------------
     

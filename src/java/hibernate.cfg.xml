@@ -4,9 +4,9 @@
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/gespro</property>
-    <property name="hibernate.connection.username">daniel</property>
-    <property name="hibernate.connection.password">d</property>
+    <property name="hibernate.connection.url">jdbc:mysql://172.17.0.2:3306/gespro?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password">cruzade</property>
     <property name="show_sql">true</property>
     <property name="hbm2ddl.auto">update</property>
     <mapping resource="com/tsp/gespro/hibernate/pojo/UsuarioMonitor.hbm.xml"/>

@@ -106,9 +106,9 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
                                         <tr>
                                             <th>ID Proyecto</th>
                                             <th>Nombre</th>
-                                            <th>Inicio</th>
-                                            <th>Programada</th>
-                                            <th>Real</th>
+                                            <th>Fecha de Inicio</th>
+                                            <th>Fecha Programada</th>
+                                            <th>Fecha de Creación</th>
                                             <th>Cliente</th>
                                             <th>Avance %</th>
                                             <th>Estatus</th>
@@ -129,11 +129,12 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
                                             <td>${item.status == 1 ? "Activo": "Inactivo"}</td>
                                             <td>
                                                <a href="${formulario}?id=${item.idProyecto}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
-                                                &nbsp;&nbsp;
                                                 <a href="proyectos_tasks.jsp?idProyecto=${item.idProyecto}"><img src="../../images/icon_logistica.png" alt="editar" class="help" title="Ver Actividades"/></a>
-                                                &nbsp;&nbsp;
                                                 <a href="reparto.jsp?idProyecto=${item.idProyecto}"><img src="../../images/clipboard_report_bar_16_ns.png" alt="editar" class="help" title="Ver Reparto"/></a>
-                                             </td>
+                                                <c:if test="${item.status == 1}">
+                                                <a href="changes_proyecto_ajax.jsp?idProyecto=${item.idProyecto}"><img src="../../images/icon_delete.png" alt="editar" class="help" title="Ver Reparto"/></a>
+                                                </c:if>
+                                                </td>
                                           </tr>
                                        </c:forEach>
                                     </tbody>

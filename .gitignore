@@ -3,3 +3,4 @@ build/
 *.class
 /database/
 /SystemaDeArchivos/
+/SGFENS_BAFAR/nbproject/private/
