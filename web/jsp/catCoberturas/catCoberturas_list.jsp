@@ -4,6 +4,7 @@
     Author     : Jefecito
 --%>
 
+<%@page import="com.tsp.gespro.bo.EmpresaBO"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Cobertura"%>
 <%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="com.tsp.gespro.report.ReportBO"%>
@@ -28,6 +29,10 @@
     }
     String filtroBusquedaEncoded = java.net.URLEncoder.encode(filtroBusqueda, "UTF-8");
     Allservices allservices = new Allservices();
+    
+    EmpresaBO empresaBO = new EmpresaBO(user.getConn());
+    int idEmpresaMatriz = empresaBO.getEmpresaMatriz(user.getUser().getIdEmpresa()).getIdEmpresa();
+    
     List<Cobertura> coberturas = allservices.queryCobertura(filtroBusqueda);
 %>
 <!DOCTYPE html>
@@ -144,20 +149,25 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach items="<%=coberturas%>" var="item">
-                                        <c:if test="${item.activo == 1}">
-                                            <tr>
-                                                <td>${item.idCobertura}</td>
-                                                <td>${item.nombre}</td>
+                                    <%
+                                        for(Cobertura cobertura:coberturas) {
+                                            if (cobertura.getActivo() == 1 && cobertura.getIdEmpresa() == idEmpresaMatriz ) {
+                                                %><tr>
+                                                <td><%=cobertura.getIdCobertura()%></td>
+                                                <td><%=cobertura.getNombre()%></td>
                                                 <td>
-                                                    <a href="${formulario}?id=${item.idCobertura}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
+                                                <a href="./formulario.jsp?id=<%=cobertura.getIdCobertura()%>">
+                                                   <img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/>
+                                                </a>
                                                     &nbsp;&nbsp;
-                                                    <a class="accion-eliminar" href="#" cobertura-id="${item.idCobertura}"><img src="../../images/icon_delete.png" alt="editar" class="help" title="Editar"/></a>
+                                                    <a class="accion-eliminar" href="#" cobertura-id="<%=cobertura.getIdCobertura()%>"><img src="../../images/icon_delete.png" alt="editar" class="help" title="Editar"/></a>
                                                     &nbsp;&nbsp;
                                                 </td>
                                             </tr>
-                                        </c:if>
-                                    </c:forEach>
+                                            <%
+                                            }
+                                        }
+                                    %>
                                 </tbody>
                             </table>
                         </form>

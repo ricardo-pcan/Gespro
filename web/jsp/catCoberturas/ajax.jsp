@@ -4,6 +4,7 @@
     Author     : gloria
 --%>
 
+<%@page import="com.tsp.gespro.bo.EmpresaBO"%>
 <%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="java.util.List"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -20,6 +21,8 @@
     // Crear objeto que almacenará los datos a actulizar de el usuario.
     Cobertura cobertura = new Cobertura();
     CoberturaDAO coberturaDAO = new CoberturaDAO();
+    EmpresaBO empresaBO = new EmpresaBO(user.getConn());
+    int idEmpresa = empresaBO.getEmpresaMatriz(user.getUser().getIdEmpresa()).getIdEmpresa();
     // Si el id viene que el request parsearlo a integer.
     Integer id = request.getParameter("id") != null ? new Integer(request.getParameter("id")) : 0;
     String accion = request.getParameter("accion");
@@ -46,11 +49,13 @@
                     idCobertura = id;
                     cobertura.setIdCobertura(id);
                     cobertura.setActivo(1);
+                    cobertura.setIdEmpresa(idEmpresa);
                     coberturaDAO.actualizar(cobertura);
                     message = "<--EXITO-->" + "La actualización fue exitosa.";
                     status = true;
                 } else {
                     cobertura.setActivo(1);
+                    cobertura.setIdEmpresa(idEmpresa);
                     idCobertura = coberturaDAO.guardar(cobertura);
                     message = "<--EXITO-->" + "Se guardó correctamente.";
                     status = true;
