@@ -15,6 +15,7 @@ import com.tsp.gespro.exceptions.EmpresaDaoException;
 import com.tsp.gespro.exceptions.SgfensPedidoDaoException;
 import com.tsp.gespro.exceptions.UsuariosDaoException;
 import com.tsp.gespro.hibernate.dao.ClienteDAO;
+import com.tsp.gespro.Services.Allservices;
 import com.tsp.gespro.hibernate.dao.PromotorproyectoDAO;
 import com.tsp.gespro.hibernate.pojo.Producto;
 import com.tsp.gespro.hibernate.pojo.Promotorproyecto;
@@ -44,38 +45,38 @@ import java.util.Date;
 /**
  *
  * @author ISCesarMartinez  poseidon24@hotmail.com
- * @date 17-dic-2012 
+ * @date 17-dic-2012
  */
 public class ReportBO {
-    
+
     public static final int DATA_STRING = 1;
     public static final int DATA_INT = 2;
     public static final int DATA_DECIMAL = 3;
     public static final int DATA_DATE = 4;
     public static final int DATA_DATETIME = 5;
     public static final int DATA_BOOLEAN = 6;
-    
-    
+
+
     public static final int CUSTOM_REPORT = -1;
-    public static final int USER_REPORT = 1;  
+    public static final int USER_REPORT = 1;
     public static final int CLIENTE_REPORT = 2;
     public static final int PRODUCTO_REPORT = 3;
     public static final int PROSPECTO_REPORT = 4;
     public static final int BITACORA_REPORT = 5;
     public static final int PROYECTO_REPORT = 6;
-    
-    
-    
+
+
+
     public static final int PEDIDO_REPRESENTACION_IMPRESA = 24;
     public static final int DEGUSTACION_REPRESENTACION_IMPRESA = 25;
-    
+
     private int tipoReporte = 0;
-   
+
     private UsuarioBO usuarioBO = null;
 
     private Connection conn = null;
-    
-    //Flag para Indicar si al generar los reportes al final se genera una fila 
+
+    //Flag para Indicar si al generar los reportes al final se genera una fila
     // con totales de acuerdo al tipo de Campo específicado en el reporte
     private boolean totalDecimalFields = false;
     private boolean totalIntegerFields = false;
@@ -87,7 +88,7 @@ public class ReportBO {
     public void setConn(Connection conn) {
         this.conn = conn;
     }
-    
+
     public UsuarioBO getUsuarioBO() {
         return usuarioBO;
     }
@@ -111,13 +112,13 @@ public class ReportBO {
     public void setTotalIntegerFields(boolean totalIntegerFields) {
         this.totalIntegerFields = totalIntegerFields;
     }
-    
+
     public static String getTitle(int REPORT){
         String title = "Reporte";
         switch(REPORT){
             case USER_REPORT:
                 title = "Reporte de Usuarios";
-                break; 
+                break;
             case PEDIDO_REPRESENTACION_IMPRESA:
                 title = "PEDIDO";
                 break;
@@ -140,13 +141,13 @@ public class ReportBO {
                 title = "Reporte de Proyectos";
                 break;
         }
-        
+
         return title;
     }
-    
+
     /**
-     * 
-     * 
+     *
+     *
      * @return String realData
      */
     private String getRealData(HashMap hashField,String data){
@@ -198,14 +199,14 @@ public class ReportBO {
 
     /**
      * Devuelve un hash con los datos para el encabezado del reporte
-     * 
+     *
      * @param String field
      * @param String label
      * @param String fkTable
      * @param String fkField
      * @param String type
      * @param String mask
-     * 
+     *
      * @return Hash<String,String>
      */
     public HashMap getDataInfo(String field, String label, String fkTable, String fkField, String type, String mask){
@@ -221,12 +222,12 @@ public class ReportBO {
 
         return dataMap;
     }
-    
+
     /**
      * Devuelve un arreglo de hash con los encabezados del reporte
-     * 
+     *
      * @param int REPORT
-     * 
+     *
      * @return ArrayList<HashMap>
      */
     public ArrayList<HashMap> getFieldList(int REPORT){
@@ -239,14 +240,14 @@ public class ReportBO {
                 fieldList.add(getDataInfo("FK_ROL","Rol","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("FK_NOMBRE","Nombre","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("ID_ESTATUS","Estatus","","",""+DATA_BOOLEAN,"Activo|Inactivo"));
-                break;            
-                
+                break;
+
             case CLIENTE_REPORT:
-                fieldList.add(getDataInfo("ID_CLIENTE","ID","","",""+DATA_INT,""));                
+                fieldList.add(getDataInfo("ID_CLIENTE","ID","","",""+DATA_INT,""));
                 fieldList.add(getDataInfo("NOMBRE_COMERCIAL","Nombre Comercial","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("CONTACTO","Contacto","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("CORREO","Correo","","",""+DATA_STRING,""));
-                fieldList.add(getDataInfo("ID_ESTATUS","Estatus","","",""+DATA_BOOLEAN,"Activo|Inactivo"));                
+                fieldList.add(getDataInfo("ID_ESTATUS","Estatus","","",""+DATA_BOOLEAN,"Activo|Inactivo"));
                 fieldList.add(getDataInfo("FECHA_REGISTRO","Fecha Registro","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("CALLE","Calle","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("COLONIA","Colonia","","",""+DATA_STRING,""));
@@ -254,19 +255,21 @@ public class ReportBO {
                 fieldList.add(getDataInfo("ESTADO","Estado","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("LONGITUD","Longitud","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("LATITUD","Latitud","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("PROMOTOR","Promotor","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("PROYECTOS","Proyectos","","",""+DATA_STRING,""));
                 break;
-                
+
             case PRODUCTO_REPORT:
                 fieldList.add(getDataInfo("ID_CONCEPTO","ID","","",""+DATA_INT,""));
                 fieldList.add(getDataInfo("CODIGO","Código","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("NOMBRE","Nombre","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("DESCRIPCION","Descripcion","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("FK_MARCA","Marca","","",""+DATA_STRING,""));
-                fieldList.add(getDataInfo("FK_CATEGORIA","Categoria","","",""+DATA_STRING,""));                
-                fieldList.add(getDataInfo("PRECIO","Precio","","",""+DATA_DECIMAL,""));                
+                fieldList.add(getDataInfo("FK_CATEGORIA","Categoria","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("PRECIO","Precio","","",""+DATA_DECIMAL,""));
                 fieldList.add(getDataInfo("ID_ESTATUS","Estatus","","",""+DATA_BOOLEAN,"Activo|Inactivo"));
                 break;
-                
+
             case PROSPECTO_REPORT:
                 fieldList.add(getDataInfo("ID_PROSPECTO","ID","","",""+DATA_INT,""));
                 fieldList.add(getDataInfo("RAZON_SOCIAL","Razón Social","","",""+DATA_STRING,""));
@@ -299,13 +302,13 @@ public class ReportBO {
         }
         return fieldList;
     }
-    
+
     /**
      * Devuelve una lista con los valores del reporte seleccionado
-     * 
+     *
      * @param int report - Tipo de reporte
      * @param String params - Parámetros de búsqueda
-     * 
+     *
      * @return ArrayList<HashMap> - Arreglo de hash con los datos
      */
     public ArrayList<HashMap> getDataReport(int report, String params, String paramsExtra) throws Exception{
@@ -333,7 +336,7 @@ public class ReportBO {
                     dataList = this.getDataList(new ConceptoBO(this.conn).findConceptos(-1, idEmpresa, 0, 0, params));
                 else
                     dataList = this.getDataList(new ConceptoBO(this.conn).findConceptos(-1, idEmpresa, 0, 0, ""));
-                break;    
+                break;
             case PROSPECTO_REPORT:
                 if(params!=null && !params.equals(""))
                     dataList = this.getDataList(new ProspectoBO(this.conn).findProspecto(-1, idEmpresa, 0, 0, params));
@@ -349,7 +352,7 @@ public class ReportBO {
              case PROYECTO_REPORT:
                 String filtroBusqueda = "";
                 if(params == null) {
-                    params = "";                    
+                    params = "";
                 }
                 String filtroBusquedaEncoded = java.net.URLEncoder.encode(params, "UTF-8");
                 Allservices allservices = new Allservices();
@@ -359,8 +362,8 @@ public class ReportBO {
         }
         return dataList;
     }
-    
-    
+
+
     /**
      *  CLIENTE_REPORT
      * @param objectDto Arreglo de objetos tipo DTO para fabricar reporte.
@@ -370,15 +373,21 @@ public class ReportBO {
         ArrayList<HashMap> dataList = new ArrayList<HashMap>();
         HashMap<String,String> hashData = new HashMap<String, String>();
         ArrayList<HashMap> dataInfo = getFieldList(CLIENTE_REPORT);
-        
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy" );
-        
+        RelacionClienteVendedor relacionCliente = null;
+        Allservices servicesObject = new Allservices();
+        Usuarios usuario = null;
+
         String fechaReg ="";
-        
+
         for(Cliente dto:objectDto){
-            
+
+            // Objects for get Pormotor
+            try{ relacionCliente = new RelacionClienteVendedorBO( this.conn ).findRelacionClienteVendedors( dto.getIdCliente(), 0, 0, 0, "" )[0]; }catch(Exception e){};
+            try{ usuario = new UsuariosBO( relacionCliente.getIdUsuario(), this.conn ).getUsuario(); }catch(Exception e){}
+
             fechaReg ="";
-            try{            
+            try{
                fechaReg = format.format(dto.getFechaRegistro());
             }catch(Exception e){}
 
@@ -386,7 +395,7 @@ public class ReportBO {
             hashData.put((String)dataInfo.get(1).get("field"), getRealData(dataInfo.get(1), "" + dto.getNombreComercial()));
             hashData.put((String)dataInfo.get(2).get("field"), getRealData(dataInfo.get(2), "" + dto.getContacto()!=null?dto.getContacto():"" ));
             hashData.put((String)dataInfo.get(3).get("field"), getRealData(dataInfo.get(3), "" + dto.getCorreo() ));
-            hashData.put((String)dataInfo.get(4).get("field"), getRealData(dataInfo.get(4), "" + dto.getIdEstatus() ));            
+            hashData.put((String)dataInfo.get(4).get("field"), getRealData(dataInfo.get(4), "" + dto.getIdEstatus() ));
             hashData.put((String)dataInfo.get(5).get("field"), getRealData(dataInfo.get(5), "" + fechaReg));
             hashData.put((String)dataInfo.get(6).get("field"), getRealData(dataInfo.get(6), "" + dto.getCalle() ));
             hashData.put((String)dataInfo.get(7).get("field"), getRealData(dataInfo.get(7), "" + dto.getColonia() ));
@@ -394,6 +403,32 @@ public class ReportBO {
             hashData.put((String)dataInfo.get(9).get("field"), getRealData(dataInfo.get(9), "" + dto.getEstado() ));
             hashData.put((String)dataInfo.get(10).get("field"), getRealData(dataInfo.get(10), "" + dto.getLongitud() ));
             hashData.put((String)dataInfo.get(11).get("field"), getRealData(dataInfo.get(11), "" + dto.getLatitud() ));
+
+            // Get the promotor name
+            String promotorName = "";
+            if ( usuario!=null ){
+                DatosUsuario datosUsuarioVendedor = new DatosUsuarioBO( usuario.getIdDatosUsuario(), this.conn ).getDatosUsuario();
+                if (datosUsuarioVendedor!=null){
+                    promotorName = StringManage.getValidString( datosUsuarioVendedor.getNombre() ) + " " + StringManage.getValidString( datosUsuarioVendedor.getApellidoPat() );
+                }else{
+                    promotorName = "¡ No Existe !";
+                }
+            }else{
+                promotorName = "-Sin Asignar-";
+            }
+            hashData.put( ( String ) dataInfo.get(12).get("field"), getRealData(dataInfo.get(11), "" + promotorName ) );
+
+            // Get the projects
+            List<Proyecto> list_projects = servicesObject.queryProyectoDAO( "P where P.idCliente = " + dto.getIdCliente() );
+            String projectsName = "- Sin Proyectos -";
+            if( !list_projects.isEmpty() ) {
+                projectsName = "";
+                for ( Proyecto project: list_projects ) {
+                    projectsName += " " + project.getNombre();
+                }
+            }
+            hashData.put( ( String ) dataInfo.get(13).get("field"), getRealData(dataInfo.get(11), "" + projectsName ) );
+
 
             dataList.add(hashData);
 
@@ -416,7 +451,7 @@ public class ReportBO {
         ConceptoBO conceptoBO = new ConceptoBO(this.conn);
         ExistenciaAlmacenBO exisAlmBO = new ExistenciaAlmacenBO(this.conn);
         for(Concepto dto:objectDto){
-            
+
             Marca marcaDto =null;
             Categoria categoriaDto = null;
             Categoria subcategoriaDto = null;
@@ -430,12 +465,12 @@ public class ReportBO {
                 ex.printStackTrace();
             }
             hashData.put((String)dataInfo.get(0).get("field"), getRealData(dataInfo.get(0), "" + dto.getIdConcepto()));
-            hashData.put((String)dataInfo.get(1).get("field"), getRealData(dataInfo.get(1), "" + dto.getIdentificacion()));         
-            hashData.put((String)dataInfo.get(2).get("field"), getRealData(dataInfo.get(2), "" + dto.getNombreDesencriptado() ));          
+            hashData.put((String)dataInfo.get(1).get("field"), getRealData(dataInfo.get(1), "" + dto.getIdentificacion()));
+            hashData.put((String)dataInfo.get(2).get("field"), getRealData(dataInfo.get(2), "" + dto.getNombreDesencriptado() ));
             hashData.put((String)dataInfo.get(3).get("field"), getRealData(dataInfo.get(3), "" + dto.getDescripcion() ));
             hashData.put((String)dataInfo.get(4).get("field"), getRealData(dataInfo.get(4), "" + (dto.getIdMarca()>0?"[" + dto.getIdMarca() +"]":"") + (marcaDto!=null? marcaDto.getNombre():"") ));
-            hashData.put((String)dataInfo.get(5).get("field"), getRealData(dataInfo.get(5), "" + (dto.getIdCategoria()>0?"[" + dto.getIdCategoria() +"]":"") + (categoriaDto!=null? categoriaDto.getNombreCategoria():"") ));          
-            hashData.put((String)dataInfo.get(6).get("field"), getRealData(dataInfo.get(6), "" + dto.getPrecio() ));         
+            hashData.put((String)dataInfo.get(5).get("field"), getRealData(dataInfo.get(5), "" + (dto.getIdCategoria()>0?"[" + dto.getIdCategoria() +"]":"") + (categoriaDto!=null? categoriaDto.getNombreCategoria():"") ));
+            hashData.put((String)dataInfo.get(6).get("field"), getRealData(dataInfo.get(6), "" + dto.getPrecio() ));
             hashData.put((String)dataInfo.get(7).get("field"), getRealData(dataInfo.get(7), "" + dto.getIdEstatus() ));
 
             dataList.add(hashData);
@@ -445,8 +480,8 @@ public class ReportBO {
 
         return dataList;
     }
-    
-    
+
+
     /**
      *  PROSPECTO_REPORT
      * @param objectDto Arreglo de objetos tipo DTO para fabricar reporte.
@@ -456,25 +491,25 @@ public class ReportBO {
         ArrayList<HashMap> dataList = new ArrayList<HashMap>();
         HashMap<String,String> hashData = new HashMap<String, String>();
         ArrayList<HashMap> dataInfo = getFieldList(PROSPECTO_REPORT);
-        
+
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy" );
 
         String fechaReg ="";
-        
+
         for(Prospecto dto:objectDto){
 
             fechaReg ="";
-            try{            
+            try{
                fechaReg = format.format(dto.getFechaRegistro());
             }catch(Exception e){}
-            
+
             hashData.put((String)dataInfo.get(0).get("field"), getRealData(dataInfo.get(0), "" + dto.getIdProspecto()));
             hashData.put((String)dataInfo.get(1).get("field"), getRealData(dataInfo.get(1), "" + dto.getRazonSocial() ));
             hashData.put((String)dataInfo.get(2).get("field"), getRealData(dataInfo.get(2), "" + dto.getContacto()!=null?dto.getContacto():"" ));
             hashData.put((String)dataInfo.get(3).get("field"), getRealData(dataInfo.get(3), "" + dto.getCorreo() ));
             hashData.put((String)dataInfo.get(4).get("field"), getRealData(dataInfo.get(4), "" + fechaReg));
 
-            
+
             dataList.add(hashData);
 
             hashData = new HashMap<String, String>();
@@ -482,7 +517,7 @@ public class ReportBO {
 
         return dataList;
     }
-    
+
     /**
      *  CLIENTE_REPORT
      * @param objectDto Arreglo de objetos tipo DTO para fabricar reporte.
@@ -491,16 +526,16 @@ public class ReportBO {
     private ArrayList<HashMap> getDataList(RegistroCheckin[] objectDto) throws UsuariosDaoException {
         ArrayList<HashMap> dataList = new ArrayList<HashMap>();
         HashMap<String,String> hashData = new HashMap<String, String>();
-        ArrayList<HashMap> dataInfo = getFieldList(BITACORA_REPORT);        
-    
+        ArrayList<HashMap> dataInfo = getFieldList(BITACORA_REPORT);
+
         ClienteBO clienteBO = new ClienteBO(this.conn);
         for(RegistroCheckin dto:objectDto){
-            
+
             String tipoCheck ="";
             try{
                 tipoCheck = dto.getIdTipoCheck()==1?"ENTRADA":dto.getIdTipoCheck()==2?"SALIDA":"DESCONOCIDO";
             }catch(Exception e){}
-            
+
             String nombreEstatus  = "SIN DETALLE";
             try{
 
@@ -510,17 +545,17 @@ public class ReportBO {
             }catch(Exception e){
                 System.out.println("No se encontraron registros con los datos especificado");
             }
-            
-            
+
+
             String nombreCliente = "";
             if (dto.getIdCliente() > 0){
                 Cliente clientesDto = null;
                 clienteBO = new ClienteBO(dto.getIdCliente(), this.conn);
                 clientesDto = clienteBO.getCliente();
-                
+
                 nombreCliente = clientesDto!=null?clientesDto.getNombreComercial():"NA";
             }
-            
+
             //Obtiene el nombre del promotor
             String nombrePromotor = "";
             if (dto.getIdUsuario() > 0){
@@ -528,19 +563,19 @@ public class ReportBO {
                 DatosUsuario datosUsuarioPromotorDto = null;
                 promotorDto = new UsuariosDaoImpl(this.conn).findByPrimaryKey(dto.getIdUsuario());
                 datosUsuarioPromotorDto = new DatosUsuarioBO(promotorDto.getIdDatosUsuario(),this.conn).getDatosUsuario();
-                
+
                 nombrePromotor = datosUsuarioPromotorDto!=null?datosUsuarioPromotorDto.getNombreCompleto():"NA";
             }
-            
+
             String titleIncidencia = "";
             if(dto.getIdTipoCheck() == 1  && dto.getIdDetalleCheck() == 6){
-               if(dto.getIncidencia()== 0){                  
+               if(dto.getIncidencia()== 0){
                     titleIncidencia = "SIN COMENTARIO";
-                }else if(dto.getIncidencia() == 1){                 
+                }else if(dto.getIncidencia() == 1){
                     titleIncidencia = "RETARDO";
-                }else if(dto.getIncidencia() == 2){                    
+                }else if(dto.getIncidencia() == 2){
                     titleIncidencia = "FALTA";
-                } 
+                }
             }else{
                 titleIncidencia = "NA";
             }
@@ -549,7 +584,7 @@ public class ReportBO {
             hashData.put((String)dataInfo.get(1).get("field"), getRealData(dataInfo.get(1), "" + dto.getFechaHora()));
             hashData.put((String)dataInfo.get(2).get("field"), getRealData(dataInfo.get(2), "" + tipoCheck ));
             hashData.put((String)dataInfo.get(3).get("field"), getRealData(dataInfo.get(3), "" + nombreEstatus));
-            hashData.put((String)dataInfo.get(4).get("field"), getRealData(dataInfo.get(4), "" + nombreCliente ));            
+            hashData.put((String)dataInfo.get(4).get("field"), getRealData(dataInfo.get(4), "" + nombreCliente ));
             hashData.put((String)dataInfo.get(5).get("field"), getRealData(dataInfo.get(5), "" + titleIncidencia));
             hashData.put((String)dataInfo.get(6).get("field"), getRealData(dataInfo.get(6), "" + nombrePromotor));
             hashData.put((String)dataInfo.get(7).get("field"), getRealData(dataInfo.get(7), "" + dto.getComentarios()));
@@ -561,7 +596,7 @@ public class ReportBO {
 
         return dataList;
     }
-    
+
     /**
      *  PROYECTO_REPORT
      * @param proyectos Arreglo de objetos tipo Proyecto para fabricar reporte.
@@ -570,13 +605,13 @@ public class ReportBO {
     private ArrayList<HashMap> getDataList(List<Proyecto> proyectos) {
         ArrayList<HashMap> dataList = new ArrayList<HashMap>();
         HashMap<String,String> hashData = new HashMap<String, String>();
-        ArrayList<HashMap> dataInfo = getFieldList(PROYECTO_REPORT);        
-    
+        ArrayList<HashMap> dataInfo = getFieldList(PROYECTO_REPORT);
+
         for(Proyecto proyecto:proyectos){
             // Obtenemos la informacion del cliente del proyecto
             ClienteDAO clienteDAO = new ClienteDAO();
             com.tsp.gespro.hibernate.pojo.Cliente cliente = clienteDAO.getById(proyecto.getIdCliente());
-            
+
             // Obtenemos la informacion de los promotor del proyecto
             Allservices allservices = new Allservices();
             List<Promotorproyecto> promotoresProyecto = allservices.queryPromotorProyectoDAO("WHERE id_proyecto = " + proyecto.getIdProyecto());
@@ -588,7 +623,7 @@ public class ReportBO {
             if (!promotores.trim().equals("")) {
                 promotores = promotores.substring(0, promotores.length()-2);
             }
-            
+
             // Obtenemos la informacion de los productos del proyecto
             List<Producto> productosList = allservices.QueryProductosDAO("WHERE id_proyecto = " + proyecto.getIdProyecto());
             String productos = "";
@@ -598,13 +633,13 @@ public class ReportBO {
             if (!productos.trim().equals("")) {
                 productos = productos.substring(0, productos.length()-2);
             }
-            
+
             //Agregamos la informacion al reporte por cada proyecto
             hashData.put((String)dataInfo.get(0).get("field"), getRealData(dataInfo.get(0), "" + proyecto.getIdProyecto())); ;
             hashData.put((String)dataInfo.get(1).get("field"), getRealData(dataInfo.get(1), "" + proyecto.getNombre()));
             hashData.put((String)dataInfo.get(2).get("field"), getRealData(dataInfo.get(2), "" + proyecto.getFechaInicio()));
             hashData.put((String)dataInfo.get(3).get("field"), getRealData(dataInfo.get(3), "" + proyecto.getFechaProgramada()));
-            hashData.put((String)dataInfo.get(4).get("field"), getRealData(dataInfo.get(4), "" + proyecto.getFechaReal()));            
+            hashData.put((String)dataInfo.get(4).get("field"), getRealData(dataInfo.get(4), "" + proyecto.getFechaReal()));
             hashData.put((String)dataInfo.get(5).get("field"), getRealData(dataInfo.get(5), "" + cliente.getNombreComercial()));
             hashData.put((String)dataInfo.get(6).get("field"), getRealData(dataInfo.get(6), "" + proyecto.getAvance()));
             hashData.put((String)dataInfo.get(7).get("field"), getRealData(dataInfo.get(7), "" + promotores));
@@ -618,5 +653,5 @@ public class ReportBO {
 
         return dataList;
     }
-    
+
 }
