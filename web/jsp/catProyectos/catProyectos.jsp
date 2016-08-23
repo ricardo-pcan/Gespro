@@ -4,7 +4,12 @@
     Author     : Fabian
 --%>
 
+<%@page import="com.tsp.gespro.bo.EmpresaBO"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Cliente"%>
+<%@page import="com.tsp.gespro.hibernate.dao.ClienteDAO"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Usuarios"%>
+<%@page import="com.tsp.gespro.hibernate.dao.UsuariosDAO"%>
 <%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="com.tsp.gespro.report.ReportBO"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -29,6 +34,11 @@ if (!buscar.trim().equals("")) {
 String filtroBusquedaEncoded = java.net.URLEncoder.encode(filtroBusqueda, "UTF-8");
 Allservices allservices = new Allservices();
 List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
+
+EmpresaBO empresaBO = new EmpresaBO(user.getConn());
+int idEmpresaMatriz = empresaBO.getEmpresaMatriz(user.getUser().getIdEmpresa()).getIdEmpresa();
+ClienteDAO clienteModel = new ClienteDAO();
+UsuariosDAO usuarioModel = new UsuariosDAO();
 %>
 <!DOCTYPE html>
 <html>
@@ -42,7 +52,6 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
     <body>
         <!--- Inicialización de variables --->
         <jsp:useBean id="productos" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
-        <jsp:useBean id="clienteModel" class="com.tsp.gespro.hibernate.dao.ClienteDAO"/>
         <!--- @formulario --->
         <c:set var="formulario" value="formulario.jsp"/> 
         
@@ -81,7 +90,7 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
 
                                                         <input type="text" id="q" name="q" title="Buscar por nombre" class="" style="width: 70%; float: left; "
                                                                value="<%=buscar%>"/>
-                                                        <input type="image" src="../../images/Search-32_2.png" id="buscar" name="buscar"  value="" style="cursor: pointer; width: 30px; height: 25px; float: left"/>
+                                                        <input type="image" src="../../images/Search-32_2.png" id="buscar" name="buscar"  style="cursor: pointer; width: 30px; height: 25px; float: left"/>
 
                                                 </form>
                                                 </div>
@@ -111,32 +120,47 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
                                             <th>Fecha de Creación</th>
                                             <th>Cliente</th>
                                             <th>Avance %</th>
-                                            <th>Estatus</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach items="<%=proyectos%>" var="item">
-                                         <tr>
-                                            <td>${item.idProyecto}</td>
-                                            <td>${item.nombre}</td>
-                                            <td>${item.fechaInicio}</td>
-                                            <td>${item.fechaProgramada}</td>
-                                            <td>${item.fechaReal}</td>
-                                            <c:set var="clientes" value="${clienteModel.getById(item.idCliente)}"/>
-                                            <td>${clientes.nombreComercial}</td>
-                                            <td>${item.avance}</td>
-                                            <td>${item.status == 1 ? "Activo": "Inactivo"}</td>
+                                        <% 
+                                            for(Proyecto proyecto : proyectos){
+                                                Usuarios userproyecto = null;
+                                                boolean isSameEmpresa = false;
+                                                if(proyecto.getIdPromotor()!=null){
+                                                    userproyecto = usuarioModel.getById(proyecto.getIdPromotor());
+                                                    int idEmpresaMatrizProyecto = empresaBO.getEmpresaMatriz(userproyecto.getIdEmpresa()).getIdEmpresa();
+                                                    if(idEmpresaMatrizProyecto==idEmpresaMatriz)
+                                                        isSameEmpresa = true;
+                                                    
+                                                }
+                                                if(proyecto.getStatus() == 1 && isSameEmpresa){
+                                        %> 
+                                        <tr>
+                                            <td><% out.print(proyecto.getIdProyecto()); %></td>
+                                            <td><% out.print(proyecto.getNombre()); %></td>
+                                            <td><% out.print(proyecto.getFechaInicio()); %></td>
+                                            <td><% out.print(proyecto.getFechaProgramada()); %></td>
+                                            <td><% out.print(proyecto.getFechaReal()); %></td>
+                                            <% Cliente client = clienteModel.getById(proyecto.getIdCliente());
+                                            %>
+                                            <td><% out.print(client.getNombreComercial()); %></td>
+                                            <td><% out.print(proyecto.getAvance()); %></td>
                                             <td>
-                                               <a href="${formulario}?id=${item.idProyecto}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
-                                                <a href="proyectos_tasks.jsp?idProyecto=${item.idProyecto}"><img src="../../images/icon_logistica.png" alt="editar" class="help" title="Ver Actividades"/></a>
-                                                <a href="reparto.jsp?idProyecto=${item.idProyecto}"><img src="../../images/clipboard_report_bar_16_ns.png" alt="editar" class="help" title="Ver Reparto"/></a>
-                                                <c:if test="${item.status == 1}">
-                                                <a href="changes_proyecto_ajax.jsp?idProyecto=${item.idProyecto}"><img src="../../images/icon_delete.png" alt="editar" class="help" title="Ver Reparto"/></a>
-                                                </c:if>
+                                                <a href="${formulario}?id=<% out.print(proyecto.getIdProyecto()); %><% if(isSameEmpresa){out.print("&idEmpresa="+idEmpresaMatriz);} %>"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
+                                                <a href="proyectos_tasks.jsp?idProyecto=<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/icon_logistica.png" alt="editar" class="help" title="Ver Actividades"/></a>
+                                                <a href="reparto.jsp?idProyecto=<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/clipboard_report_bar_16_ns.png" alt="editar" class="help" title="Ver Reparto"/></a>
+                                                <% if(proyecto.getStatus() == 1) { %>
+                                                <a href="changes_proyecto_ajax.jsp?idProyecto=<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/icon_delete.png" alt="editar" class="help" title="Ver Reparto"/></a>
+                                                <% } %>
                                                 </td>
-                                          </tr>
-                                       </c:forEach>
+                                          </tr>        
+                                         
+                                        <%        
+                                                }
+                                            }
+                                        %>
                                     </tbody>
                                 </table>
                             </form>

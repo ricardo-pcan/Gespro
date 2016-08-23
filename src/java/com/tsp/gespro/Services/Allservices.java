@@ -19,6 +19,8 @@ import com.tsp.gespro.hibernate.dao.ProyectoDAO;
 import com.tsp.gespro.hibernate.pojo.Cobertura;
 import com.tsp.gespro.hibernate.pojo.Producto;
 import com.tsp.gespro.hibernate.pojo.Punto;
+import com.tsp.gespro.hibernate.dao.CoberturaProyectoDAO;
+import com.tsp.gespro.hibernate.pojo.Coberturaproyecto;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -29,6 +31,7 @@ public class Allservices {
     private static ProyectoDAO proyectoDAO;    
     private static ProductoDAO productoDAO;
     private static ActividadDAO actividadDAO;
+    private static CoberturaProyectoDAO coberturaproyectoDAO;
 
     public Allservices() {
     }
@@ -43,6 +46,28 @@ public class Allservices {
             session = HibernateUtil.getSessionFactory().openSession(); 
             Transaction tx = session.beginTransaction(); 
             String query = "from Cobertura "+where;
+            lista = session.createQuery(query).list(); 
+        }
+        finally 
+        { 
+            session.close(); 
+        }  
+
+        return lista; 
+    }
+    
+    
+    
+    public List queryCoberturaProyecto(String where){  
+        
+            List<Coberturaproyecto> lista = null;  
+            Session session = null;
+
+        try 
+        { 
+            session = HibernateUtil.getSessionFactory().openSession(); 
+            Transaction tx = session.beginTransaction(); 
+            String query = "from Coberturaproyecto "+where;
             lista = session.createQuery(query).list(); 
         }
         finally 
