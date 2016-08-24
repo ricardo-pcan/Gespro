@@ -16,9 +16,12 @@ import com.tsp.gespro.hibernate.dao.UsuariosDAO;
 import com.tsp.gespro.hibernate.pojo.Actividad;
 import com.tsp.gespro.hibernate.dao.ActividadDAO;
 import com.tsp.gespro.hibernate.dao.ProyectoDAO;
+import com.tsp.gespro.hibernate.dao.PuntoDAO;
 import com.tsp.gespro.hibernate.pojo.Cobertura;
+import com.tsp.gespro.hibernate.pojo.Coberturaproyecto;
 import com.tsp.gespro.hibernate.pojo.Producto;
 import com.tsp.gespro.hibernate.pojo.Punto;
+import java.util.ArrayList;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -206,6 +209,64 @@ public class Allservices {
             session.close(); 
         }  
 
+        return lista; 
+    }
+    
+    public List queryCoberturaProyectoDAO(String where){  
+        
+            List<Coberturaproyecto> lista = null;  
+            Session session = null;
+
+        try 
+        { 
+            session = HibernateUtil.getSessionFactory().openSession(); 
+            Transaction tx = session.beginTransaction(); 
+            String query = "from CoberturaProyecto "+where;
+            lista = session.createQuery(query).list(); 
+        }
+        finally 
+        { 
+            session.close(); 
+        }  
+
+        return lista; 
+    }
+    
+    public List getActividadesFull(List<Actividad> listaActividades){  
+        // Lista de objeto con los objectos de actividades, punto y proyeco
+        // Por actividad.
+        List<ActividadFullObject> lista = new ArrayList<>();
+        ActividadFullObject actividadFull=new ActividadFullObject();
+        
+        // Punto
+        Punto punto;
+        PuntoDAO puntoDAO=new PuntoDAO();
+        
+        // Proyecto
+        Proyecto proyecto;
+        ProyectoDAO proyectoDAO=new ProyectoDAO();
+        
+        for (Actividad obj: listaActividades) {
+           
+           // Buscar objeto punto de esta actividad.
+           punto=puntoDAO.getById(obj.getIdPunto());
+           if(punto!=null){
+               actividadFull.setPunto(punto);
+           }
+           
+           // Buscar objeto proyecto de esta actividad.
+           proyecto=proyectoDAO.getById(obj.getIdProyecto());
+           if(proyecto!=null){
+               actividadFull.setProyecto(proyecto);
+           }
+           
+           // Setear actividad a el objeto ActividadFullObject
+           actividadFull.setActividad(obj);
+           
+           // Aegregar objeto ActividadFullObject a la lista.
+           lista.add(actividadFull);
+        }
+        
         return lista; 
     }
 }

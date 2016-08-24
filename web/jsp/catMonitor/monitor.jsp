@@ -4,6 +4,7 @@
     Author     : zesk8
 --%>
 
+<%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="com.tsp.gespro.hibernate.dao.ProyectoDAO"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
 <%@page import="java.util.List"%>
@@ -25,7 +26,7 @@
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <%
-            List<Proyecto> proyectoList = new ProyectoDAO().lista();
+            List<Proyecto> proyectoList = new Allservices().queryPuntoDAO("where id_cliente=3");
         %>
         
     </head>
