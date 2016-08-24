@@ -76,7 +76,6 @@
                 });
             }
         </script>
-    </script>
 </head>
 <body>
     <!--- Inicialización de variables --->
@@ -151,7 +150,7 @@
                                 <tbody>
                                     <%
                                         for(Cobertura cobertura:coberturas) {
-                                            if (cobertura.getActivo() == 1 && cobertura.getIdEmpresa() == idEmpresaMatriz ) {
+                                            if (cobertura.getActivo() == 1 && Integer.parseInt(cobertura.getIdEmpresa().toString()) == idEmpresaMatriz ) {
                                                 %><tr>
                                                 <td><%=cobertura.getIdCobertura()%></td>
                                                 <td><%=cobertura.getNombre()%></td>
