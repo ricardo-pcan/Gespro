@@ -18,6 +18,7 @@ import com.tsp.gespro.hibernate.dao.ClienteDAO;
 import com.tsp.gespro.Services.Allservices;
 import com.tsp.gespro.hibernate.dao.PromotorproyectoDAO;
 import com.tsp.gespro.hibernate.pojo.Producto;
+import com.tsp.gespro.hibernate.pojo.Actividad;
 import com.tsp.gespro.hibernate.pojo.Promotorproyecto;
 import com.tsp.gespro.hibernate.pojo.Proyecto;
 import com.tsp.gespro.jdbc.DatosUsuarioDaoImpl;
@@ -298,6 +299,7 @@ public class ReportBO {
                 fieldList.add(getDataInfo("PROMOTOR","Promotor","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("ESTATUS","Estatus","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("PRODUCTOS","Productos","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("VISITAS REALIZADAS","Visitas realizadas","","",""+DATA_INT,""));
                 break;
         }
         return fieldList;
@@ -626,12 +628,22 @@ public class ReportBO {
 
             // Obtenemos la informacion de los productos del proyecto
             List<Producto> productosList = allservices.QueryProductosDAO("WHERE id_proyecto = " + proyecto.getIdProyecto());
+            List<Actividad> actividades = allservices.QueryActividadDAO("where idProyecto = " + proyecto.getIdProyecto());
             String productos = "";
             for (Producto producto: productosList) {
                 productos += producto.getNombre() + "- ";
             }
             if (!productos.trim().equals("")) {
                 productos = productos.substring(0, productos.length()-2);
+            }
+
+            // Obtener actividades terminadas
+            int actividades_completadas = 0;
+            for( Actividad actividad: actividades ) {
+                Float avance = actividad.getAvance();
+                if( avance == 100 ) {
+                    actividades_completadas += 1;
+                }
             }
 
             //Agregamos la informacion al reporte por cada proyecto
@@ -645,6 +657,7 @@ public class ReportBO {
             hashData.put((String)dataInfo.get(7).get("field"), getRealData(dataInfo.get(7), "" + promotores));
             hashData.put((String)dataInfo.get(8).get("field"), getRealData(dataInfo.get(8), "" + (proyecto.getStatus() == 1 ? "Activo" : "Inactivo")));
             hashData.put((String)dataInfo.get(9).get("field"), getRealData(dataInfo.get(9), "" + productos));
+            hashData.put((String)dataInfo.get(10).get("field"), getRealData(dataInfo.get(10), "" + actividades_completadas));
 
             dataList.add(hashData);
 
