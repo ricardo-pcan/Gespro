@@ -31,14 +31,9 @@
        
        // Creo una lista de actividades, donde obtenga los objetos
        // completos de actividad, punto y proyecto.
-       List <ActividadFullObject> actividadesFull=new ArrayList<>();
-       
-       // Recorro todas las actividades para crear una lista con 
-     
-       for (Actividad obj: actividades) {
-           puntosID+=String.valueOf(obj.getIdPunto())+",";
-       }
-       
+       List <ActividadFullObject> actividadesFull;
+       actividadesFull=allservices.getActividadesFull(actividades);
+        
     }
     
     
