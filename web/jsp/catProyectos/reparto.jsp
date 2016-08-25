@@ -8,6 +8,7 @@
 <%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="com.tsp.gespro.report.ReportBO"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Cobertura"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Coberturaproyecto"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Punto"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Producto"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -32,7 +33,8 @@ if (!buscar.trim().equals("")) {
 String filtroBusquedaEncoded = java.net.URLEncoder.encode(filtroBusqueda, "UTF-8");
 Allservices allservices = new Allservices();
 List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
-                                        List<Cobertura> coberturas = allservices.queryCobertura("where idProyecto = "+idProyecto);
+List<Cobertura> coberturas = allservices.queryCobertura("where idCobertura in (select idCobertura from Coberturaproyecto where idProyecto = "+idProyecto+")");
+
 %>
 <!DOCTYPE html>
 <html>
@@ -130,7 +132,7 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
                                                     <th></th>
                                                     <% 
                                                         for(Cobertura itemsCob : coberturas){
-                                                            List<Punto> puntos = allservices.queryPuntoDAO("where id_cobertura = "+itemsCob.getIdCobertura());
+                                                            List<Punto> puntos = allservices.queryPuntoDAO("where idCobertura = "+itemsCob.getIdCobertura());
                                                             out.print("<th colspan='"+puntos.size()+"'>"+itemsCob.getNombre()+"</th>");
                                                         }
                                                     %>
@@ -140,7 +142,7 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
                                                     <th></th>
                                                     <% 
                                                         for(Cobertura itemsCob : coberturas){
-                                                            List<Punto> puntos = allservices.queryPuntoDAO("where id_cobertura = "+itemsCob.getIdCobertura());
+                                                            List<Punto> puntos = allservices.queryPuntoDAO("where idCobertura = "+itemsCob.getIdCobertura());
                                                             for(Punto itemsPun : puntos){
                                                                 out.print("<th>"+itemsPun.getLugar()+"</th>");
                                                             }
@@ -157,7 +159,7 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
                                                 <th>${productoProyecto.nombre}</th>
                                                  <% 
                                                         for(Cobertura itemsCob : coberturas){
-                                                            List<Punto> puntos = allservices.queryPuntoDAO("where id_cobertura = "+itemsCob.getIdCobertura());
+                                                            List<Punto> puntos = allservices.queryPuntoDAO("where idCobertura = "+itemsCob.getIdCobertura());
                                                             for(Punto itemsPun : puntos){
                                                                 out.print("<td>");%>
                                                                 <input type="text" name="cantidad[]" value="0"/>
