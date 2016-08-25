@@ -7,6 +7,9 @@
 <%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
 <%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="com.tsp.gespro.report.ReportBO"%>
+<%@page import="com.tsp.gespro.bo.UsuarioBO"%>
+<%@page import="com.tsp.gespro.bo.RolesBO"%>
+<%@page import="com.tsp.gespro.bo.UsuariosBO"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:directive.page import="com.tsp.gespro.hibernate.dao.*"/>
@@ -18,6 +21,10 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     response.sendRedirect("../../jsp/inicio/login.jsp?action=loginRequired&urlSource=" + request.getRequestURI() + "?" + request.getQueryString());
     response.flushBuffer();
 }
+
+
+    int idEmpresa = user.getUser().getIdEmpresa();
+
 // Obtener parametros
 String buscar = request.getParameter("q")!=null? new String(request.getParameter("q").getBytes("ISO-8859-1"),"UTF-8") :"";    //
 
@@ -26,6 +33,8 @@ String filtroBusqueda = ""; //"AND ID_ESTATUS=1 ";
 if (!buscar.trim().equals("")) {
     filtroBusqueda += " WHERE (NOMBRE LIKE '%" + buscar + "%')";
 }
+
+
 String filtroBusquedaEncoded = java.net.URLEncoder.encode(filtroBusqueda, "UTF-8");
 Allservices allservices = new Allservices();
 List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
@@ -43,6 +52,7 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
         <!--- Inicialización de variables --->
         <jsp:useBean id="productos" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
         <jsp:useBean id="clienteModel" class="com.tsp.gespro.hibernate.dao.ClienteDAO"/>
+        <jsp:useBean id="Services" class="com.tsp.gespro.Services.Allservices"/>
         <!--- @formulario --->
         <c:set var="formulario" value="formulario.jsp"/> 
         
@@ -62,7 +72,45 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
                     <div id="ajax_message" class="alert_warning" style="display: none;"></div>
                    
                     <div class="onecolumn">
-                  
+                        <div class="header">
+                            <span>
+                                Búsqueda Avanzada &dArr;
+                            </span>                           
+                        </div>
+                        <br class="clear"/>
+                        <div class="content" style="display: block;">
+                            <form action="./catProyectos.jsp" id="search_form_advance" name="search_form_advance" method="post">
+                                <p>
+                                    <label>Ciudad:</label><br/>
+                                    <input type="text" name="proy_ciudad_search" placeholder="Buscar por ciudad">
+                                </p>
+
+                                <p>
+                                    <label>Cliente:</label><br/>
+                                    <input type="text" name="proy_cliente_search" placeholder="Buscar por cliente">
+                                </p>
+
+                                <p>
+                                    <label>Promotor:</label><br/>
+                                    <select name="idUser" id="idUser" >
+                                            <c:set var="promotorespro" value="${Services.QueryPromotorProyecto(where)}"/>
+                                            <option value="0">Seleccionar Promotor</option>
+                                            <c:forEach items="${promotorespro}" var="item">
+                                                <c:set var="usuario" value="${usuariosModel.getById(item.idUser)}"/>
+                                                <option value="${item.idUser}" ${item.idUser == usuario.idUsuarios ? "selected" : ""}>${usuario.userName}</option>
+                                            </c:forEach>
+                                        </select>
+                                </p>
+                                <br/>                                    
+                                <br/>
+                                <div id="action_buttons">
+                                    <p>
+                                        <input type="button" id="buscar" value="Buscar" onclick="$('#search_form_advance').submit();"/>
+                                    </p>
+                                </div>
+                                
+                            </form>
+                        </div>
                     </div>
 
                     <div class="onecolumn">
