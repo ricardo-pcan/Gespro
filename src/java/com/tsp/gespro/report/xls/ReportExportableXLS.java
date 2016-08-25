@@ -47,6 +47,8 @@ public class ReportExportableXLS extends ReportExportable {
 
         ArrayList<HashMap> dataList = null;
         ArrayList<HashMap> fieldList = null;
+        ArrayList<HashMap> dataExtraList = null;
+        ArrayList<HashMap> fieldExtraList = null;
         ArrayList<BigDecimal> totalList = new ArrayList<BigDecimal>();
         
         if(this.dataList!=null)
@@ -58,6 +60,16 @@ public class ReportExportableXLS extends ReportExportable {
             fieldList = this.fieldList;
         else
             fieldList = repBO.getFieldList(report);
+        
+        if(this.dataExtraList!=null)
+            dataExtraList = this.dataExtraList;
+        else
+            dataExtraList = repBO.getDataExtraReport(report, params , parametrosExtra );
+        
+        if(this.fieldExtraList!=null)
+            fieldExtraList = this.fieldExtraList;
+        else
+            fieldExtraList = repBO.getFieldExtraList(report);
 
         ByteArrayOutputStream bos= new ByteArrayOutputStream();
 
@@ -157,6 +169,65 @@ public class ReportExportableXLS extends ReportExportable {
                 }
                 k++;
             }
+            
+            
+            /*
+             * CABECERA EXTRA
+             *
+             * Por cada dato en la cabecera, se pinta una celda,
+             *
+             */
+            k+=4;
+            for(int i = 0; i < fieldExtraList.size(); i ++){
+                
+                //Label header = new Label(i, 0, (String)fieldList.get(i).get("label"), formatCabecera);
+                Label header = new Label(k, 6, (String)fieldExtraList.get(i).get("label"), formatCabecera);
+                hojaCatalogo.addCell(header);
+                hojaCatalogo.setColumnView(k, view);
+                
+                totalList.add(BigDecimal.ZERO);
+                
+                k++;
+            }
+
+            /*
+             * CUERPO EXTRA
+             *
+             * Para cada grupo de datos obtenido
+             * se va pintando el dato correspondiente a la cabecera
+             */
+            k+=1;
+            for(int i = 1; i <= dataExtraList.size(); i ++){
+                
+                int m=6;
+                //for(int j = 0; j < fieldList.size(); j ++){
+                for(int j = 0; j < fieldExtraList.size(); j ++){
+
+                     Label contentTxt = null;
+                     Number contentNum = null;
+                     String valor = (String)dataExtraList.get(i-1).get((String)fieldExtraList.get(j).get("field"));
+                     //contentTxt = new Label(m, k, (String)dataList.get(i-1).get((String)fieldList.get(j).get("field")), formatContent);
+                     contentTxt = new Label(m, k, valor, formatContent);
+                     
+                     hojaCatalogo.addCell(contentTxt!=null?contentTxt:contentNum);
+                     hojaCatalogo.setColumnView(m, view);
+
+                     //Si el tipo de campo es Integer o Decimal, lo sumamos a la lista de totales
+                    int tipoCampo = 0;
+                    try{ tipoCampo = Integer.parseInt(fieldExtraList.get(j).get("type").toString()); }catch(Exception ex){}
+                    if (tipoCampo==ReportBO.DATA_INT || tipoCampo==ReportBO.DATA_DECIMAL){
+                        if(valor!=null){
+                            BigDecimal actual = totalList.get(j).add(new BigDecimal(valor));
+                            totalList.set(j, actual);
+                        }
+                    }
+                    
+                     m++;
+                }
+                k++;
+            }
+            
+            
             
             
             if (repBO.isTotalIntegerFields()
