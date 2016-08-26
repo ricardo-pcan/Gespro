@@ -95,6 +95,18 @@ public class ProyectoDAO {
         return object; 
     }  
 
+    public List getListByIdClient(int idCliente)throws HibernateException {
+        List<Proyecto> lista=null;
+        try {
+            iniciaOperacion();
+            lista = sesion.createQuery("from Proyecto where idCliente=:idCliente").setParameter("idCliente", idCliente).list();
+        } finally {
+            sesion.close();
+        }
+
+        return lista;
+    }
+    
     public List lista() throws HibernateException 
     { 
         List<Proyecto> lista = null;  

@@ -135,6 +135,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     String urlTo4 = "../catPop/catConceptoRegistroFotografico_form.jsp";
     String urlTo5 = "../catEstanteria/catConceptoEstanteria_list.jsp";
     String urlTo6 = "../catClientes/catClientes_descargar_imagenes.jsp";
+    String urlTo7 = "../catClientes/catClientes_create_login.jsp";
     
     String paramName = "idCliente";
     String parametrosPaginacion="inactivos="+buscar_isMostrarSoloActivos+"&q_idvendedor="+buscar_idvendedor+"&idClienteCategoria="+idClienteCategoria; // "idEmpresa="+idEmpresa;
@@ -425,6 +426,8 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                 <a href="<%=urlTo5%>?<%=paramName%>=<%=item.getIdCliente()%>&acc=Estanteria"><img src="../../images/icon_estanteria.png" alt="pop" class="help" title="Estanteria"/>
                                                 &nbsp;&nbsp;
                                                 <a href="<%=urlTo6%>?<%=paramName%>=<%=item.getIdCliente()%>&acc=DescargarImagenes"><img src="../../images/download.png" alt="downloadImages" class="help" title="Descargar imagenes"/>
+                                                    &nbsp;&nbsp;
+                                                <a href="<%=urlTo7%>?<%=paramName%>=<%=item.getIdCliente()%>&acc=GenerarCredenciales&pagina=<%=paginaActual%>""><img src="../../images/icon_gateway.png" alt="generateLogin" class="help" title="Generar credenciales"/>
                                             </td>
                                         </tr>
                                         <%      }catch(Exception ex){

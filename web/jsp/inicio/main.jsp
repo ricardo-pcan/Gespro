@@ -4,6 +4,8 @@
     Author     : ISC Cesar Martinez poseidon24@hotmail.com
 --%>
 
+<%@page import="com.tsp.gespro.dto.Roles"%>
+<%@page import="com.tsp.gespro.jdbc.RolesDaoImpl"%>
 <%@page import="com.tsp.gespro.jdbc.EmpresaPermisoAplicacionDaoImpl"%>
 <%@page import="com.tsp.gespro.dto.EmpresaPermisoAplicacion"%>
 <%@page import="com.tsp.gespro.bo.EmpresaBO"%>
@@ -49,6 +51,10 @@ try{
             <jsp:include page="../include/leftContent.jsp"/>
             
             <!-- Inicio de Contenido -->
+            <%  RolesDaoImpl rolesDaoImpl=new RolesDaoImpl(user.getConn());
+                Roles rol=rolesDaoImpl.findByPrimaryKey(user.getUser().getIdRoles());
+                if(!rol.getNombre().equals("CLIENTE")){
+            %>  
             <div id="content">
                 
                 <div class="inner">                                      
@@ -58,6 +64,16 @@ try{
                 
                 <jsp:include page="../include/footer.jsp"/>
             </div>
+            <%}else{%>
+            <div id="content">
+                
+                <div class="inner">                                      
+                    Bienvenido <%=user.getUser().getUserName()%>
+                                      
+                </div>
+                
+                <jsp:include page="../include/footer.jsp"/>
+            <%}%>
             <!-- Fin de Contenido-->
         </div>
     </body>   
