@@ -33,6 +33,8 @@
        // completos de actividad, punto y proyecto.
        List <ActividadFullObject> actividadesFull;
        actividadesFull=allservices.getActividadesFull(actividades);
+       
+       // Agrupamos los avances por ciudad.
         
     }
     

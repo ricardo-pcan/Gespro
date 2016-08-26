@@ -5,27 +5,32 @@
 package com.tsp.gespro.Services;
 
 import com.google.gson.Gson;
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author gloria
  */
-public class Avance {
-    public String getAvancesByCiudadRegionesJSON(List<ActividadFullObject> lista){
-        int totalDeActividades=lista.size();
-        int actividadesTerminadas=0;
-        int actividadesSinTerminar=0;
+public class AvanceProyectoService {
+    public String getAvancesRegiones(List<ActividadFullObject> lista){
+        List<ActividadFullObject> ciudades=lista;
+        List<ActividadFullObject> grupoCiudad=lista;
+        List<ActividadFullObject> estados=lista;
+         List<ActividadFullObject> grupoEstado=lista;
+        AvanceProyecto ciudad=new AvanceProyecto();
+        AvanceProyecto estado=new AvanceProyecto();
+      
         float terminada=100;
-        
+        int terminadas=0;
+        int noTerminadas=0;
+        int total=0;
         if(lista!=null){
             for(ActividadFullObject obj:lista){
-                if(obj.getActividad().getAvance()==terminada){
-                    actividadesTerminadas++;
-                }else{
-                    actividadesSinTerminar++;
-                }
+               
             }
+            
         }
         else{
             return "{'status':'error',message:'No tiene actividades.'}";
@@ -37,4 +42,6 @@ public class Avance {
         System.out.println("JSON avances por region y co");
         return jsonResponse;
     }
+    
+    
 }

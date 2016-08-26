@@ -5,8 +5,11 @@
 package com.tsp.gespro.Services;
 
 import com.tsp.gespro.hibernate.pojo.Actividad;
+import com.tsp.gespro.hibernate.pojo.Cliente;
+import com.tsp.gespro.hibernate.pojo.Promotorproyecto;
 import com.tsp.gespro.hibernate.pojo.Proyecto;
 import com.tsp.gespro.hibernate.pojo.Punto;
+import com.tsp.gespro.hibernate.pojo.Usuarios;
 
 /**
  *
@@ -16,6 +19,9 @@ public class ActividadFullObject {
     private Punto punto;
     private Actividad actividad;
     private Proyecto proyecto;
+    private Usuarios promotor;
+    private DataUbicacion ubicacion;
+    private Cliente cliente;
     
     public  ActividadFullObject() {
     
@@ -62,4 +68,47 @@ public class ActividadFullObject {
     public void setProyecto(Proyecto proyecto) {
         this.proyecto = proyecto;
     }
+
+    /**
+     * @return the promotor
+     */
+    public Usuarios getPromotor() {
+        return promotor;
+    }
+
+    /**
+     * @param promotor the promotor to set
+     */
+    public void setPromotor(Usuarios promotor) {
+        this.promotor = promotor;
+    }
+
+    /**
+     * @return the ubicacion
+     */
+    public DataUbicacion getUbicacion() {
+        return ubicacion;
+    }
+
+    /**
+     * @param ubicacion the ubicacion to set
+     */
+    public void setUbicacion(DataUbicacion ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
+    /**
+     * @return the cliente
+     */
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    /**
+     * @param cliente the cliente to set
+     */
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
 }

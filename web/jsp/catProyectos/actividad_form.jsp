@@ -4,6 +4,22 @@
     Author     : Fabian
 --%>
 
+<%@page import="java.util.List"%>
+<%@page import="com.tsp.gespro.hibernate.dao.UsuariosDAO"%>
+<%@page import="com.tsp.gespro.Services.Allservices"%>
+<%@page import="com.tsp.gespro.hibernate.dao.PuntoDAO"%>
+<%@page import="com.tsp.gespro.hibernate.dao.ActividadDAO"%>
+<%@page import="com.tsp.gespro.hibernate.dao.CoberturaProyectoDAO"%>
+<%@page import="com.tsp.gespro.hibernate.dao.CoberturaDAO"%>
+<%@page import="com.tsp.gespro.hibernate.dao.ProyectoDAO"%>
+<%@page import="com.tsp.gespro.hibernate.dao.ClienteDAO"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Usuarios"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Cobertura"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Coberturaproyecto"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Punto"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Actividad"%>
+<%@page import="com.tsp.gespro.bo.EmpresaBO"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -16,6 +32,31 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     response.sendRedirect("../../jsp/inicio/login.jsp?action=loginRequired&urlSource=" + request.getRequestURI() + "?" + request.getQueryString());
     response.flushBuffer();
 }
+
+Integer idProyecto = request.getParameter("idProyecto") != null ? new Integer(request.getParameter("idProyecto")): 0;
+Integer idActividad = request.getParameter("id") != null ? new Integer(request.getParameter("id")): 0;
+Actividad act = (new ActividadDAO()).getById(idActividad);
+EmpresaBO empresaBO = new EmpresaBO(user.getConn());
+int idEmpresaMatriz = empresaBO.getEmpresaMatriz(user.getUser().getIdEmpresa()).getIdEmpresa();
+ClienteDAO clienteModel = new ClienteDAO();
+UsuariosDAO usuarioModel = new UsuariosDAO();
+Usuarios userproyecto = null;
+boolean isSameEmpresa = false;
+ProyectoDAO proyectoMod = new ProyectoDAO();
+PuntoDAO puntomod = new PuntoDAO();
+Proyecto proyecto = proyectoMod.getById(idProyecto);
+Allservices services = new Allservices();
+List<Punto> puntos = null;
+if(proyecto.getIdPromotor()!=null){
+    userproyecto = usuarioModel.getById(proyecto.getIdPromotor());
+    int idEmpresaMatrizProyecto = empresaBO.getEmpresaMatriz(userproyecto.getIdEmpresa()).getIdEmpresa();
+    if(idEmpresaMatrizProyecto==idEmpresaMatriz){
+        isSameEmpresa = true;
+        String where ="where idCobertura in (select idCobertura from Coberturaproyecto where idProyecto = "+proyecto.getIdProyecto()+")";
+        puntos = services.queryPuntoDAO(where);
+    }
+}
+
 %>
 <!DOCTYPE html>
 <html>
@@ -31,7 +72,17 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
         <c:if test="${not empty param.idProyecto}">
             <fmt:parseNumber var="idProyecto" integerOnly="true" type="number" value="${param.idProyecto}" />
         </c:if>
-
+        <%
+            if(!isSameEmpresa){
+                %>
+                <script>
+                    javascript:window.location.href = 'catProyectos.jsp';
+                </script>
+                <%
+            }else{
+                
+            }
+        %>
         <script type="text/javascript">
             function guardar(){ 
                     $.ajax({
@@ -103,6 +154,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                             <div class="content">
                                     <input type="hidden" id="id" name="idActividad" value="${ not empty obj.idActividad ? obj.idActividad :"0"}" />
                                     <input type="hidden" id="id" name="idProyecto" value="${ not empty idProyecto ? idProyecto :"0"}" />
+                                    <input type="hidden" id="avance" name="avance" value="${not empty obj.avance ? obj.avance : "0.0"}" />
                                     <p>
                                         <label>* Nombre:</label><br/>
                                         <input maxlength="45" type="text" id="actividad" name="actividad" style="width:300px"
@@ -140,16 +192,22 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                     <br/> 
                                     <p>
                                         <label>Lugar:</label><br/>
-                                        <input maxlength="45" type="text" id="idPunto" name="idPunto" style="width:300px"
-                                               value="${not empty obj.idPunto ? obj.idPunto : ""}"
-                                               />
-                                    </p>
-                                    <br>
-                                    <p>
-                                        <label>Avance</label><br/>
-                                        <input maxlength="45" type="text" id="avance" name="avance" style="width:300px"
-                                               value="${not empty obj.avance ? obj.avance : ""}"
-                                               />
+                                        <select id="idPunto" name="idPunto">
+                                            <option value="0">Seleccionar un Lugar</option>
+                                            <%
+                                                for(Punto punto: puntos){
+                                                    out.print("<option value='"+punto.getIdPunto()+"'");
+                                                    if(act != null){
+                                                        if(punto.getIdPunto().equals(act.getIdPunto())){
+                                                            out.print(" selected ");
+                                                        }
+                                                    }
+                                                    out.print(">");
+                                                    out.print(punto.getLugar());
+                                                    out.print("</option>");
+                                                }
+                                            %>
+                                        </select>
                                     </p>
                                     <br>
                                     <c:if test="${not empty obj.checkin}">

@@ -7,7 +7,9 @@
 <%@page import="java.util.Date"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.HibernateUtil"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
 <%@page import="org.hibernate.Session"%>
+<%@page import="com.tsp.gespro.bo.EmpresaBO"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -22,12 +24,15 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
 }
 
 Integer id = request.getParameter("id") != null ? new Integer(request.getParameter("id")): 0;
+Integer idEmpresaJ = request.getParameter("idEmpresa") != null ? new Integer(request.getParameter("idEmpresa")): 0;
 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 Date date = new Date();
 String fechaactual = "";
 if(id==0){
     fechaactual = formatter.format(date);
 }
+EmpresaBO empresaBO = new EmpresaBO(user.getConn());
+int idEmpresaMatriz = empresaBO.getEmpresaMatriz(user.getUser().getIdEmpresa()).getIdEmpresa();
 %>
 <!DOCTYPE html>
 <html>
@@ -45,7 +50,13 @@ if(id==0){
                 width: 20%;
             }
         </style>
-
+        <%
+            if(idEmpresaJ != idEmpresaMatriz){
+        %>
+                <script>
+                    javascript:window.location.href = "catProyectos.jsp";
+                </script>
+        <% } %>
         <jsp:include page="../include/keyWordSEO.jsp" />
         <jsp:include page="../include/skinCSS.jsp" />
         <jsp:include page="../include/jsFunctions.jsp"/>
@@ -114,6 +125,38 @@ if(id==0){
                         }
                     });   
                 }
+                
+            function guardarCobertura(){ 
+                    $.ajax({
+                        type: "POST",
+                        url: "cobertura_ajax.jsp",
+                        data: $("#frm_coberturas").serialize(),
+                        beforeSend: function(objeto){
+                            $("#action_buttons").fadeOut("slow");
+                            $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
+                            $("#ajax_loading").fadeIn("slow");
+                        },
+                        success: function(datos){
+                            console.log("Datos");
+                            console.log(datos);
+                            if(datos.indexOf("--EXITO-->", 0)>0){
+                               $("#ajax_message").html("Los datos se guardaron correctamente.");
+                               $("#ajax_loading").fadeOut("slow");
+                               $("#ajax_message").fadeIn("slow");
+                               apprise('<center><img src=../../images/info.png> <br/>Los datos se guardaron correctamente.</center>',{'animate':true},
+                                        function(r){
+                                                javascript:window.location.reload();
+                                                parent.$.fancybox.close();  
+                                        });
+                           }else{
+                               $("#ajax_loading").fadeOut("slow");
+                               $("#ajax_message").html("Ocurrió un error al intentar guardar los datos.");
+                               $("#ajax_message").fadeIn("slow");
+                               $("#action_buttons").fadeIn("slow");
+                           }
+                        }
+                    });   
+                }
         function guardarProducto(){ 
                     $.ajax({
                         type: "POST",
@@ -145,11 +188,44 @@ if(id==0){
                         }
                     });   
                 }
+                
           function eliminarPromotor(idpromotorproyecto){
             $.ajax({
                 type: "POST",
                 url: "promotor_ajax.jsp",
                 data: {'id':idpromotorproyecto,'option':2},
+                beforeSend: function(objeto){
+                    $("#action_buttons").fadeOut("slow");
+                    $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
+                    $("#ajax_loading").fadeIn("slow");
+                },
+                success: function(datos){
+                    console.log("Datos");
+                    console.log(datos);
+                    if(datos.indexOf("--EXITO-->", 0)>0){
+                       $("#ajax_message").html("Se ha retirado el promotor correctamente correctamente");
+                       $("#ajax_loading").fadeOut("slow");
+                       $("#ajax_message").fadeIn("slow");
+                       apprise('<center><img src=../../images/info.png> <br/>Los datos se guardaron correctamente.</center>',{'animate':true},
+                                function(r){
+                                        javascript:window.location.reload();
+                                        parent.$.fancybox.close();  
+                                });
+                   }else{
+                       $("#ajax_loading").fadeOut("slow");
+                       $("#ajax_message").html("Ocurrió un error al intentar guardar los datos.");
+                       $("#ajax_message").fadeIn("slow");
+                       $("#action_buttons").fadeIn("slow");
+                   }
+                }
+            }); 
+          }
+                
+          function eliminarCobertura(idcoberturaProyecto){
+            $.ajax({
+                type: "POST",
+                url: "cobertura_ajax.jsp",
+                data: {'id':idcoberturaProyecto,'option':2},
                 beforeSend: function(objeto){
                     $("#action_buttons").fadeOut("slow");
                     $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
@@ -194,6 +270,8 @@ if(id==0){
         <jsp:useBean id="productosModel" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
         <jsp:useBean id="usuariosModel" class="com.tsp.gespro.hibernate.dao.UsuariosDAO"/>
         <jsp:useBean id="clienteModel" class="com.tsp.gespro.hibernate.dao.ClienteDAO"/>
+        <jsp:useBean id="coberturaproyectooModel" class="com.tsp.gespro.hibernate.dao.CoberturaProyectoDAO"/>
+        <jsp:useBean id="coberturaModel" class="com.tsp.gespro.hibernate.dao.CoberturaDAO"/>
         <jsp:useBean id="promotorproyectoModel" class="com.tsp.gespro.hibernate.dao.PromotorproyectoDAO"/>
         <jsp:useBean id="Services" class="com.tsp.gespro.Services.Allservices"/>
         <!--- @obj : Objeto de moneda a editar --->
@@ -444,6 +522,61 @@ if(id==0){
                                         </table>
                                     </div>
                             </div>
+                        </div>  
+                        <br>
+                        <br>
+                        <br>
+                        <div class="column_right">
+                            <div class="header">
+                                <span>
+                                    Coberturas para el Proyecto
+                                </span>
+                            </div>
+                            <br class="clear"/>
+                            
+                            <div class="content">
+                                <form  style="display:none" id="frm_coberturas" class="has-validation-callback">
+                                    <input type="hidden" id="idProyecto" name="idProyecto"  value="${ not empty obj.idProyecto ? obj.idProyecto :"0"}" />
+                                    <input type="hidden" id="option" name="option"  value="1" />
+                                    <p>
+                                    <label>Asignar Cobertura:</label>
+                                    <c:set var="whereempresa" value="where idCobertura not in (select cb.idCobertura from Coberturaproyecto as cb where cb.idProyecto = ${obj.idProyecto}) and idEmpresa = ${param.idEmpresa} and activo = 1"/>
+                                    <c:set var="Coberturaproye" value="${Services.queryCobertura(whereempresa)}"/>
+                                    <select id="idCobertura" name="idCobertura">
+                                        <option value="0" >Seleccione una Cobertura</option>
+                                        <c:forEach items="${Coberturaproye}" var="item">
+                                            <option value="${item.idCobertura}" >${item.nombre}</option>
+                                        </c:forEach>
+                                    </select>
+                                    <input value="Guardar" type="submit" class="btn">
+                                    <p>  
+                                </form>
+                                    
+                                    
+                                    
+                                    <div style="max-height:300px;text-align: right;">
+                                        <a id="btnAgregarCobertura">Agregar Cobertura</a><br><br>
+                                        <table class="data" width="100%" cellpadding="0" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Cobertura</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <c:set var="where" value="where idProyecto = ${obj.idProyecto}"/>
+                                                <c:set var="Coberturaproyeto" value="${Services.queryCoberturaProyecto(where)}"/>
+                                                <c:forEach items="${Coberturaproyeto}" var="item">
+                                                    <c:set var="cober" value="${coberturaModel.getById(item.idCobertura)}"/>
+                                                    <tr>
+                                                        <td>${cober.nombre}</td>
+                                                        <td><a onclick="eliminarCobertura('${item.id}')"><img src="../../images/icon_cancel.png" alt="editar" class="help" title="Eliminar Promotor"/></a></td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                            </div>
                         </div>                      
                         </c:if>
                     </div>
@@ -481,6 +614,10 @@ if(id==0){
                 $("#frm_promotor").show("slow");
                 $(this).hide("fast");
             });
+            $("#btnAgregarCobertura").click(function(){
+                $("#frm_coberturas").show("slow");
+                $(this).hide("fast");
+            });
             $("#frm_action").submit(function(e){
                e.preventDefault();
                guardar();
@@ -492,6 +629,10 @@ if(id==0){
             $("#frm_productos").submit(function(e){
                e.preventDefault();
                guardarProducto();
+            });
+            $("#frm_coberturas").submit(function(e){
+               e.preventDefault();
+               guardarCobertura();
             });
             $('#checkActivo').change(function() {
                 if($(this).is(":checked")) {

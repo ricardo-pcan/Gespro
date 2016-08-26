@@ -1,5 +1,6 @@
 package com.tsp.gespro.Services;
 
+import com.tsp.gespro.dto.Ubicacion;
 import java.util.List;
 
 import com.tsp.gespro.hibernate.pojo.HibernateUtil;
@@ -15,6 +16,7 @@ import com.tsp.gespro.hibernate.pojo.Proyecto;
 import com.tsp.gespro.hibernate.dao.UsuariosDAO;
 import com.tsp.gespro.hibernate.pojo.Actividad;
 import com.tsp.gespro.hibernate.dao.ActividadDAO;
+import com.tsp.gespro.hibernate.dao.ClienteDAO;
 import com.tsp.gespro.hibernate.dao.ProyectoDAO;
 import com.tsp.gespro.hibernate.dao.PuntoDAO;
 import com.tsp.gespro.hibernate.pojo.Cobertura;
@@ -22,6 +24,9 @@ import com.tsp.gespro.hibernate.pojo.Coberturaproyecto;
 import com.tsp.gespro.hibernate.pojo.Producto;
 import com.tsp.gespro.hibernate.pojo.Punto;
 import java.util.ArrayList;
+import com.tsp.gespro.hibernate.dao.CoberturaProyectoDAO;
+import com.tsp.gespro.hibernate.pojo.Cliente;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -32,6 +37,7 @@ public class Allservices {
     private static ProyectoDAO proyectoDAO;    
     private static ProductoDAO productoDAO;
     private static ActividadDAO actividadDAO;
+    private static CoberturaProyectoDAO coberturaproyectoDAO;
 
     public Allservices() {
     }
@@ -46,6 +52,28 @@ public class Allservices {
             session = HibernateUtil.getSessionFactory().openSession(); 
             Transaction tx = session.beginTransaction(); 
             String query = "from Cobertura "+where;
+            lista = session.createQuery(query).list(); 
+        }
+        finally 
+        { 
+            session.close(); 
+        }  
+
+        return lista; 
+    }
+    
+    
+    
+    public List queryCoberturaProyecto(String where){  
+        
+            List<Coberturaproyecto> lista = null;  
+            Session session = null;
+
+        try 
+        { 
+            session = HibernateUtil.getSessionFactory().openSession(); 
+            Transaction tx = session.beginTransaction(); 
+            String query = "from Coberturaproyecto "+where;
             lista = session.createQuery(query).list(); 
         }
         finally 
@@ -246,6 +274,20 @@ public class Allservices {
         Proyecto proyecto;
         ProyectoDAO proyectoDAO=new ProyectoDAO();
         
+        //Promotor
+        Usuarios promotor;
+        UsuariosDAO promotorDAO=new UsuariosDAO();
+        
+        // Cliente
+        Cliente cliente;
+        ClienteDAO clienteDAO=new ClienteDAO();
+        
+        //Ubicacion
+        DataUbicacion ubicacion=new DataUbicacion();
+        
+        // Cliente Geocode google
+        ClientGoogleServicesAPI api=new ClientGoogleServicesAPI();
+        
         for (Actividad obj: listaActividades) {
            
            // Buscar objeto punto de esta actividad.
@@ -263,6 +305,31 @@ public class Allservices {
            // Setear actividad a el objeto ActividadFullObject
            actividadFull.setActividad(obj);
            
+           // Setear promotor
+           promotor=promotorDAO.getById(obj.getIdUser());
+           if(promotor != null){
+             actividadFull.setPromotor(promotor);
+           }
+           
+           // Setear cliente al que pertenece el proyecto.
+           cliente=clienteDAO.getById(proyecto.getIdUser());
+           if(cliente!=null){
+               actividadFull.setCliente(cliente);
+           }
+           
+           // Agregar ubicacion
+           //Tipo de punto : ciudad 2 , Cliente 1, lugar 3
+           // Si es diferente de 2 sacar estado y ciudad por lt y lng.
+           if(punto.getTipo()!=2){
+              try{
+                ubicacion=api.getCiudadRegion(punto.getLatitud(),punto.getLongitud());
+                actividadFull.setUbicacion(ubicacion);
+              }catch(Exception e){
+                  System.out.print("Ocurrio un error intentando sacar ciudad y estado");
+                  System.out.print("punto_id :" + punto.getIdPunto());
+                  e.printStackTrace();
+              }
+           }
            // Aegregar objeto ActividadFullObject a la lista.
            lista.add(actividadFull);
         }
