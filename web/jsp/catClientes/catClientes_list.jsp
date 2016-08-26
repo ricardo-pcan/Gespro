@@ -427,7 +427,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                 &nbsp;&nbsp;
                                                 <a href="<%=urlTo6%>?<%=paramName%>=<%=item.getIdCliente()%>&acc=DescargarImagenes"><img src="../../images/download.png" alt="downloadImages" class="help" title="Descargar imagenes"/>
                                                     &nbsp;&nbsp;
-                                                <a href="<%=urlTo7%>?<%=paramName%>=<%=item.getIdCliente()%>&acc=GenerarCredenciales"><img src="../../images/icon_gateway.png" alt="generateLogin" class="help" title="Generar credenciales"/>
+                                                <a href="<%=urlTo7%>?<%=paramName%>=<%=item.getIdCliente()%>&acc=GenerarCredenciales&pagina=<%=paginaActual%>""><img src="../../images/icon_gateway.png" alt="generateLogin" class="help" title="Generar credenciales"/>
                                             </td>
                                         </tr>
                                         <%      }catch(Exception ex){
