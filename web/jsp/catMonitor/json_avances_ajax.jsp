@@ -4,6 +4,8 @@
     Author     : gloria
 --%>
 
+<%@page import="com.tsp.gespro.Services.DataUbicacion"%>
+<%@page import="com.tsp.gespro.dto.Ubicacion"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.tsp.gespro.Services.ActividadFullObject"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Actividad"%>
@@ -39,9 +41,15 @@
         String json = "{\"ciudades\":{";
 
         for (ActividadFullObject actividadFull : actividadesFull) {
-            if (!listaDeCiudades.contains(actividadFull.getUbicacion().getCiudad())) {
-                listaDeCiudades.add(actividadFull.getUbicacion().getCiudad());
-            }
+            DataUbicacion ubi=actividadFull.getUbicacion();
+            if(ubi!=null){
+              String ciudad=actividadFull.getUbicacion().getCiudad();
+              if(ciudad!=null && ciudad!=""){
+                if (!listaDeCiudades.contains(ciudad)) {
+                  listaDeCiudades.add(actividadFull.getUbicacion().getCiudad());
+                 }
+              }
+            } 
         }
         int indice = -1;
         for (String ciudad : listaDeCiudades) {
@@ -56,7 +64,6 @@
             }
             json += "\""+ciudad+"\":"+sumaDeAvance/(contador);
             if (listaDeCiudades.size() == indice+1) {
-                json += "},\"regiones\":{";
             } else {
                 json += ",";
             }
@@ -66,10 +73,18 @@
         ArrayList<String> listaDeEstados = new ArrayList();
 
         for (ActividadFullObject actividadFull : actividadesFull) {
-            if (!listaDeEstados.contains(actividadFull.getUbicacion().getEstado())) {
-                listaDeEstados.add(actividadFull.getUbicacion().getEstado());
-            }
+            DataUbicacion ubi=actividadFull.getUbicacion();
+            if(ubi!=null){
+                String estado=actividadFull.getUbicacion().getEstado();
+                if(estado!=null && estado!=""){
+                    if (!listaDeEstados.contains(estado)) {
+                        listaDeEstados.add(actividadFull.getUbicacion().getEstado());
+                    }
+                }
+            } 
         }
+        
+        json+="},\"regiones\":{";
         indice = -1;
         for (String estado : listaDeEstados) {
             indice++;
@@ -83,19 +98,13 @@
             }
             json += "\""+estado+"\":"+sumaDeAvance/(contador);
             if (listaDeEstados.size() == indice+1) {
-                json += "}}";
             } else {
                 json += ",";
             }
         }
+     json+="}}";
      response.setContentType("application/json");
      out.print(json);
     }
-
-    /**
-     * *
-     * String json=""; for(int i=0;i< proyectos.size();i++){ Gson gson = new
-     * Gson(); String jsonResponse = gson.toJson(proyectos.get(i)); }**
-     */
 
 %>
