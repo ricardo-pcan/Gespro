@@ -830,15 +830,7 @@
                                                                 out.print("<input type=\"hidden\" id=\"sucursalCampo\" value=\"" + sucursal.getCampo() + "\"/>");
                                                                 out.print("<input type=\"hidden\" id=\"sucursalId\" value=\"" + sucursal.getIdEtiquetaFormularioCliente() + "\"/>");
                                                             %>
-                                                            <label id="sucursalLabel"><%
-                                                                if (sucursal.getObligatorio() == 1) {
-                                                                    out.print("*");
-                                                                }
-                                                                out.print(sucursal.getEtiqueta());
-                                                                %>:</label> <img src="../../images/icon_edit.png" alt="icon" onclick="openModalCliente('sucursal')" onmouseover="" style="cursor: pointer;" /><br/>
-                                                            <select size="1" id="idSucursalEmpresaAsignado" name="idSucursalEmpresaAsignado" disabled="true">
-                                                                <option value="-1">Selecciona una Sucursal</option>                                                
-                                                            </select>                                        
+                                                                                                 
                                                         </p>  
                                                         <br/>
 

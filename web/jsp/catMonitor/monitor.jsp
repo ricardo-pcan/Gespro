@@ -4,6 +4,8 @@
     Author     : zesk8
 --%>
 
+<%@page import="com.tsp.gespro.hibernate.pojo.Usuarios"%>
+<%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.LoginCliente"%>
 <%@page import="com.tsp.gespro.hibernate.dao.LoginClienteDAO"%>
 <%@page import="com.tsp.gespro.dto.Roles"%>
@@ -30,15 +32,23 @@
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <%
+            List<Proyecto> proyectoList = new ProyectoDAO().lista();
+            List<Usuarios> promotores=new Allservices().QueryUsuariosDAO("where ID_ROLES=4");
             RolesDaoImpl rolesDaoImpl=new RolesDaoImpl(user.getConn());
             Roles rol=rolesDaoImpl.findByPrimaryKey(user.getUser().getIdRoles());
-            List<Proyecto> proyectoList;
             if(rol.getNombre().equals("CLIENTE")){
                 LoginClienteDAO loginClienteDAO=new LoginClienteDAO(user.getConn());
                 LoginCliente lc=loginClienteDAO.getByIdUsuario(user.getUser().getIdUsuarios());
                 proyectoList = new ProyectoDAO().getListByIdClient(lc.getIdCliente());
-            }else{
-                proyectoList = new ProyectoDAO().lista();
+                String promotoresID="(";
+                for(Proyecto proyecto: proyectoList){
+                    if(proyecto.getIdPromotor()!=null){
+                        promotoresID+= String.valueOf(proyecto.getIdProyecto())+",";
+                    }  
+                }
+                promotoresID=promotoresID.substring(0,promotoresID.length()-1);
+                promotoresID+=")";
+                promotores=new Allservices().QueryUsuariosDAO("where ID_USUARIOS in " + promotoresID);
             }
         %>
         
@@ -62,6 +72,18 @@
                                             <%
                                             for(Proyecto proyecto:proyectoList) {%>
                                                 <option value="<%=proyecto.getIdProyecto()%>"> <%=proyecto.getNombre()%> </option>
+                                            <%  
+                                            }
+                                            %>
+                     </select>
+                    </div>
+                     <div class="form-group">
+                      <label for="promotores">Promotores</label>
+                      <select id="selector-proyecto" name="promotor_id" class="form-control">
+                                            <option value="0">Seleccione un promotor</option>
+                                            <%
+                                            for(Usuarios promo: promotores) {%>
+                                                <option value="<%= promo.getIdUsuarios() %>"> <%= promo.getUserName() %> </option>
                                             <%  
                                             }
                                             %>
@@ -95,27 +117,24 @@
                     <th>#</th>
                     <th>Proyecto</th>
                     <th>Avance</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
+                  <%
+                     for(Proyecto pro:proyectoList){                       
+                  %>
                   <tr>
-                    <th scope="row">1</th>
-                    <td>Proyecto 1</td>
-                    <td>30%</td>
+                      <th scope="row"><%= pro.getIdProyecto()%></th>
+                    <td><%= pro.getNombre()%></td>
+                    <td><%= pro.getAvance() %> %</td>
+                    <td><button href="#myModal" id="openBtn" data-toggle="modal" type="button" class="btn btn-link">Actividades</button></td>
                   </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Proyecto 2</td>
-                    <td>10%</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>Proyecto 3</td>
-                    <td>100%</td>
-                  </tr>
+                  <%}%>
                 </tbody>
               </table>
               </div>
+              
               <div class="col-md-5">
                 <table class="table table-sm">
                 <thead>
@@ -123,24 +142,20 @@
                     <th>#</th>
                     <th>Proyecto</th>
                     <th>Avance</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
+                  <%
+                     for(Proyecto pro:proyectoList){                       
+                  %>
                   <tr>
-                    <th scope="row">1</th>
-                    <td>Proyecto 1</td>
-                    <td>30%</td>
+                      <th scope="row"><%= pro.getIdProyecto()%></th>
+                    <td><%= pro.getNombre()%></td>
+                    <td><%= pro.getAvance() %> %</td>
+                    <td><button href="#myModal" id="openBtn" data-toggle="modal" type="button" class="btn btn-link">Actividades</button></td>
                   </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Proyecto 2</td>
-                    <td>10%</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>Proyecto 3</td>
-                    <td>100%</td>
-                  </tr>
+                  <%}%>
                 </tbody>
               </table>
               </div>
@@ -230,5 +245,44 @@
             document.getElementById("myBtn").addEventListener("click", printMaps);
             printMaps();
         </script>
+<div class="modal fade" id="myModal">
+<div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 class="modal-title">Actividades</h3>
+        </div>
+        <div class="modal-body">
+		  <h5 class="text-center">Estás son las actividades de los proyectos en curso.</h5>
+          <table class="table table-striped" id="tblGrid">
+            <thead id="tblHead">
+              <tr>
+                <th>Actividad</th>
+                <th>Descripción</th>
+                <th class="text-right">Avance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Long Island, NY, USA</td>
+                <td>3</td>
+                <td class="text-right">45001</td>
+              </tr>
+              <tr><td>Chicago, Illinois, USA</td>
+                <td>5</td>
+                <td class="text-right">76455</td>
+              </tr>
+              <tr><td>New York, New York, USA</td>
+                <td>10</td>
+                <td class="text-right">39097</td>
+              </tr>
+            </tbody>
+          </table>
+	</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default " data-dismiss="modal">Close</button>
+        </div>			
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
     </body>
 </html>
