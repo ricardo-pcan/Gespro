@@ -50,13 +50,7 @@ int idEmpresaMatriz = empresaBO.getEmpresaMatriz(user.getUser().getIdEmpresa()).
                 width: 20%;
             }
         </style>
-        <%
-            if(idEmpresaJ != idEmpresaMatriz){
-        %>
-                <script>
-                    javascript:window.location.href = "catProyectos.jsp";
-                </script>
-        <% } %>
+
         <jsp:include page="../include/keyWordSEO.jsp" />
         <jsp:include page="../include/skinCSS.jsp" />
         <jsp:include page="../include/jsFunctions.jsp"/>
