@@ -26,18 +26,18 @@ import jxl.format.Alignment;
 /**
  *
  * @author ISCesarMartinez  poseidon24@hotmail.com
- * @date 17-dic-2012 
+ * @date 17-dic-2012
  */
 public class ReportExportableXLS extends ReportExportable {
-    
+
     private Connection conn = null;
 
     /**
      * Devuelve el ByteArrayOutputStream generado acorde al tipo de reporte y parámetros recibidos
-     * 
+     *
      * @param int report
      * @param String params
-     * 
+     *
      * @return ByteArrayOutputStream  Contenido de archivo XLS (MS Excel)
      */
     public ByteArrayOutputStream generarReporte(int report, String params, String parametrosExtra , String infoTitle) throws IOException, WriteException, Exception{
@@ -47,17 +47,29 @@ public class ReportExportableXLS extends ReportExportable {
 
         ArrayList<HashMap> dataList = null;
         ArrayList<HashMap> fieldList = null;
+        ArrayList<HashMap> dataExtraList = null;
+        ArrayList<HashMap> fieldExtraList = null;
         ArrayList<BigDecimal> totalList = new ArrayList<BigDecimal>();
-        
+
         if(this.dataList!=null)
             dataList = this.dataList;
         else
             dataList = repBO.getDataReport(report, params , parametrosExtra );
-        
+
         if(this.fieldList!=null)
             fieldList = this.fieldList;
         else
             fieldList = repBO.getFieldList(report);
+
+        if(this.dataExtraList!=null)
+            dataExtraList = this.dataExtraList;
+        else
+            dataExtraList = repBO.getDataExtraReport(report, params , parametrosExtra );
+
+        if(this.fieldExtraList!=null)
+            fieldExtraList = this.fieldExtraList;
+        else
+            fieldExtraList = repBO.getFieldExtraList(report);
 
         ByteArrayOutputStream bos= new ByteArrayOutputStream();
 
@@ -78,7 +90,7 @@ public class ReportExportableXLS extends ReportExportable {
             CellView view = new CellView();
             view.setAutosize(true);
             boolean cabecera=true;
-            
+
             /* CONTENIDO */
 
             /**
@@ -93,15 +105,15 @@ public class ReportExportableXLS extends ReportExportable {
                     Label logoCell = new Label(j, i, "_", formatLogo);
                     hojaCatalogo.addCell(logoCell);
                     hojaCatalogo.setColumnView(j, view);
-                }   
+                }
             }
 
-                
+
             /**
-             * 
+             *
              */
-            
-            
+
+
             /*
              * CABECERA
              *
@@ -110,14 +122,14 @@ public class ReportExportableXLS extends ReportExportable {
              */
             int k=6;
             for(int i = 0; i < fieldList.size(); i ++){
-                
+
                 //Label header = new Label(i, 0, (String)fieldList.get(i).get("label"), formatCabecera);
                 Label header = new Label(k, 6, (String)fieldList.get(i).get("label"), formatCabecera);
                 hojaCatalogo.addCell(header);
                 hojaCatalogo.setColumnView(k, view);
-                
+
                 totalList.add(BigDecimal.ZERO);
-                
+
                 k++;
             }
 
@@ -129,7 +141,7 @@ public class ReportExportableXLS extends ReportExportable {
              */
             k=7;
             for(int i = 1; i <= dataList.size(); i ++){
-                
+
                 int m=6;
                 //for(int j = 0; j < fieldList.size(); j ++){
                 for(int j = 0; j < fieldList.size(); j ++){
@@ -139,7 +151,7 @@ public class ReportExportableXLS extends ReportExportable {
                      String valor = (String)dataList.get(i-1).get((String)fieldList.get(j).get("field"));
                      //contentTxt = new Label(m, k, (String)dataList.get(i-1).get((String)fieldList.get(j).get("field")), formatContent);
                      contentTxt = new Label(m, k, valor, formatContent);
-                     
+
                      hojaCatalogo.addCell(contentTxt!=null?contentTxt:contentNum);
                      hojaCatalogo.setColumnView(m, view);
 
@@ -152,18 +164,77 @@ public class ReportExportableXLS extends ReportExportable {
                             totalList.set(j, actual);
                         }
                     }
-                    
+
                      m++;
                 }
                 k++;
             }
-            
-            
+
+
+            /*
+             * CABECERA EXTRA
+             *
+             * Por cada dato en la cabecera, se pinta una celda,
+             *
+             */
+            k+=4;
+            for(int i = 0; i < fieldExtraList.size(); i ++){
+
+                //Label header = new Label(i, 0, (String)fieldList.get(i).get("label"), formatCabecera);
+                Label header = new Label(6, k, (String)fieldExtraList.get(i).get("label"), formatCabecera);
+                hojaCatalogo.addCell(header);
+                hojaCatalogo.setColumnView(k, view);
+
+                totalList.add(BigDecimal.ZERO);
+
+                k++;
+            }
+
+            /*
+             * CUERPO EXTRA
+             *
+             * Para cada grupo de datos obtenido
+             * se va pintando el dato correspondiente a la cabecera
+             */
+            k+=1;
+            for(int i = 1; i <= dataExtraList.size(); i ++){
+
+                int m=6;
+                //for(int j = 0; j < fieldList.size(); j ++){
+                for(int j = 0; j < fieldExtraList.size(); j ++){
+
+                     Label contentTxt = null;
+                     Number contentNum = null;
+                     String valor = (String)dataExtraList.get(i-1).get((String)fieldExtraList.get(j).get("field"));
+                     //contentTxt = new Label(m, k, (String)dataList.get(i-1).get((String)fieldList.get(j).get("field")), formatContent);
+                     contentTxt = new Label(m, k, valor, formatContent);
+
+                     hojaCatalogo.addCell(contentTxt!=null?contentTxt:contentNum);
+                     hojaCatalogo.setColumnView(m, view);
+
+                     //Si el tipo de campo es Integer o Decimal, lo sumamos a la lista de totales
+                    int tipoCampo = 0;
+                    try{ tipoCampo = Integer.parseInt(fieldExtraList.get(j).get("type").toString()); }catch(Exception ex){}
+                    if (tipoCampo==ReportBO.DATA_INT || tipoCampo==ReportBO.DATA_DECIMAL){
+                        if(valor!=null){
+                            BigDecimal actual = totalList.get(j).add(new BigDecimal(valor));
+                            totalList.set(j, actual);
+                        }
+                    }
+
+                     m++;
+                }
+                k++;
+            }
+
+
+
+
             if (repBO.isTotalIntegerFields()
                         || repBO.isTotalDecimalFields()){
                 /**
                  * TOTALES
-                 * 
+                 *
                  * Opcional, para campos Enteros y/o Decimales
                  */
                 int i = 0;
@@ -190,24 +261,24 @@ public class ReportExportableXLS extends ReportExportable {
                 }
                 k++;
             }
-            
+
             /**
              * Titulo
              */
-            
+
              //PARA OBTENER LA SUCURSAL O MATRIZ
             Empresa empresa = new Empresa();
             EmpresaBO empBO = new EmpresaBO(user.getUser().getIdEmpresa(), this.conn);
             empresa = empBO.getEmpresa();
-        
+
             hojaCatalogo.mergeCells(6, 1, 8, 3);
             Label titleCell = new Label(6, 1, empresa.getNombreComercial() +" , "+this.getTitle(report), formatContent);
             hojaCatalogo.addCell(titleCell);
-            
+
             //hojaCatalogo.mergeCells(7, 1, 8, 3);
             Label titleCellExtra = new Label(6, 4, infoTitle , formatContent);
             hojaCatalogo.addCell(titleCellExtra);
-            
+
             libro.write();
             libro.close();
         }

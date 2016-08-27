@@ -15,6 +15,9 @@
 <%@page import="com.tsp.gespro.hibernate.dao.UsuariosDAO"%>
 <%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="com.tsp.gespro.report.ReportBO"%>
+<%@page import="com.tsp.gespro.bo.UsuarioBO"%>
+<%@page import="com.tsp.gespro.bo.RolesBO"%>
+<%@page import="com.tsp.gespro.bo.UsuariosBO"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:directive.page import="com.tsp.gespro.hibernate.dao.*"/>
@@ -26,6 +29,10 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     response.sendRedirect("../../jsp/inicio/login.jsp?action=loginRequired&urlSource=" + request.getRequestURI() + "?" + request.getQueryString());
     response.flushBuffer();
 }
+
+
+    int idEmpresa = user.getUser().getIdEmpresa();
+
 // Obtener parametros
 String buscar = request.getParameter("q")!=null? new String(request.getParameter("q").getBytes("ISO-8859-1"),"UTF-8") :"";    //
 
@@ -68,6 +75,7 @@ UsuariosDAO usuarioModel = new UsuariosDAO();
     <body>
         <!--- Inicialización de variables --->
         <jsp:useBean id="productos" class="com.tsp.gespro.hibernate.dao.ProductoDAO"/>
+
         <!--- @formulario --->
         <c:set var="formulario" value="formulario.jsp"/> 
         
@@ -86,9 +94,6 @@ UsuariosDAO usuarioModel = new UsuariosDAO();
                     <div id="ajax_loading" class="alert_info" style="display: none;"></div>
                     <div id="ajax_message" class="alert_warning" style="display: none;"></div>
                    
-                    <div class="onecolumn">
-                  
-                    </div>
 
                     <div class="onecolumn">
                         <div class="header">

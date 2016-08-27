@@ -14,6 +14,8 @@ public class ReportExportable {
     
     protected ArrayList<HashMap> dataList = null;
     protected ArrayList<HashMap> fieldList = null;
+    protected ArrayList<HashMap> dataExtraList = null;
+    protected ArrayList<HashMap> fieldExtraList = null;
     protected UsuarioBO user = null;
     protected File fileImageLogo = null;
 

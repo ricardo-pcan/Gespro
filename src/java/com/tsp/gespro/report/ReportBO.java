@@ -18,6 +18,7 @@ import com.tsp.gespro.hibernate.dao.ClienteDAO;
 import com.tsp.gespro.Services.Allservices;
 import com.tsp.gespro.hibernate.dao.PromotorproyectoDAO;
 import com.tsp.gespro.hibernate.pojo.Producto;
+import com.tsp.gespro.hibernate.pojo.Actividad;
 import com.tsp.gespro.hibernate.pojo.Promotorproyecto;
 import com.tsp.gespro.hibernate.pojo.Proyecto;
 import com.tsp.gespro.jdbc.DatosUsuarioDaoImpl;
@@ -298,6 +299,24 @@ public class ReportBO {
                 fieldList.add(getDataInfo("PROMOTOR","Promotor","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("ESTATUS","Estatus","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("PRODUCTOS","Productos","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("VISITAS REALIZADAS","Visitas realizadas","","",""+DATA_STRING,""));
+                break;
+        }
+        return fieldList;
+    }
+
+     /**
+     * Devuelve un arreglo de hash con los encabezados de parametros extra del reporte
+     *
+     * @param int REPORT
+     *
+     * @return ArrayList<HashMap>
+     */
+    public ArrayList<HashMap> getFieldExtraList(int REPORT){
+        ArrayList<HashMap> fieldList = new ArrayList<HashMap>();
+        switch(REPORT){
+            case PROYECTO_REPORT:
+                fieldList.add(getDataInfo("AVANCE GENERAL","Avance General","","",""+DATA_DECIMAL,""));
                 break;
         }
         return fieldList;
@@ -358,6 +377,34 @@ public class ReportBO {
                 Allservices allservices = new Allservices();
                 List<Proyecto> proyectos = allservices.queryProyectoDAO(params);
                 dataList = this.getDataList(proyectos);
+                break;
+        }
+        return dataList;
+    }
+    
+    /**
+     * Devuelve una lista con los valores extra del reporte seleccionado
+     *
+     * @param int report - Tipo de reporte
+     * @param String params - Parámetros de búsqueda
+     *
+     * @return ArrayList<HashMap> - Arreglo de hash con los datos
+     */
+    public ArrayList<HashMap> getDataExtraReport(int report, String params, String paramsExtra) throws Exception{
+        tipoReporte = report;
+        int idEmpresa = usuarioBO!=null?usuarioBO.getUser().getIdEmpresa():-1;
+        String paramsDefault ="";
+        ArrayList<HashMap> dataList = new ArrayList<HashMap>();
+        switch(report){
+             case PROYECTO_REPORT:
+                String filtroBusqueda = "";
+                if(params == null) {
+                    params = "";
+                }
+                String filtroBusquedaEncoded = java.net.URLEncoder.encode(params, "UTF-8");
+                Allservices allservices = new Allservices();
+                List<Proyecto> proyectos = allservices.queryProyectoDAO(params);
+                dataList = this.getDataExtraList(proyectos);
                 break;
         }
         return dataList;
@@ -626,6 +673,7 @@ public class ReportBO {
 
             // Obtenemos la informacion de los productos del proyecto
             List<Producto> productosList = allservices.QueryProductosDAO("WHERE id_proyecto = " + proyecto.getIdProyecto());
+            List<Actividad> actividades = allservices.QueryActividadDAO("where idProyecto = " + proyecto.getIdProyecto());
             String productos = "";
             for (Producto producto: productosList) {
                 productos += producto.getNombre() + "- ";
@@ -633,6 +681,17 @@ public class ReportBO {
             if (!productos.trim().equals("")) {
                 productos = productos.substring(0, productos.length()-2);
             }
+
+            // Obtener actividades terminadas
+            int totalActividades = actividades.size();
+            int actividades_completadas = 0;
+            for( Actividad actividad: actividades ) {
+                Float avance = actividad.getAvance();
+                if( avance == 100 ) {
+                    actividades_completadas += 1;
+                }
+            }
+            String actividades_resumen = actividades_completadas + " de " + totalActividades;
 
             //Agregamos la informacion al reporte por cada proyecto
             hashData.put((String)dataInfo.get(0).get("field"), getRealData(dataInfo.get(0), "" + proyecto.getIdProyecto())); ;
@@ -645,6 +704,7 @@ public class ReportBO {
             hashData.put((String)dataInfo.get(7).get("field"), getRealData(dataInfo.get(7), "" + promotores));
             hashData.put((String)dataInfo.get(8).get("field"), getRealData(dataInfo.get(8), "" + (proyecto.getStatus() == 1 ? "Activo" : "Inactivo")));
             hashData.put((String)dataInfo.get(9).get("field"), getRealData(dataInfo.get(9), "" + productos));
+            hashData.put((String)dataInfo.get(10).get("field"), getRealData(dataInfo.get(10), "" + actividades_resumen));
 
             dataList.add(hashData);
 
@@ -652,6 +712,30 @@ public class ReportBO {
         }
 
         return dataList;
+    }
+
+    /**
+     *  PROYECTO_REPORT EXTRA
+     * @param proyectos Arreglo de objetos tipo Proyecto para fabricar reporte.
+     * @return ArrayList<HashMap> con todos los datos para el reporte.
+     */
+    private ArrayList<HashMap> getDataExtraList(List<Proyecto> proyectos) {
+        ArrayList<HashMap> dataList = new ArrayList<HashMap>();
+        HashMap<String,String> hashData = new HashMap<String, String>();
+        ArrayList<HashMap> dataInfo = getFieldExtraList(PROYECTO_REPORT);
+
+        double avance_total = 0.0;
+        int total_proyectos = proyectos.size();
+        double proyectos_avance_suma = 0.0;
+        for(Proyecto proyecto:proyectos){
+            proyectos_avance_suma += proyecto.getAvance();
+        }
+
+        avance_total = proyectos_avance_suma / total_proyectos;
+        hashData.put((String)dataInfo.get(0).get("field"), getRealData( dataInfo.get(0), "" + avance_total )); ;
+        dataList.add(hashData);
+        return dataList;
+
     }
 
 }
