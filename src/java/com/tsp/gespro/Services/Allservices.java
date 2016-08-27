@@ -264,7 +264,7 @@ public class Allservices {
         // Lista de objeto con los objectos de actividades, punto y proyeco
         // Por actividad.
         List<ActividadFullObject> lista = new ArrayList<>();
-        ActividadFullObject actividadFull=new ActividadFullObject();
+        ActividadFullObject actividadFull;
         
         // Punto
         Punto punto;
@@ -289,7 +289,7 @@ public class Allservices {
         ClientGoogleServicesAPI api=new ClientGoogleServicesAPI();
         
         for (Actividad obj: listaActividades) {
-           
+           actividadFull=new ActividadFullObject();
            // Buscar objeto punto de esta actividad.
            punto=puntoDAO.getById(obj.getIdPunto());
            if(punto!=null){
