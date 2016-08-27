@@ -93,7 +93,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                             <th>descripcion</th>
                                             <th>Usuario</th>
                                             <th>Lugar</th>
-                                            <th>Avance</th>
                                             <th>Tipo</th>
                                             <th>Realizada</th>
                                             <th>Producto</th>
@@ -112,7 +111,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                             <td>${user.userName}</td>
                                             <c:set var="punto" value="${puntoModel.getById(item.idPunto)}"/>
                                             <td>${punto.lugar}</td>
-                                            <td>${item.avance}</td>
                                             <td>${item.tipoActividad == 1 ? "Entrega" : "Actividad"}</td>
                                             <td>${item.checkin != null ? item.checkin  :"-"}</td>
                                             <c:set var="producto" value="${productoModel.getById(item.idProducto)}" />
@@ -123,7 +121,6 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                                 <a href="${formulario}?idProyecto=${item.idProyecto}&id=${item.idActividad}"><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
                                                 <c:if test="${item.checkin == null}">
                                                     <a href="finish_task.jsp?id=${item.idActividad}&idProyecto=${item.idProyecto}" ><img src="../../images/icon_accept.png" alt="Terminar" class="help" title="Terminar"/></a>
-                                                    <a href="change_progress.jsp?id=${item.idActividad}&idProyecto=${item.idProyecto}" ><img src="../../images/icon_inventario.png" alt="Terminar" class="help" title="Añadir Avance"/></a>
                                                 </c:if>
                                                 </td>
                                           </tr>
