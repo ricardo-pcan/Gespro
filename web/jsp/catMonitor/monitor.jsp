@@ -36,6 +36,7 @@
             List<Usuarios> promotores=new Allservices().QueryUsuariosDAO("where ID_ROLES=4");
             RolesDaoImpl rolesDaoImpl=new RolesDaoImpl(user.getConn());
             Roles rol=rolesDaoImpl.findByPrimaryKey(user.getUser().getIdRoles());
+            
             if(rol.getNombre().equals("CLIENTE")){
                 LoginClienteDAO loginClienteDAO=new LoginClienteDAO(user.getConn());
                 LoginCliente lc=loginClienteDAO.getByIdUsuario(user.getUser().getIdUsuarios());
@@ -43,13 +44,15 @@
                 String promotoresID="(";
                 for(Proyecto proyecto: proyectoList){
                     if(proyecto.getIdPromotor()!=null){
-                        promotoresID+= String.valueOf(proyecto.getIdProyecto())+",";
+                        promotoresID += String.valueOf(proyecto.getIdProyecto()) +",";
                     }  
                 }
                 promotoresID=promotoresID.substring(0,promotoresID.length()-1);
-                promotoresID+=")";
-                promotores=new Allservices().QueryUsuariosDAO("where ID_USUARIOS in " + promotoresID);
+                promotoresID += ")";
+                String where="where ID_USUARIOS in " + promotoresID;
+                promotores=new Allservices().QueryUsuariosDAO(where);
             }
+            
         %>
         
     </head>
@@ -58,7 +61,12 @@
             <div class="row">
               <div class="col-md-12 text-center">
                    <h1>Avance de proyectos</h1>
-                   <a href="../../jsp/inicio/main.jsp"><b>Regresar<b></a>
+              </div>
+              <div class="col-md-12 text-center">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../../jsp/inicio/main.jsp">Home</a></li>
+                    <li class="breadcrumb-item active">Monitor</li>
+                  </ol>
               </div>
             </div>
             <div class="row">
@@ -67,7 +75,7 @@
                   <form class="form-inline">
                     <div class="form-group">
                       <label for="proyecto">Proyecto</label>
-                      <select id="selector-proyecto" name="proyecto_id" class="form-control">
+                      <select id="selector-proyecto" name="proyecto_id" class="form-control" onchange="proyectoSelect();">
                                             <option value="0">Seleccione un proyecto</option>
                                             <%
                                             for(Proyecto proyecto:proyectoList) {%>
@@ -79,7 +87,7 @@
                     </div>
                      <div class="form-group">
                       <label for="promotores">Promotores</label>
-                      <select id="selector-proyecto" name="promotor_id" class="form-control">
+                      <select id="selector-proyecto" name="promotor_id" class="form-control" onchange="promotorSelect();">
                                             <option value="0">Seleccione un promotor</option>
                                             <%
                                             for(Usuarios promo: promotores) {%>
@@ -89,7 +97,7 @@
                                             %>
                      </select>
                     </div>
-                    <button id="myBtn" type="submit" class="btn btn-primary">Buscar avance</button>
+                    <button id="buscarBtn" type="submit" class="btn btn-primary">Buscar avance</button>
                   </form>
               </div>
               <div class="col-md-5">
@@ -221,68 +229,82 @@
                         data = JSON.parse(xhttp.responseText);
                         regions = data.regiones;
                         cities = data.ciudades;
-                        // Fill regions array
-                        Object.keys(regions).map(function(key) {
-                            regionsArray.push([key, regions[key]]);
-                        });
-                        // Fill cities array
-                        Object.keys(cities).map(function(key) {
-                            markersArray.push([key, cities[key]]);
-                        });
-                        drawRegionsMap(regionsArray);
-                        drawMarkersMap(markersArray);
+                        console.log("Ciudades :" + regions);
+                        console.log("Regiones :" + cities);
+                        if(regions){
+                            // Fill regions array
+                            Object.keys(regions).map(function(key) {
+                                regionsArray.push([key, regions[key]]);
+                            });
+                            drawRegionsMap(regionsArray);
+                        }
+                        
+                        if(cities){
+                           // Fill cities array
+                            Object.keys(cities).map(function(key) {
+                                markersArray.push([key, cities[key]]);
+                            }); 
+                            drawMarkersMap(markersArray);
+                        }
                     }
                 };
                 // Change direction for real call
-                xhttp.open('GET', 'https://zesk8.firebaseio.com/users.json', true);
-                xhttp.send();
-                //$.get("json_avances_ajax.jsp", function(data, status){
-                    //console.log("Data: " + data + "\nStatus: " + status);
-               // });
-                
+                xhttp.open('GET', 'json_avances_ajax.jsp?proyecto_id=8', true);
+                xhttp.send();   
             }
             // Add event to show maps
-            document.getElementById("myBtn").addEventListener("click", printMaps);
+            document.getElementById("buscarBtn").addEventListener("click", printMaps);
             printMaps();
+            
+           
         </script>
-<div class="modal fade" id="myModal">
-<div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-          <h3 class="modal-title">Actividades</h3>
-        </div>
-        <div class="modal-body">
-		  <h5 class="text-center">Estás son las actividades de los proyectos en curso.</h5>
-          <table class="table table-striped" id="tblGrid">
-            <thead id="tblHead">
-              <tr>
-                <th>Actividad</th>
-                <th>Descripción</th>
-                <th class="text-right">Avance</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>Long Island, NY, USA</td>
-                <td>3</td>
-                <td class="text-right">45001</td>
-              </tr>
-              <tr><td>Chicago, Illinois, USA</td>
-                <td>5</td>
-                <td class="text-right">76455</td>
-              </tr>
-              <tr><td>New York, New York, USA</td>
-                <td>10</td>
-                <td class="text-right">39097</td>
-              </tr>
-            </tbody>
-          </table>
-	</div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default " data-dismiss="modal">Close</button>
-        </div>			
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+        
+        <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  <h3 class="modal-title">Actividades</h3>
+                </div>
+                <div class="modal-body">
+                          <h5 class="text-center">Estás son las actividades de los proyectos en curso.</h5>
+                  <table class="table table-striped" id="tblGrid">
+                    <thead id="tblHead">
+                      <tr>
+                        <th>Actividad</th>
+                        <th>Descripción</th>
+                        <th class="text-right">Avance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Long Island, NY, USA</td>
+                        <td>3</td>
+                        <td class="text-right">45001</td>
+                      </tr>
+                      <tr><td>Chicago, Illinois, USA</td>
+                        <td>5</td>
+                        <td class="text-right">76455</td>
+                      </tr>
+                      <tr><td>New York, New York, USA</td>
+                        <td>10</td>
+                        <td class="text-right">39097</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default " data-dismiss="modal">Close</button>
+                </div>			
+              </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+          </div><!-- /.modal -->
+          
+          <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                No hay avances!! :(
+              </div>
+            </div>
+          </div>
     </body>
 </html>
