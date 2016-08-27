@@ -88,8 +88,8 @@
                 json += ",";
             }
         }
-        
-        out.print(json);
+     response.setContentType("application/json");
+     out.print(json);
     }
 
     /**
