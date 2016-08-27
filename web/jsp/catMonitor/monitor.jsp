@@ -4,11 +4,16 @@
     Author     : zesk8
 --%>
 
+<%@page import="com.tsp.gespro.hibernate.pojo.LoginCliente"%>
+<%@page import="com.tsp.gespro.hibernate.dao.LoginClienteDAO"%>
+<%@page import="com.tsp.gespro.dto.Roles"%>
+<%@page import="com.tsp.gespro.jdbc.RolesDaoImpl"%>
 <%@page import="com.tsp.gespro.hibernate.dao.ProyectoDAO"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 <!DOCTYPE html>
 <html>
     <head>
@@ -25,7 +30,16 @@
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <%
-            List<Proyecto> proyectoList = new ProyectoDAO().lista();
+            RolesDaoImpl rolesDaoImpl=new RolesDaoImpl(user.getConn());
+            Roles rol=rolesDaoImpl.findByPrimaryKey(user.getUser().getIdRoles());
+            List<Proyecto> proyectoList;
+            if(rol.getNombre().equals("CLIENTE")){
+                LoginClienteDAO loginClienteDAO=new LoginClienteDAO(user.getConn());
+                LoginCliente lc=loginClienteDAO.getByIdUsuario(user.getUser().getIdUsuarios());
+                proyectoList = new ProyectoDAO().getListByIdClient(lc.getIdCliente());
+            }else{
+                proyectoList = new ProyectoDAO().lista();
+            }
         %>
         
     </head>

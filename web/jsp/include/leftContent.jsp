@@ -6,6 +6,8 @@
 
 
 
+<%@page import="com.tsp.gespro.dto.Roles"%>
+<%@page import="com.tsp.gespro.jdbc.RolesDaoImpl"%>
 <%@page import="com.tsp.gespro.dto.Empresa"%>
 <%@page import="com.tsp.gespro.bo.EmpresaBO"%>
 <%@page import="com.tsp.gespro.jdbc.EmpresaPermisoAplicacionDaoImpl"%>
@@ -15,7 +17,8 @@
 <%
     EmpresaBO empresaBO = new EmpresaBO(user.getConn());
     EmpresaPermisoAplicacion empresaPermisoAplicacionDto = new EmpresaPermisoAplicacionDaoImpl(user.getConn()).findByPrimaryKey(empresaBO.getEmpresaMatriz(user.getUser().getIdEmpresa()).getIdEmpresa());
-
+    RolesDaoImpl rolesDaoImpl=new RolesDaoImpl(user.getConn());
+    Roles rol=rolesDaoImpl.findByPrimaryKey(user.getUser().getIdRoles());
     String verificadorSesionGuiaCerrada = "0";
     try {
         if (session.getAttribute("sesionCerrada") != null) {
@@ -28,13 +31,26 @@
 <a href="javascript:;" id="show_menu">&raquo;</a>
 <div id="left_menu">
     <a href="javascript:;" id="hide_menu">&laquo;</a>
-    <ul id="main_menu">
-        <% if (user.isPermisoVerMenu()) {
-
-        %>
+    <ul id="main_menu">        
+        <% if (user.isPermisoVerMenu()) {            
+            if(rol.getNombre().equals("CLIENTE")){
+        %>        
         <li><a href="../../jsp/inicio/main.jsp" id="idInicioLeftContent"><img src="../../images/icon_home.png" alt="Inicio"/>Inicio</a></li>
         <li><a href="../../jsp/catMonitor/monitor.jsp" id="monitor"><img src="../../images/icon_home.png" alt="Inicio"/>Monitor</a></li>
         <li><a href="../../jsp/catMonitor/monitor_log.jsp" id="monitor"><img src="../../images/icon_home.png" alt="Inicio"/>MonitorLog</a></li>
+        <li>
+            <a href="" id="idAdministracionLeftContent"><img src="../../images/icon_validaXML.png" alt="Proyectos"/>Proyectos</a>
+            <ul>
+                <li><a href="../../jsp/catProyectos/catProyectos.jsp"><img src="../../images/icon_validaXML.png"/>Ver Proyectos</a></li>
+                <li><a href="../../jsp/catCoberturas/catCoberturas_list.jsp"><img src="../../images/camion_icono_16.png"/>Cobertura</a></li>
+            </ul>	
+        </li>
+        <%
+            }else{
+        %>
+        <li><a href="../../jsp/inicio/main.jsp" id="idInicioLeftContent"><img src="../../images/icon_home.png" alt="Inicio"/>Inicio</a></li>
+        
+
 
 
         <li style="position: relative; z-index: 99;">
@@ -140,7 +156,8 @@
             </ul>                            
         </li>-->
 
-        <%}%>
+        <%}
+        }%>
     </ul>
 
     <br class="clear"/>
