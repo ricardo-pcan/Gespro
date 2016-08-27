@@ -16,8 +16,10 @@ import com.tsp.gespro.exceptions.SgfensPedidoDaoException;
 import com.tsp.gespro.exceptions.UsuariosDaoException;
 import com.tsp.gespro.hibernate.dao.ClienteDAO;
 import com.tsp.gespro.Services.Allservices;
+import com.tsp.gespro.Services.ActividadFullObject;
 import com.tsp.gespro.hibernate.dao.PromotorproyectoDAO;
 import com.tsp.gespro.hibernate.pojo.Producto;
+import com.tsp.gespro.hibernate.pojo.Punto;
 import com.tsp.gespro.hibernate.pojo.Actividad;
 import com.tsp.gespro.hibernate.pojo.Promotorproyecto;
 import com.tsp.gespro.hibernate.pojo.Proyecto;
@@ -300,6 +302,7 @@ public class ReportBO {
                 fieldList.add(getDataInfo("ESTATUS","Estatus","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("PRODUCTOS","Productos","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("VISITAS REALIZADAS","Visitas realizadas","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("RUTAS CUMPLIDAS","Rutas cumplidas","","",""+DATA_STRING,""));
                 break;
         }
         return fieldList;
@@ -381,7 +384,7 @@ public class ReportBO {
         }
         return dataList;
     }
-    
+
     /**
      * Devuelve una lista con los valores extra del reporte seleccionado
      *
@@ -674,6 +677,7 @@ public class ReportBO {
             // Obtenemos la informacion de los productos del proyecto
             List<Producto> productosList = allservices.QueryProductosDAO("WHERE id_proyecto = " + proyecto.getIdProyecto());
             List<Actividad> actividades = allservices.QueryActividadDAO("where idProyecto = " + proyecto.getIdProyecto());
+            List<ActividadFullObject> actividadesFullObjects = allservices.getActividadesFull( actividades );
             String productos = "";
             for (Producto producto: productosList) {
                 productos += producto.getNombre() + "- ";
@@ -683,15 +687,32 @@ public class ReportBO {
             }
 
             // Obtener actividades terminadas
-            int totalActividades = actividades.size();
+            int totalActividades = actividadesFullObjects.size();
             int actividades_completadas = 0;
-            for( Actividad actividad: actividades ) {
-                Float avance = actividad.getAvance();
+            double puntos_con_checkin = 0.0;
+            String puntos = "";
+            for( ActividadFullObject actividad: actividadesFullObjects ) {
+                Float avance = actividad.getActividad().getAvance();
+                Date checkin = actividad.getActividad().getCheckin();
+                Punto punto = actividad.getPunto();
+
+
                 if( avance == 100 ) {
                     actividades_completadas += 1;
                 }
+
+                if( !actividad.getActividad().getCheckin().toString().isEmpty() ) {
+                    puntos_con_checkin += 1;
+                    puntos += punto.getLugar() + " ";
+                }
             }
             String actividades_resumen = actividades_completadas + " de " + totalActividades;
+            if( puntos_con_checkin > 0 ) {
+                puntos_con_checkin = ( puntos_con_checkin * 100 ) / totalActividades;
+            }
+            
+
+
 
             //Agregamos la informacion al reporte por cada proyecto
             hashData.put((String)dataInfo.get(0).get("field"), getRealData(dataInfo.get(0), "" + proyecto.getIdProyecto())); ;
@@ -705,6 +726,7 @@ public class ReportBO {
             hashData.put((String)dataInfo.get(8).get("field"), getRealData(dataInfo.get(8), "" + (proyecto.getStatus() == 1 ? "Activo" : "Inactivo")));
             hashData.put((String)dataInfo.get(9).get("field"), getRealData(dataInfo.get(9), "" + productos));
             hashData.put((String)dataInfo.get(10).get("field"), getRealData(dataInfo.get(10), "" + actividades_resumen));
+            hashData.put((String)dataInfo.get(11).get("field"), getRealData(dataInfo.get(11), "" + puntos_con_checkin ));
 
             dataList.add(hashData);
 
