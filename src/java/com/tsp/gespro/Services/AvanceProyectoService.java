@@ -5,6 +5,9 @@
 package com.tsp.gespro.Services;
 
 import com.google.gson.Gson;
+import com.tsp.gespro.hibernate.dao.ActividadDAO;
+import com.tsp.gespro.hibernate.pojo.Actividad;
+import com.tsp.gespro.hibernate.pojo.Proyecto;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +17,7 @@ import java.util.List;
  * @author gloria
  */
 public class AvanceProyectoService {
+    
     public String getAvancesRegiones(List<ActividadFullObject> lista){
         List<ActividadFullObject> ciudades=lista;
         List<ActividadFullObject> grupoCiudad=lista;
@@ -43,5 +47,8 @@ public class AvanceProyectoService {
         return jsonResponse;
     }
     
-    
+    public List<Actividad> getAvanceActividades(int idproyecto){
+        List<Actividad> actividades=new Allservices().QueryActividadDAO("where id_proyecto"+idproyecto);
+        return actividades;
+    }
 }

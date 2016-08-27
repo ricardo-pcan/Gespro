@@ -5,6 +5,9 @@
 --%>
 
 <%@page import="com.tsp.gespro.bo.EmpresaBO"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.LoginCliente"%>
+<%@page import="com.tsp.gespro.dto.Roles"%>
+<%@page import="com.tsp.gespro.jdbc.RolesDaoImpl"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Cliente"%>
 <%@page import="com.tsp.gespro.hibernate.dao.ClienteDAO"%>
@@ -30,6 +33,19 @@ String buscar = request.getParameter("q")!=null? new String(request.getParameter
 String filtroBusqueda = ""; //"AND ID_ESTATUS=1 ";
 if (!buscar.trim().equals("")) {
     filtroBusqueda += " WHERE (NOMBRE LIKE '%" + buscar + "%')";
+}
+RolesDaoImpl rolesDaoImpl=new RolesDaoImpl(user.getConn());
+Roles rol=rolesDaoImpl.findByPrimaryKey(user.getUser().getIdRoles());
+List<Proyecto> proyectoList;
+if(rol.getNombre().equals("CLIENTE")){
+    LoginClienteDAO loginClienteDAO=new LoginClienteDAO(user.getConn());
+    LoginCliente lc=loginClienteDAO.getByIdUsuario(user.getUser().getIdUsuarios());
+    if(filtroBusqueda.contains("WHERE")){
+        filtroBusqueda+= " AND idCliente='"+lc.getIdCliente()+"'";
+    }else{
+        filtroBusqueda+= " WHERE idCliente='"+lc.getIdCliente()+"'";
+    }
+    
 }
 String filtroBusquedaEncoded = java.net.URLEncoder.encode(filtroBusqueda, "UTF-8");
 Allservices allservices = new Allservices();
