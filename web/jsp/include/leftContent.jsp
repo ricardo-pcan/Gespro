@@ -37,6 +37,7 @@
         %>        
         <li><a href="../../jsp/inicio/main.jsp" id="idInicioLeftContent"><img src="../../images/icon_home.png" alt="Inicio"/>Inicio</a></li>
         <li><a href="../../jsp/catMonitor/monitor.jsp" id="monitor"><img src="../../images/icon_home.png" alt="Inicio"/>Monitor</a></li>
+        <li><a href="../../jsp/catMonitor/monitor_log.jsp" id="monitor"><img src="../../images/icon_home.png" alt="Inicio"/>MonitorLog</a></li>
         <li>
             <a href="" id="idAdministracionLeftContent"><img src="../../images/icon_validaXML.png" alt="Proyectos"/>Proyectos</a>
             <ul>
@@ -49,6 +50,7 @@
         %>
         <li><a href="../../jsp/inicio/main.jsp" id="idInicioLeftContent"><img src="../../images/icon_home.png" alt="Inicio"/>Inicio</a></li>
         
+
 
 
         <li style="position: relative; z-index: 99;">

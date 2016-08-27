@@ -4,6 +4,10 @@
     Author     : gloria
 --%>
 
+<%@page import="com.tsp.gespro.Services.Allservices"%>
+<%@page import="com.tsp.gespro.hibernate.dao.ProyectoDAO"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
+<%@page import="java.util.List"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="org.hibernate.HibernateException"%>
@@ -26,6 +30,7 @@
     String message = "";
     String json = "";
     boolean status = false;
+    Allservices services = new Allservices();
     
     try{
         if(option==1){
@@ -70,7 +75,19 @@
                 }
            }
         }
-                   
+        List<Actividad> actividades = services.QueryActividadDAO("where idProyecto = "+obj.getIdProyecto());
+            Float promedio = Float.parseFloat("0");
+            int cantidad = actividades.size();
+            for(Actividad itemAct : actividades){
+                promedio += itemAct.getAvance();
+            }
+            out.print(promedio);
+            promedio = promedio/cantidad;
+            Proyecto proyecto2;
+            ProyectoDAO proyectoModel = new ProyectoDAO();
+            proyecto2 = proyectoModel.getById(obj.getIdProyecto());
+            proyecto2.setAvance(promedio);
+            proyectoModel.actualizar(proyecto2);      
            
        }catch(HibernateException e){
            message = "<--ERROR-->" + "Ocurrió un error al actualizar." + e.getMessage();
