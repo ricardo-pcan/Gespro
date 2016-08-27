@@ -71,47 +71,6 @@ List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
                     <div id="ajax_loading" class="alert_info" style="display: none;"></div>
                     <div id="ajax_message" class="alert_warning" style="display: none;"></div>
                    
-                    <div class="onecolumn">
-                        <div class="header">
-                            <span>
-                                Búsqueda Avanzada &dArr;
-                            </span>                           
-                        </div>
-                        <br class="clear"/>
-                        <div class="content" style="display: block;">
-                            <form action="./catProyectos.jsp" id="search_form_advance" name="search_form_advance" method="post">
-                                <p>
-                                    <label>Ciudad:</label><br/>
-                                    <input type="text" name="proy_ciudad_search" placeholder="Buscar por ciudad">
-                                </p>
-
-                                <p>
-                                    <label>Cliente:</label><br/>
-                                    <input type="text" name="proy_cliente_search" placeholder="Buscar por cliente">
-                                </p>
-
-                                <p>
-                                    <label>Promotor:</label><br/>
-                                    <select name="idUser" id="idUser" >
-                                            <c:set var="promotorespro" value="${Services.QueryPromotorProyecto(where)}"/>
-                                            <option value="0">Seleccionar Promotor</option>
-                                            <c:forEach items="${promotorespro}" var="item">
-                                                <c:set var="usuario" value="${usuariosModel.getById(item.idUser)}"/>
-                                                <option value="${item.idUser}" ${item.idUser == usuario.idUsuarios ? "selected" : ""}>${usuario.userName}</option>
-                                            </c:forEach>
-                                        </select>
-                                </p>
-                                <br/>                                    
-                                <br/>
-                                <div id="action_buttons">
-                                    <p>
-                                        <input type="button" id="buscar" value="Buscar" onclick="$('#search_form_advance').submit();"/>
-                                    </p>
-                                </div>
-                                
-                            </form>
-                        </div>
-                    </div>
 
                     <div class="onecolumn">
                         <div class="header">
