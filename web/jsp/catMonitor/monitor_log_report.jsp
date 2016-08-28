@@ -46,6 +46,11 @@ if(request.getParameter("idProyecto")!=null){
             .info_resumen{
                 font-weight: normal;
             }
+            .show_foto{
+                width: 20%;
+                width: 200px;
+                display: inline-table;
+            }
         </style>
     </head>
     <body>
@@ -93,9 +98,9 @@ if(request.getParameter("idProyecto")!=null){
                                                     <input type="radio" name="tipo" value=" and avance = 100"/> Terminadas
                                                 </form>
                                             </td>
-                                            <td>
+                                            <td><a href="monitor_log.jsp" >
                                                 <input type="button" id="nuevo" name="nuevo" class="right_switch" value="Regresar" 
-                                                        style="float: right; width: 100px;" onclick="history.back()"/>&nbsp;&nbsp;
+                                                       style="float: right; width: 100px;"/></a>
                                             </td>                                           
                                         </tr>
                                     </tbody>
@@ -126,8 +131,9 @@ if(request.getParameter("idProyecto")!=null){
                                             <td>${item.tipoActividad == 1 ? "Entrega" : "Actividad"}</td>
                                             <c:set var="producto" value="${productoModel.getById(item.idProducto)}" />
                                             <td>
-                                                <a id="${item.idActividad}" class="show_resumen" ><img src="../../images/icon_edit.png" alt="editar" class="help" title="Editar"/></a>
-                                                <a  idact="${item.idActividad}" id="map_${item.idActividad}" class="show_ubicacion" ><img src="../../images/icon_edit.png" alt="editar" class="help" title="Ver Ubicacion"/></a>
+                                                <a id="${item.idActividad}" class="show_resumen" ><img src="../../images/icon_reporte.png" alt="editar" class="help" title="Editar"/></a>
+                                                <a  idact="${item.idActividad}" id="map_${item.idActividad}" class="show_ubicacion" ><img src="../../images/icon_mapa_1.png" alt="editar" class="help" title="Ver Ubicacion"/></a>
+                                                <a  idactpic="${item.idActividad}" class="show_images" ><img src="../../images/icon_pop.png" alt="editar" class="help" title="Ver Imagenes"/></a>
                                            
                                                 <input type="hidden" id="producto_${item.idActividad}" value="${producto != null ? producto.nombre: "-"}" />
                                                 <input type="hidden" id="checkin_${item.idActividad}" value="${item.checkin != null ? item.checkin  :"No terminada"}" />
@@ -171,6 +177,10 @@ if(request.getParameter("idProyecto")!=null){
                                 
                             </div>
                         </div>
+                        <br class="clear"/>
+                        <div id="pictures" class="content">
+                            
+                        </div>
                     </div>
                                                     
             <script>
@@ -179,6 +189,30 @@ if(request.getParameter("idProyecto")!=null){
                 $(document).ready(function(){
                     $("input[name=tipo]").click(function(){
                         $("#action_filter").submit();
+                    });
+                    $(".show_images").click(function(){
+                        var idActividad = $(this).attr("idactpic");
+                        var fechaActividad = $("#checkin_"+$(this).attr("idactpic")).val();
+                        fechaActividad = fechaActividad.split(" ");
+                        fechaActividad = fechaActividad[0];
+                        var data ={
+                            "idActividad":idActividad,
+                            "fechaActividad":fechaActividad
+                        }
+                        $.ajax({
+                            type: "POST",
+                            url: "photo_task.jsp",
+                            data: data,
+                            beforeSend: function(objeto){
+                                $("#action_buttons").fadeOut("slow");
+                                $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
+                                $("#ajax_loading").fadeIn("slow");
+                            },
+                            success: function(datos){
+                                $("#pictures").html(datos);
+                                $("#ajax_loading").fadeOut("slow");
+                            }
+                        });
                     });
                     $(".show_ubicacion").click(function(){
                         $(".column_right").hide("fast");

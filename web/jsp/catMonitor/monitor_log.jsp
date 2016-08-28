@@ -140,7 +140,11 @@ UsuariosDAO usuarioModel = new UsuariosDAO();
                                             <td><% out.print(client.getNombreComercial()); %></td>
                                             <td><% out.print(proyecto.getAvance()); %></td>
                                             <td>
+
                                                 <a href="monitor_log_report.jsp?idProyecto=<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/icon_reporte.png" alt="Ver Reporte" class="help" title="Ver Reporte"/></a>
+
+                                                <a class="imprimir_excel" idProyecto="<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/icon_excel.png" alt="Excel Resumen" class="help" title="Excel Resumen"/></a>
+                                                <a class="imprimir_pdf" idProyecto="<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/icon_pdf.png" alt="PDF Resumen" class="help" title="PDF Resumen"/></a>
                                             </td>
                                           </tr>        
                                          
@@ -151,6 +155,10 @@ UsuariosDAO usuarioModel = new UsuariosDAO();
                                     </tbody>
                                 </table>
                             </form>
+                            <form action="../reportesExportar/exportarXLS.jsp" method="post" id="imprimir_reporte" target="_blank">
+                                <input type="hidden" id="i" name="i" value="7">
+                                <input type="hidden" id="parametrosCustom" name="parametrosCustom" value="">
+                            </form>
                         </div>
                     </div>
 
@@ -160,6 +168,24 @@ UsuariosDAO usuarioModel = new UsuariosDAO();
             </div>
             <!-- Fin de Contenido-->
         </div>
+            <script>
+                $(document).ready(function(){
+                    $(".imprimir_excel").click(function(){
+                        var idProyecto = $(this).attr("idProyecto");
+                        var where = "WHERE idProyecto = "+idProyecto;
+                        $("#parametrosCustom").val(where);
+                        $("#imprimir_reporte").attr({"action":"../reportesExportar/exportarXLS.jsp"});
+                        $("#imprimir_reporte").submit();
+                    });
+                    $(".imprimir_pdf").click(function(){
+                        var idProyecto = $(this).attr("idProyecto");
+                        var where = "WHERE idProyecto = "+idProyecto;
+                        $("#parametrosCustom").val(where);
+                        $("#imprimir_reporte").attr({"action":"../reportesExportar/exportarPDF.jsp"});
+                        $("#imprimir_reporte").submit();
+                    });
+                });
+            </script>
         
     </body>
 </html>

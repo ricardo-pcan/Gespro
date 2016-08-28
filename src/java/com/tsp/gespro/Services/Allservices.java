@@ -23,6 +23,9 @@ import com.tsp.gespro.hibernate.pojo.Cobertura;
 import com.tsp.gespro.hibernate.pojo.Coberturaproyecto;
 import com.tsp.gespro.hibernate.pojo.Producto;
 import com.tsp.gespro.hibernate.pojo.Punto;
+
+import com.tsp.gespro.hibernate.dao.ConceptoRegistroFotograficoDAO;
+import com.tsp.gespro.hibernate.pojo.ConceptoRegistroFotografico;
 import java.util.ArrayList;
 import com.tsp.gespro.hibernate.dao.CoberturaProyectoDAO;
 import com.tsp.gespro.hibernate.pojo.Cliente;
@@ -38,8 +41,29 @@ public class Allservices {
     private static ProductoDAO productoDAO;
     private static ActividadDAO actividadDAO;
     private static CoberturaProyectoDAO coberturaproyectoDAO;
+    private static ConceptoRegistroFotograficoDAO conceptoregistrofotograficoDAO;
 
     public Allservices() {
+    }
+    
+    public List queryConceptoRegistroFotografico(String where){  
+        
+            List<ConceptoRegistroFotografico> lista = null;  
+            Session session = null;
+
+        try 
+        { 
+            session = HibernateUtil.getSessionFactory().openSession(); 
+            Transaction tx = session.beginTransaction(); 
+            String query = "from ConceptoRegistroFotografico "+where;
+            lista = session.createQuery(query).list(); 
+        }
+        finally 
+        { 
+            session.close(); 
+        }  
+
+        return lista; 
     }
     
     public List queryCobertura(String where){  
@@ -264,7 +288,7 @@ public class Allservices {
         // Lista de objeto con los objectos de actividades, punto y proyeco
         // Por actividad.
         List<ActividadFullObject> lista = new ArrayList<>();
-        ActividadFullObject actividadFull=new ActividadFullObject();
+        ActividadFullObject actividadFull;
         
         // Punto
         Punto punto;
@@ -289,7 +313,7 @@ public class Allservices {
         ClientGoogleServicesAPI api=new ClientGoogleServicesAPI();
         
         for (Actividad obj: listaActividades) {
-           
+           actividadFull=new ActividadFullObject();
            // Buscar objeto punto de esta actividad.
            punto=puntoDAO.getById(obj.getIdPunto());
            if(punto!=null){
