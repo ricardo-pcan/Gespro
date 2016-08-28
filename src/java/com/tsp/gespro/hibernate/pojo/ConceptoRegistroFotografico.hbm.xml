@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27/08/2016 07:20:14 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="com.tsp.gespro.hibernate.pojo.ConceptoRegistroFotografico" table="concepto_registro_fotografico" catalog="gespro">
+        <id name="idRegistro" type="java.lang.Integer">
+            <column name="ID_REGISTRO" />
+            <generator class="identity" />
+        </id>
+        <property name="idEmpresa" type="int">
+            <column name="ID_EMPRESA" not-null="true" />
+        </property>
+        <property name="idConcepto" type="int">
+            <column name="ID_CONCEPTO" not-null="true">
+                <comment>ID DE LA FOTO QUE SE RELACIONA A LA FOTO</comment>
+            </column>
+        </property>
+        <property name="idCliente" type="java.lang.Integer">
+            <column name="ID_CLIENTE">
+                <comment>ID DEL CLIENTE AL QUE SE LE TOMO LA FOTO</comment>
+            </column>
+        </property>
+        <property name="idUsuario" type="java.lang.Integer">
+            <column name="ID_USUARIO">
+                <comment>ID DEL USUARIO QUE TOMO LA FOTO</comment>
+            </column>
+        </property>
+        <property name="idTipoFoto" type="java.lang.Integer">
+            <column name="ID_TIPO_FOTO">
+                <comment>1 PLANOGRAMA DE ENTRADA, 2 PLANOGRAMA DE SALIDA, 3 POP(MATERIAL PROMOCIONAL), 4 COMPETENCIA, 5 GIVE WAYS(PREMIOS)</comment>
+            </column>
+        </property>
+        <property name="idEstatus" type="java.lang.Integer">
+            <column name="ID_ESTATUS">
+                <comment>1 ACTIVO, 2 INACTIVO</comment>
+            </column>
+        </property>
+        <property name="nombreFoto" type="string">
+            <column name="NOMBRE_FOTO" length="150">
+                <comment>NOMBRE DE LA FOTOGRAFIA CARGADA</comment>
+            </column>
+        </property>
+        <property name="comentario" type="string">
+            <column name="COMENTARIO" length="250" />
+        </property>
+        <property name="fechaHora" type="timestamp">
+            <column name="FECHA_HORA" length="19">
+                <comment>FECHA Y HORA EN LA QUE SE DIO DE ALTA LA FOTO</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>
