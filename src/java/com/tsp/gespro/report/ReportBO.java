@@ -16,7 +16,11 @@ import com.tsp.gespro.exceptions.SgfensPedidoDaoException;
 import com.tsp.gespro.exceptions.UsuariosDaoException;
 import com.tsp.gespro.hibernate.dao.ClienteDAO;
 import com.tsp.gespro.Services.Allservices;
+import com.tsp.gespro.hibernate.dao.ProductoDAO;
 import com.tsp.gespro.hibernate.dao.PromotorproyectoDAO;
+import com.tsp.gespro.hibernate.dao.ProyectoDAO;
+import com.tsp.gespro.hibernate.dao.PuntoDAO;
+import com.tsp.gespro.hibernate.dao.UsuariosDAO;
 import com.tsp.gespro.hibernate.pojo.Producto;
 import com.tsp.gespro.hibernate.pojo.Actividad;
 import com.tsp.gespro.hibernate.pojo.Promotorproyecto;
@@ -65,6 +69,7 @@ public class ReportBO {
     public static final int PROSPECTO_REPORT = 4;
     public static final int BITACORA_REPORT = 5;
     public static final int PROYECTO_REPORT = 6;
+    public static final int ACTIVIDAD_REPORT = 7;
 
 
 
@@ -140,6 +145,9 @@ public class ReportBO {
                 break;
             case PROYECTO_REPORT:
                 title = "Reporte de Proyectos";
+                break;
+            case ACTIVIDAD_REPORT:
+                title = "Reporte de Actividades";
                 break;
         }
 
@@ -301,6 +309,20 @@ public class ReportBO {
                 fieldList.add(getDataInfo("PRODUCTOS","Productos","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("VISITAS REALIZADAS","Visitas realizadas","","",""+DATA_STRING,""));
                 break;
+            case ACTIVIDAD_REPORT:
+                fieldList.add(getDataInfo("PROYECTO","Proyecto","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("ACTIVIDAD","Actividad","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("DESCRIPCION","Descripción","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("PROMOTOR","Promotor","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("LUGAR","Lugar","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("TIPO","Tipo","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("REALIZADA","Fecha Realizada","","",""+DATA_DATE,""));
+                fieldList.add(getDataInfo("PRODUCTO","Producto","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("CANTIDAD","Cantidad","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("RECIBIO","Recibio","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("COMENTARIO","Comentarios","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("Estatus","Estatus","","",""+DATA_STRING,""));
+                break;
         }
         return fieldList;
     }
@@ -377,6 +399,11 @@ public class ReportBO {
                 Allservices allservices = new Allservices();
                 List<Proyecto> proyectos = allservices.queryProyectoDAO(params);
                 dataList = this.getDataList(proyectos);
+                break;
+             case ACTIVIDAD_REPORT:
+                Allservices allservices2 = new Allservices();
+                List<Actividad> actividades = allservices2.QueryActividadDAO(params);
+                dataList = this.getDataList(actividades,1);
                 break;
         }
         return dataList;
@@ -705,6 +732,54 @@ public class ReportBO {
             hashData.put((String)dataInfo.get(8).get("field"), getRealData(dataInfo.get(8), "" + (proyecto.getStatus() == 1 ? "Activo" : "Inactivo")));
             hashData.put((String)dataInfo.get(9).get("field"), getRealData(dataInfo.get(9), "" + productos));
             hashData.put((String)dataInfo.get(10).get("field"), getRealData(dataInfo.get(10), "" + actividades_resumen));
+
+            dataList.add(hashData);
+
+            hashData = new HashMap<String, String>();
+        }
+
+        return dataList;
+    }
+    
+    
+    /**
+     *  PROYECTO_REPORT
+     * @param proyectos Arreglo de objetos tipo Proyecto para fabricar reporte.
+     * @return ArrayList<HashMap> con todos los datos para el reporte.
+     */
+    private ArrayList<HashMap> getDataList(List<Actividad> actividades,int IdProyecto) {
+        ArrayList<HashMap> dataList = new ArrayList<HashMap>();
+        HashMap<String,String> hashData = new HashMap<String, String>();
+        ArrayList<HashMap> dataInfo = getFieldList(ACTIVIDAD_REPORT);
+        int cont = 1;
+        for(Actividad actividad:actividades){
+            
+            String usuario = (new UsuariosDAO()).getById(actividad.getIdUser()).getUserName();
+            String proyecto = (new ProyectoDAO()).getById(actividad.getIdProyecto()).getNombre();
+            String punto = (new PuntoDAO()).getById(actividad.getIdPunto()).getLugar();
+            String producto = (new ProductoDAO()).getById(actividad.getIdProducto()).getNombre();
+            String actividadtipo = actividad.getTipoActividad() == 1 ? "Entrega" : "Actividad";
+            String cantidad = actividad.getCantidad() != null  ? actividad.getCantidad().toString() : "-";
+            String recibio = actividad.getRecibio() != null  ? actividad.getRecibio().toString() : "-";
+            String checkin = actividad.getCheckin() != null  ? actividad.getCheckin().toString() : "-";
+            String comentarios = actividad.getComentarios() != null  ? actividad.getComentarios().toString() : "-";
+            String estatus = actividad.getAvance()== 100  ? "Terminada" : "En desarrollo";
+            if(cont == 1){
+                hashData.put((String)dataInfo.get(0).get("field"), getRealData(dataInfo.get(0), "" + proyecto)); ;
+                cont ++;
+            }
+            //Agregamos la informacion al reporte por cada proyecto
+            hashData.put((String)dataInfo.get(1).get("field"), getRealData(dataInfo.get(1), "" + actividad.getActividad())); ;
+            hashData.put((String)dataInfo.get(2).get("field"), getRealData(dataInfo.get(2), "" + actividad.getDescripcion()));
+            hashData.put((String)dataInfo.get(3).get("field"), getRealData(dataInfo.get(3), "" + usuario));
+            hashData.put((String)dataInfo.get(4).get("field"), getRealData(dataInfo.get(4), "" + punto));
+            hashData.put((String)dataInfo.get(5).get("field"), getRealData(dataInfo.get(5), "" + actividadtipo));
+            hashData.put((String)dataInfo.get(6).get("field"), getRealData(dataInfo.get(6), "" + checkin));
+            hashData.put((String)dataInfo.get(7).get("field"), getRealData(dataInfo.get(7), "" + producto));
+            hashData.put((String)dataInfo.get(8).get("field"), getRealData(dataInfo.get(8), "" + cantidad));
+            hashData.put((String)dataInfo.get(9).get("field"), getRealData(dataInfo.get(9), "" + recibio));
+            hashData.put((String)dataInfo.get(10).get("field"), getRealData(dataInfo.get(10), "" + comentarios));
+            hashData.put((String)dataInfo.get(11).get("field"), getRealData(dataInfo.get(11), "" + estatus));
 
             dataList.add(hashData);
 

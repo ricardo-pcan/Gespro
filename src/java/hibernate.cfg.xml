@@ -30,5 +30,6 @@
     <mapping resource="com/tsp/gespro/hibernate/pojo/Punto.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/Cobertura.hbm.xml"/>
     <mapping resource="com/tsp/gespro/hibernate/pojo/LoginCliente.hbm.xml"/>
+    <mapping resource="com/tsp/gespro/hibernate/pojo/ConceptoRegistroFotografico.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
