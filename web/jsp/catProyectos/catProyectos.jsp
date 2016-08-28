@@ -16,6 +16,7 @@
 <%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="com.tsp.gespro.report.ReportBO"%>
 <%@page import="com.tsp.gespro.bo.UsuarioBO"%>
+<%@page import="com.tsp.gespro.bo.ClienteBO"%>
 <%@page import="com.tsp.gespro.bo.RolesBO"%>
 <%@page import="com.tsp.gespro.bo.UsuariosBO"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -34,7 +35,10 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     int idEmpresa = user.getUser().getIdEmpresa();
 
 // Obtener parametros
-String buscar = request.getParameter("q")!=null? new String(request.getParameter("q").getBytes("ISO-8859-1"),"UTF-8") :"";    //
+String buscar = request.getParameter("q")!=null? new String(request.getParameter("q").getBytes("ISO-8859-1"),"UTF-8") :"";
+String buscar_idvendedor = request.getParameter("proyecto_idvendedor_search") != null ? request.getParameter("proyecto_idvendedor_search") : "";
+String buscar_idcliente = request.getParameter("proyecto_idcliente_search") != null ? request.getParameter("proyecto_idcliente_search") : "";
+
 
 // crear consulta de filtro
 String filtroBusqueda = ""; //"AND ID_ESTATUS=1 ";
@@ -54,6 +58,23 @@ if(rol.getNombre().equals("CLIENTE")){
     }
     
 }
+
+if (!buscar_idcliente.trim().equals("")) {
+    if(filtroBusqueda.contains("WHERE")){
+        filtroBusqueda+= " AND idCliente='"+ buscar_idcliente +"'";
+    }else{
+        filtroBusqueda+= " WHERE idCliente='"+ buscar_idcliente +"'";
+    }
+}
+
+if (!buscar_idvendedor.trim().equals("")) {
+    if(filtroBusqueda.contains("WHERE")){
+        filtroBusqueda+= " AND idPromotor='"+ buscar_idvendedor +"'";
+    }else{
+        filtroBusqueda+= " WHERE idPromotor='"+ buscar_idvendedor +"'";
+    }
+}
+
 String filtroBusquedaEncoded = java.net.URLEncoder.encode(filtroBusqueda, "UTF-8");
 Allservices allservices = new Allservices();
 List<Proyecto> proyectos = allservices.queryProyectoDAO(filtroBusqueda);
@@ -94,7 +115,45 @@ UsuariosDAO usuarioModel = new UsuariosDAO();
                     <div id="ajax_loading" class="alert_info" style="display: none;"></div>
                     <div id="ajax_message" class="alert_warning" style="display: none;"></div>
                    
-
+                    <div class="onecolumn">
+                        <div class="header">
+                            <span>
+                                Búsqueda Avanzada &dArr;
+                            </span>                           
+                        </div>
+                        <br class="clear"/>
+                        <div class="content" style="display: block;">
+                            <form action="catProyectos.jsp" id="search_form_advance" name="search_form_advance" method="post">
+                                
+                                <p>
+                                <label>Promotor:</label><br/>
+                                <select id="proyecto_idvendedor_search" name="proyecto_idvendedor_search" class="flexselect">
+                                    <option></option>
+                                    <%= new UsuariosBO().getUsuariosByRolHTMLCombo(idEmpresa, RolesBO.ROL_GESPRO, 0) %>                                     
+                                </select>
+                                </p>
+                                
+                                <p>
+                                <label>Cliente:</label><br/>
+                                <select id="proyecto_idcliente_search" name="proyecto_idcliente_search" class="flexselect">
+                                    <option></option>
+                                    <%= new ClienteBO(user.getConn()).getClientesByIdHTMLCombo(idEmpresa, -1,"" ) %>
+                                </select>
+                                </p>
+                                                                                           
+                               
+                                <br/>                                    
+                                <br/>
+                                <div id="action_buttons">
+                                    <p>
+                                        <input type="button" id="buscar" value="Buscar" onclick="$('#search_form_advance').submit();"/>
+                                    </p>
+                                </div>
+                                
+                            </form>
+                        </div>
+                    </div>
+                                
                     <div class="onecolumn">
                         <div class="header">
                             <span>

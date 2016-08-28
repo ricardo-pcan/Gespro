@@ -28,6 +28,8 @@ import com.tsp.gespro.jdbc.EmpresaDaoImpl;
 import com.tsp.gespro.jdbc.SgfensPedidoDaoImpl;
 import com.tsp.gespro.jdbc.SgfensPedidoProductoDaoImpl;
 import com.tsp.gespro.jdbc.UsuariosDaoImpl;
+import com.tsp.gespro.bo.UsuarioBO;
+import com.tsp.gespro.hibernate.dao.UsuariosDAO;
 import com.tsp.gespro.util.DateManage;
 import com.tsp.gespro.util.Encrypter;
 import com.tsp.gespro.util.StringManage;
@@ -660,6 +662,7 @@ public class ReportBO {
         for(Proyecto proyecto:proyectos){
             // Obtenemos la informacion del cliente del proyecto
             ClienteDAO clienteDAO = new ClienteDAO();
+            UsuariosDAO usuarioModel = new UsuariosDAO();
             com.tsp.gespro.hibernate.pojo.Cliente cliente = clienteDAO.getById(proyecto.getIdCliente());
 
             // Obtenemos la informacion de los promotor del proyecto
@@ -667,8 +670,8 @@ public class ReportBO {
             List<Promotorproyecto> promotoresProyecto = allservices.queryPromotorProyectoDAO("WHERE id_proyecto = " + proyecto.getIdProyecto());
             String promotores = "";
             for (Promotorproyecto promotorProyecto: promotoresProyecto) {
-                com.tsp.gespro.hibernate.pojo.Cliente clientePromotor = clienteDAO.getById(promotorProyecto.getIdUser());
-                promotores += clientePromotor.getNombreComercial() + "- ";
+                com.tsp.gespro.hibernate.pojo.Usuarios promotor = usuarioModel.getById(promotorProyecto.getIdUser());
+                promotores += promotor.getUserName() + "- ";
             }
             if (!promotores.trim().equals("")) {
                 promotores = promotores.substring(0, promotores.length()-2);
