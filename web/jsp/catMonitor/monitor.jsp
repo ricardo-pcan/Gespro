@@ -71,38 +71,38 @@
             </div>
             <div class="row">
               <div class="col-md-1"></div>
-              <div class="col-md-5">
+              <div class="col-md-11">
                   <form class="form-inline">
-                    <div class="form-group">
+                    <div class="form-group proyectos">
                       <label for="proyecto">Proyecto</label>
-                      <select id="selector-proyecto" name="proyecto_id" class="form-control" onchange="proyectoSelect();">
-                                            <option value="0">Seleccione un proyecto</option>
-                                            <%
-                                            for(Proyecto proyecto:proyectoList) {%>
-                                                <option value="<%=proyecto.getIdProyecto()%>"> <%=proyecto.getNombre()%> </option>
-                                            <%  
-                                            }
-                                            %>
+                      <input type="hidden" id="id_proyecto" value=""/>
+                      <select id="selector-proyecto" name="proyecto" id="proyecto"class="form-control">
+                        <option value="0">Seleccione un proyecto</option>
+                        <%
+                         for(Proyecto proyecto:proyectoList) {%>
+                            <option value="<%=proyecto.getIdProyecto()%>"> <%=proyecto.getNombre()%> </option>
+                        <%  
+                         }
+                         %>
                      </select>
                     </div>
-                     <div class="form-group">
-                      <label for="promotores">Promotores</label>
-                      <select id="selector-proyecto" name="promotor_id" class="form-control" onchange="promotorSelect();">
-                                            <option value="0">Seleccione un promotor</option>
-                                            <%
-                                            for(Usuarios promo: promotores) {%>
-                                                <option value="<%= promo.getIdUsuarios() %>"> <%= promo.getUserName() %> </option>
-                                            <%  
-                                            }
-                                            %>
-                     </select>
+                     <button id="btnProyectos"  class="btn btn-primary">Buscar avance</button>
+                    <div class="form-group promotores">
+                        <label for="promotores">Promotores</label>
+                        <input type="hidden" id="id_promotor" value=""/>
+                        <select id="selector-proyecto" name="promotor" id="promotor" class="form-control">
+                         <option value="0">Seleccione un promotor</option>
+                         <%
+                         for(Usuarios promo: promotores) {%>
+                          <option value="<%= promo.getIdUsuarios() %>"> <%= promo.getUserName() %> </option>
+                          <%  
+                           }
+                          %>
+                       </select>
                     </div>
-                    <button id="buscarBtn" type="submit" class="btn btn-primary">Buscar avance</button>
+                    <button id="btnPromotores"  class="btn btn-primary">Buscar avance</button>
                   </form>
               </div>
-              <div class="col-md-5">
-              </div>
-              <div class="col-md-1"></div>
             </div>
             <div class="row">
               <div class="col-md-1"></div>
@@ -136,7 +136,7 @@
                       <th scope="row"><%= pro.getIdProyecto()%></th>
                     <td><%= pro.getNombre()%></td>
                     <td><%= pro.getAvance() %> %</td>
-                    <td><button href="#myModal" id="openBtn" data-toggle="modal" type="button" class="btn btn-link">Actividades</button></td>
+                    <td><button href="#myModal" id="btnActividad" data-id="<%= pro.getIdProyecto() %>" data-toggle="modal" type="button" class="btn btn-link">Actividades</button></td>
                   </tr>
                   <%}%>
                 </tbody>
@@ -161,7 +161,7 @@
                       <th scope="row"><%= pro.getIdProyecto()%></th>
                     <td><%= pro.getNombre()%></td>
                     <td><%= pro.getAvance() %> %</td>
-                    <td><button href="#myModal" id="openBtn" data-toggle="modal" type="button" class="btn btn-link">Actividades</button></td>
+                    <td><button href="#myModal" id="btnActividad" data-id="<%= pro.getIdProyecto() %>" data-toggle="modal" type="button" class="btn btn-link">Actividades</button></td>
                   </tr>
                   <%}%>
                 </tbody>
@@ -172,6 +172,73 @@
         </div>
         
         <script type="text/javascript">
+            $( document ).ready(function() {
+                var URLdomain = window.location.host;
+                function proyectos(){
+                    console.log("Proyectos");
+                    var restURL="http://"+URLdomain+"/Gespro/rest/avance/proyecto/";
+                    restURL+="?proyecto="+$("#id_proyecto").val();
+                    printMaps(restURL);
+                }
+
+                function promotores(){
+                    console.log("Promotores");
+                    var URLdomain = window.location.host;
+                    var restURL="http://"+URLdomain+"/Gespro/rest/avance/promotor/";
+                    restURL+="?promotor="+$("#id_promotor").val();
+                    printMaps(restURL);
+                }
+                $( "#btnProyectos" ).click(function(e) {
+                    e.preventDefault();
+                    proyectos();
+                });
+                $( "#btnPromotores" ).click(function(e) {
+                   e.preventDefault();
+                   promotores();
+                });
+                
+                $( "#btnActividad" ).click(function(e) {
+                   var restURL="http://"+URLdomain+"/Gespro/rest/avance/actividad";
+                   restURL+="?proyecto="+$(this).attr('data-id');
+                   $.get(restURL, function(data) {
+                        var tr="";
+                        data.map(function(item) {
+                            tr+="<tr>";
+                            tr+="<th scope='row'>";
+                            tr+=item.idActividad;
+                            tr+="</th>";
+                            tr+="<td>";
+                            tr+=item.actividad;
+                            tr+="</td>";
+                            tr+="<td>";
+                            tr+=item.descripcion;
+                            tr+="</td>";
+                            tr+="<td>";
+                            if(typeof item.checkin != "undefined" ){
+                                tr+=item.checkin;
+                            }else{
+                                tr+="Sin checkin";
+                            }
+                            
+                            tr+="</td>";
+                            tr+="<td>";
+                            tr+=item.avance+" %";
+                            tr+="</td>";
+                            tr+="</tr>";
+                        });
+                        
+                        $("#actividades_tr").html(tr);
+                    })
+                    .done(function() {
+                    })
+                    .fail(function(error) {
+                      console.log("Error" + error);
+                    })
+                });
+            
+            });
+            
+            
             google.load("maps", "3", {other_params: "key=AIzaSyA6cb9XFRRlRZbkOAvgjoRiGTOuKbemoJ0"});
             google.charts.load('current', {'packages':['geochart']});
             /**
@@ -206,57 +273,51 @@
                 var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
                 chart.draw(data, options);
             }
+            
             /** 
              * Get map info from end-point and show maps
              * @returns {void}
              */
-            function printMaps() {
+            function printMaps(restURL) {
                 var regionsArray = [
                     ['State', 'Avance']
                 ];
                 var markersArray = [
                     ['City',   'Avace']
                 ];
-                var xhttp;
-                // Create XHTTP object
-                xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
-                    var data;
-                    var regions;
-                    var cities;
+
+                $.get(restURL, function(data) {
+                    console.log(data);
+                    var regions = data.regiones;
+                    var cities = data.ciudades;
                     // Fill markers and regions if status response was 200
-                    if (xhttp.readyState == 4 && xhttp.status == 200) {
-                        data = JSON.parse(xhttp.responseText);
-                        regions = data.regiones;
-                        cities = data.ciudades;
-                        console.log("Ciudades :" + regions);
-                        console.log("Regiones :" + cities);
-                        if(regions){
-                            // Fill regions array
-                            Object.keys(regions).map(function(key) {
-                                regionsArray.push([key, regions[key]]);
-                            });
-                            drawRegionsMap(regionsArray);
-                        }
-                        
-                        if(cities){
-                           // Fill cities array
-                            Object.keys(cities).map(function(key) {
-                                markersArray.push([key, cities[key]]);
-                            }); 
-                            drawMarkersMap(markersArray);
-                        }
+                    if (typeof regions != 'undefined' || typeof cities != 'undefined') {
+                       // Fill regions array
+                        Object.keys(regions).map(function(key) {
+                            regionsArray.push([key, regions[key]]);
+                        });
+                        // Fill cities array
+                         Object.keys(cities).map(function(key) {
+                             markersArray.push([key, cities[key]]);
+                         }); 
+                         drawRegionsMap(regionsArray);
+                         drawMarkersMap(markersArray);
                     }
-                };
-                // Change direction for real call
-                xhttp.open('GET', 'json_avances_ajax.jsp?proyecto_id=8', true);
-                xhttp.send();   
-            }
-            // Add event to show maps
-            document.getElementById("buscarBtn").addEventListener("click", printMaps);
-            printMaps();
+                })
+                .done(function() {
+                })
+                .fail(function(error) {
+                  console.log("Error" + error);
+                })
+            }           
+
+            $("select[name=proyecto]").change(function(){
+                $('#id_proyecto').val($(this).val());
+            });
+            $("select[name=promotor]").change(function(){
+                $('#id_promotor').val($(this).val());
+            });
             
-           
         </script>
         
         <div class="modal fade" id="myModal">
@@ -267,28 +328,18 @@
                   <h3 class="modal-title">Actividades</h3>
                 </div>
                 <div class="modal-body">
-                          <h5 class="text-center">Estás son las actividades de los proyectos en curso.</h5>
+                          <h5 class="text-center">Estás son las actividades del proyecto seleccionado.</h5>
                   <table class="table table-striped" id="tblGrid">
                     <thead id="tblHead">
                       <tr>
+                        <th>#</th>
                         <th>Actividad</th>
                         <th>Descripción</th>
+                        <th>Checkin</th>
                         <th class="text-right">Avance</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr><td>Long Island, NY, USA</td>
-                        <td>3</td>
-                        <td class="text-right">45001</td>
-                      </tr>
-                      <tr><td>Chicago, Illinois, USA</td>
-                        <td>5</td>
-                        <td class="text-right">76455</td>
-                      </tr>
-                      <tr><td>New York, New York, USA</td>
-                        <td>10</td>
-                        <td class="text-right">39097</td>
-                      </tr>
+                    <tbody id="actividades_tr">
                     </tbody>
                   </table>
                 </div>

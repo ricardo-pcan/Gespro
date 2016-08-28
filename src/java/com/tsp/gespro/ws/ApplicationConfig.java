@@ -27,6 +27,9 @@ public class ApplicationConfig extends javax.ws.rs.core.Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(com.tsp.gespro.ws.ActividadResource.class);
+        resources.add(com.tsp.gespro.ws.AvanceResource.class);
+        resources.add(com.tsp.gespro.ws.AvancesResource.class);
+        resources.add(com.tsp.gespro.ws.FotoActividadResource.class);
         resources.add(com.tsp.gespro.ws.ProyectoResource.class);
     }
     

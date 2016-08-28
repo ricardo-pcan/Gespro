@@ -38,13 +38,6 @@
         <li><a href="../../jsp/inicio/main.jsp" id="idInicioLeftContent"><img src="../../images/icon_home.png" alt="Inicio"/>Inicio</a></li>
         <li><a href="../../jsp/catMonitor/monitor.jsp" id="monitor"><img src="../../images/icon_home.png" alt="Inicio"/>Monitor</a></li>
         <li><a href="../../jsp/catMonitor/monitor_log.jsp" id="monitor"><img src="../../images/icon_home.png" alt="Inicio"/>MonitorLog</a></li>
-        <li>
-            <a href="" id="idAdministracionLeftContent"><img src="../../images/icon_validaXML.png" alt="Proyectos"/>Proyectos</a>
-            <ul>
-                <li><a href="../../jsp/catProyectos/catProyectos.jsp"><img src="../../images/icon_validaXML.png"/>Ver Proyectos</a></li>
-                <li><a href="../../jsp/catCoberturas/catCoberturas_list.jsp"><img src="../../images/camion_icono_16.png"/>Cobertura</a></li>
-            </ul>	
-        </li>
         <%
             }else{
         %>
@@ -69,6 +62,7 @@
             </ul>	
         </li>
         <li><a href="../../jsp/catMonitor/monitor.jsp" id="monitor"><img src="../../images/icon_home.png" alt="Inicio"/>Monitor</a></li>
+        <li><a href="../../jsp/catMonitor/monitor_log.jsp" id="monitor_log"><img src="../../images/icon_home.png" alt="Inicio"/>MonitorLog</a></li>
         <li>
             <a href="" id="idAdministracionLeftContent"><img src="../../images/icon_validaXML.png" alt="Proyectos"/>Proyectos</a>
             <ul>

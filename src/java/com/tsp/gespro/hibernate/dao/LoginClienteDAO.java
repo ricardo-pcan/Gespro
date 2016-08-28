@@ -17,7 +17,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import com.tsp.gespro.hibernate.pojo.LoginCliente;
-import com.tsp.gespro.hibernate.pojo.UsuarioMonitor;
 import com.tsp.gespro.hibernate.pojo.Usuarios;
 import com.tsp.gespro.jdbc.DatosUsuarioDaoImpl;
 import com.tsp.gespro.jdbc.EstatusDaoImpl;
