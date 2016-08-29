@@ -32,7 +32,11 @@
                         cacv.setCampoAdicionalCliente(cac);
                         break;
                     case 2:
-                        cacv.setIdCliente(Integer.parseInt(lineParts[1]));
+                        if(lineParts.length>1){
+                            cacv.setIdCliente(Integer.parseInt(lineParts[1]));
+                        }else{
+                            cacv.setIdCliente(0);
+                        }
                         break;
                     case 3:
                     case 4:
