@@ -405,11 +405,11 @@ public class ReportBO {
                 dataList = this.getDataList(proyectos);
                 break;
              case ACTIVIDAD_REPORT:
-                String filtroBusqueda = "";
+                String filtroBusqueda_activity = "";
                 if(params == null) {
                     params = "";
                 }
-                String filtroBusquedaEncoded = java.net.URLEncoder.encode(params, "UTF-8");
+                String filtroBusquedaEncoded_activity = java.net.URLEncoder.encode(params, "UTF-8");
                 Allservices allservices2 = new Allservices();
                 List<Actividad> actividades = allservices2.QueryActividadDAO(params);
                 dataList = this.getDataList(actividades,1);

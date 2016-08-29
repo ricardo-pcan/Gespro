@@ -1,4 +1,7 @@
 
+<%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
+<%@page import="com.tsp.gespro.hibernate.dao.UsuariosDAO"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.Promotorproyecto"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Punto"%>
@@ -19,6 +22,8 @@
 <%@page import="com.tsp.gespro.bo.EmpresaBO"%>
 <%@page import="com.tsp.gespro.dto.Empresa"%>
 <%@page import="com.tsp.gespro.hibernate.dao.ProductoDAO"%>
+<%@page import="com.tsp.gespro.hibernate.dao.ProyectoDAO"%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 
@@ -34,6 +39,18 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
     String proyectoId = request.getParameter("idProyecto") != null ? request.getParameter("idProyecto") : "";
     List<Actividad> actividades = allServicesObject.QueryActividadDAO( "where idProyecto = " + proyectoId );
     List<ActividadFullObject> actividadesFullObjects = allServicesObject.getActividadesFull( actividades );
+    UsuariosDAO usuarioModel = new UsuariosDAO();
+    ProyectoDAO proyectoDAO = new ProyectoDAO();
+    
+    Proyecto proyecto = proyectoDAO.getById( Integer.parseInt( proyectoId ));
+    float avance_proyecto = proyecto.getAvance();
+    List<Promotorproyecto> promotoresProyecto = allServicesObject.queryPromotorProyectoDAO("WHERE id_proyecto = " + proyectoId);
+    String promotores = "";
+    for (Promotorproyecto promotorProyecto: promotoresProyecto) {
+        com.tsp.gespro.hibernate.pojo.Usuarios promotor = usuarioModel.getById(promotorProyecto.getIdUser());
+        promotores += promotor.getUserName() + "- ";
+    }
+
     ProductoDAO producto = new ProductoDAO();
 
     String filtroBusqueda = "where idProyecto = " + proyectoId;
@@ -691,7 +708,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
             <div id="content">
                 
                 <div class="inner" id="leito">
-                    <h1>Vendedor - Nueva ruta</h1>
+                    <h1>Vendedor - <%= promotores %></h1>
                     
                     <div id="ajax_loading" class="alert_info" style="display: none;"></div>
                     <div id="ajax_message" class="alert_warning" style="display: none;"></div>
@@ -702,7 +719,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                 <div class="header">
                                     <span>
                                         <img src="../../images/icon_logistica.png" alt="icon"/>
-                                        Puntos programados
+                                        Puntos programados - Cumplimiento <%= avance_proyecto %>%
                                     </span>
                                     <div class="switch" style="width:410px">
 
