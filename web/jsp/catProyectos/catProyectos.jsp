@@ -233,6 +233,7 @@ UsuariosDAO usuarioModel = new UsuariosDAO();
                                                 <a href="reparto.jsp?idProyecto=<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/clipboard_report_bar_16_ns.png" alt="editar" class="help" title="Ver Reparto"/></a>
                                                 <% if(proyecto.getStatus() == 1) { %>
                                                 <a href="changes_proyecto_ajax.jsp?idProyecto=<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/icon_delete.png" alt="editar" class="help" title="Ver Reparto"/></a>
+                                                <a href="rutas_validadas.jsp?idProyecto=<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/icon_mapa.png" alt="editar" class="help" title="Ver Puntos"/></a>
                                                 <% } %>
                                                 </td>
                                           </tr>        

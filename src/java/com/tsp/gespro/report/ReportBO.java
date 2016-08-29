@@ -405,6 +405,11 @@ public class ReportBO {
                 dataList = this.getDataList(proyectos);
                 break;
              case ACTIVIDAD_REPORT:
+                String filtroBusqueda = "";
+                if(params == null) {
+                    params = "";
+                }
+                String filtroBusquedaEncoded = java.net.URLEncoder.encode(params, "UTF-8");
                 Allservices allservices2 = new Allservices();
                 List<Actividad> actividades = allservices2.QueryActividadDAO(params);
                 dataList = this.getDataList(actividades,1);
@@ -730,7 +735,7 @@ public class ReportBO {
                     actividades_completadas += 1;
                 }
 
-                if( !actividad.getActividad().getCheckin().toString().isEmpty() ) {
+                if( actividad.getActividad().getCheckin() instanceof Date ) {
                     puntos_con_checkin += 1;
                     puntos += punto.getLugar() + " ";
                 }
@@ -739,7 +744,7 @@ public class ReportBO {
             if( puntos_con_checkin > 0 ) {
                 puntos_con_checkin = ( puntos_con_checkin * 100 ) / totalActividades;
             }
-            
+
 
 
 
@@ -764,8 +769,8 @@ public class ReportBO {
 
         return dataList;
     }
-    
-    
+
+
     /**
      *  PROYECTO_REPORT
      * @param proyectos Arreglo de objetos tipo Proyecto para fabricar reporte.
@@ -777,7 +782,7 @@ public class ReportBO {
         ArrayList<HashMap> dataInfo = getFieldList(ACTIVIDAD_REPORT);
         int cont = 1;
         for(Actividad actividad:actividades){
-            
+
             String usuario = (new UsuariosDAO()).getById(actividad.getIdUser()).getUserName();
             String proyecto = (new ProyectoDAO()).getById(actividad.getIdProyecto()).getNombre();
             String punto = (new PuntoDAO()).getById(actividad.getIdPunto()).getLugar();
