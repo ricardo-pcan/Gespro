@@ -33,6 +33,12 @@ if(request.getParameter("idProyecto")!=null){
         <jsp:include page="../include/keyWordSEO.jsp" />
         <jsp:include page="../include/skinCSS.jsp" />
         <jsp:include page="../include/jsFunctions.jsp"/>
+        <link rel="stylesheet" type="text/css" href="../../css/slick-carousel/slick-theme.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/slick-carousel/slick.css"/>
+        
+        
+        
+        <script type="text/javascript" src="../../js/slick-carousel/slick.min.js"></script>
         <style>
             body{
                 background-image: none;
@@ -48,8 +54,19 @@ if(request.getParameter("idProyecto")!=null){
             }
             .show_foto{
                 width: 20%;
-                width: 200px;
                 display: inline-table;
+            }
+            .show_foto img{
+                width: 100%;
+            }
+            .multiple-items{
+                width: 40%;
+                margin: auto;
+                background: #797979;
+            }
+            #pictures{
+                background: #797979;
+                color: white;
             }
         </style>
     </head>
@@ -131,9 +148,10 @@ if(request.getParameter("idProyecto")!=null){
                                             <td>${item.tipoActividad == 1 ? "Entrega" : "Actividad"}</td>
                                             <c:set var="producto" value="${productoModel.getById(item.idProducto)}" />
                                             <td>
-                                                <a id="${item.idActividad}" class="show_resumen" ><img src="../../images/icon_reporte.png" alt="editar" class="help" title="Editar"/></a>
-                                                <a  idact="${item.idActividad}" id="map_${item.idActividad}" class="show_ubicacion" ><img src="../../images/icon_mapa_1.png" alt="editar" class="help" title="Ver Ubicacion"/></a>
-                                                <a  idactpic="${item.idActividad}" class="show_images" ><img src="../../images/icon_pop.png" alt="editar" class="help" title="Ver Imagenes"/></a>
+                                                <a id="${item.idActividad}" class="show_resumen" ><img src="../../images/icon_reporte.png" alt="Ver Resumen" class="help" title="Ver Resumen"/></a>
+                                                <a  idact="${item.idActividad}" id="map_${item.idActividad}" class="show_ubicacion" ><img src="../../images/icon_mapa_1.png" alt="Ver Ubicacion" class="help" title="Ver Ubicación"/></a>
+                                                <a  idactpic="${item.idActividad}" class="show_images" ><img src="../../images/icon_pop.png" alt="Ver Imagenes" class="help" title="Ver Imagenes"/></a>
+                                                <a  href="download_images.jsp?idActividad=${item.idActividad}" ><img src="../../images/download.png" alt="Descargar Imagenes" class="help" title="Descargar Imagenes"/></a>
                                            
                                                 <input type="hidden" id="producto_${item.idActividad}" value="${producto != null ? producto.nombre: "-"}" />
                                                 <input type="hidden" id="checkin_${item.idActividad}" value="${item.checkin != null ? item.checkin  :"No terminada"}" />
@@ -187,6 +205,11 @@ if(request.getParameter("idProyecto")!=null){
                 var id_map= 'map_canvas';
                 var markerRoute;
                 $(document).ready(function(){
+                    $(".multiple-items").slick({
+                        infinite: true,
+                        slidesToShow: 3,
+                        slidesToScroll: 3
+                      });
                     $("input[name=tipo]").click(function(){
                         $("#action_filter").submit();
                     });

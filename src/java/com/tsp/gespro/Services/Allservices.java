@@ -24,8 +24,8 @@ import com.tsp.gespro.hibernate.pojo.Coberturaproyecto;
 import com.tsp.gespro.hibernate.pojo.Producto;
 import com.tsp.gespro.hibernate.pojo.Punto;
 
-import com.tsp.gespro.hibernate.dao.ConceptoRegistroFotograficoDAO;
-import com.tsp.gespro.hibernate.pojo.ConceptoRegistroFotografico;
+import com.tsp.gespro.hibernate.dao.FotoActividadDAO;
+import com.tsp.gespro.hibernate.pojo.FotoActividad;
 import java.util.ArrayList;
 import com.tsp.gespro.hibernate.dao.CoberturaProyectoDAO;
 import com.tsp.gespro.hibernate.pojo.Cliente;
@@ -41,21 +41,21 @@ public class Allservices {
     private static ProductoDAO productoDAO;
     private static ActividadDAO actividadDAO;
     private static CoberturaProyectoDAO coberturaproyectoDAO;
-    private static ConceptoRegistroFotograficoDAO conceptoregistrofotograficoDAO;
+    private static FotoActividadDAO fotoactividadDAO;
 
     public Allservices() {
     }
     
-    public List queryConceptoRegistroFotografico(String where){  
+    public List queryFotoActividad(String where){  
         
-            List<ConceptoRegistroFotografico> lista = null;  
+            List<FotoActividad> lista = null;  
             Session session = null;
 
         try 
         { 
             session = HibernateUtil.getSessionFactory().openSession(); 
             Transaction tx = session.beginTransaction(); 
-            String query = "from ConceptoRegistroFotografico "+where;
+            String query = "from FotoActividad "+where;
             lista = session.createQuery(query).list(); 
         }
         finally 
