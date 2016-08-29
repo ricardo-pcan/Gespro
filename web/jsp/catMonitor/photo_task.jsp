@@ -16,6 +16,8 @@
 <%@page import="com.tsp.gespro.hibernate.pojo.ConceptoRegistroFotografico"%>
 <%@page import="com.tsp.gespro.hibernate.dao.ProyectoDAO"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Proyecto"%>
+<%@page import="com.tsp.gespro.hibernate.dao.FotoActividadDAO"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.FotoActividad"%>
 <%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="com.tsp.gespro.util.GenericValidator"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -28,30 +30,39 @@
     ActividadDAO actividadDAO= new ActividadDAO();
     Allservices services = new Allservices();
     ActividadDAO actividadModel = new ActividadDAO();
-    
+        Integer idActividad = request.getParameter("idActividad") != null ? new Integer(request.getParameter("idActividad")): 0;
+    String FechaActividad = request.getParameter("fechaActividad") != null ? new String(request.getParameter("fechaActividad").getBytes("ISO-8859-1"), "UTF-8") : "";
+    objActividad = actividadDAO.getById(idActividad);
     
              
     EmpresaBO empresaBO = new EmpresaBO(user.getConn());
      ;
     Configuration appConfig = new Configuration();
-    String ubicacionImagenesProspectos = appConfig.getApp_content_path() + empresaBO.getEmpresaMatriz(user.getUser().getIdEmpresa()).getRfc() +"/ImagenConcepto/pop/";
+    String ubicacionImagenesProspectos = appConfig.getApp_content_path() +"proyectos/"+objActividad.getIdProyecto()+"/actividades/"+objActividad.getIdActividad()+"/";
 
     // Si el id viene que el request parsearlo a integer.
-    Integer idActividad = request.getParameter("idActividad") != null ? new Integer(request.getParameter("idActividad")): 0;
-    String FechaActividad = request.getParameter("fechaActividad") != null ? new String(request.getParameter("fechaActividad").getBytes("ISO-8859-1"), "UTF-8") : "";
-    objActividad = actividadDAO.getById(idActividad);
-    objProyecto = proyectoDAO.getById(objActividad.getIdProyecto());
-    List <ConceptoRegistroFotografico> fotografias = services.queryConceptoRegistroFotografico("where idCliente = "+objProyecto.getIdCliente()+" and Date(fechaHora) = '"+FechaActividad+"'");
-    String listImages ="<div>";
+
+    List <FotoActividad> fotografias = services.queryFotoActividad("where idActividad = "+objActividad.getIdActividad());
+    String listImages ="<div class='multiple-items'>"
+            + "<button type='button' data-role='none' class='slick-prev slick-arrow' aria-label='Previous' role='button' style='display: block;'>Previous</button>";
     if(fotografias.size()>0){
-        for(ConceptoRegistroFotografico foto: fotografias){
+        for(FotoActividad foto: fotografias){
             listImages+="<div class='show_foto'>";
-            listImages+="<img src='"+ubicacionImagenesProspectos+foto.getNombreFoto()+"'>";
+            listImages+="<img src='"+ubicacionImagenesProspectos+foto.getFoto()+"'>";
             listImages+="</div>";
         }
     }else{
         listImages+="No se han registrado imagenes para esta Actividad";
     }
     listImages +="</div>";
+    listImages +="<script>"
+            + "$('.multiple-items').ready(function(){"
+            + "$('.multiple-items').slick({"
+  +"slidesToShow: 1,"
+  +"slidesToScroll: 1,"
+  +"autoplay: true,"
+  +"autoplaySpeed: 2000,"
+  +"});"
+            + "});";
     out.print(listImages);
 %>
