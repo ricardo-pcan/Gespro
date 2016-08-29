@@ -14,7 +14,6 @@
     Allservices services = new Allservices();
     List<FotoActividad> fotoActividad = services.queryFotoActividad("WHERE idActividad = "+idActividad);
     Configuration appConfig = new Configuration();
-    appConfig.setApp_content_path("/Users/fabmac/Mio/Gespro/web/");
     ActividadDAO actividadDAO= new ActividadDAO();
     Actividad objActividad= new Actividad();
     objActividad = actividadDAO.getById(Integer.parseInt(idActividad));
