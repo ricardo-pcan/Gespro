@@ -4,8 +4,12 @@
  */
 package com.tsp.gespro.hibernate.dao;
 
+import com.tsp.gespro.Services.Allservices;
+import com.tsp.gespro.hibernate.pojo.Cliente;
 import com.tsp.gespro.hibernate.pojo.ClientesClientes;
 import com.tsp.gespro.hibernate.pojo.HibernateUtil;
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -116,6 +120,56 @@ public class ClientesClientesDAO {
     { 
         return lista(); 
     }    
+    /***
+     * Verifica si ya existe un registro similar, de ser así, regresa el id
+     * de lo contrario, regresa un 0.
+     ***/
+    public int exist(String where) throws HibernateException 
+    { 
+        List<ClientesClientes> lista = null; 
+        int id=0;
+
+        try 
+        { 
+            iniciaOperacion(); 
+            lista = sesion.createQuery("from ClientesClientes "+where).list();
+            if(lista!=null){
+                if(lista.size()>0){
+                    return lista.get(0).getId();
+                }
+            }
+        }
+        finally 
+        { 
+            sesion.close(); 
+        }  
+
+        return id; 
+    }
+   
+    public String ClientesIdMatriz() throws HibernateException 
+    { 
+        List<ClientesClientes> lista = null; 
+        String idClientes="";
+
+        try 
+        { 
+            iniciaOperacion(); 
+            lista = sesion.createQuery("from ClientesClientes where cliente_id=cliente_sucursal_id ").list();
+            if(lista!=null){
+              for(ClientesClientes obj: lista){
+                  idClientes+=obj.getClienteId()+",";
+              }  
+            }
+            idClientes+=idClientes.substring(0,idClientes.length()-1);
+        }
+        finally 
+        { 
+            sesion.close(); 
+        }  
+
+        return idClientes; 
+    }
      
     private void iniciaOperacion() throws HibernateException 
     { 

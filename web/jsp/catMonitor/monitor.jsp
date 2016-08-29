@@ -4,6 +4,7 @@
     Author     : zesk8
 --%>
 
+<%@page import="com.tsp.gespro.hibernate.pojo.Actividad"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.Usuarios"%>
 <%@page import="com.tsp.gespro.Services.Allservices"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.LoginCliente"%>
@@ -41,15 +42,35 @@
                 LoginClienteDAO loginClienteDAO=new LoginClienteDAO(user.getConn());
                 LoginCliente lc=loginClienteDAO.getByIdUsuario(user.getUser().getIdUsuarios());
                 proyectoList = new ProyectoDAO().getListByIdClient(lc.getIdCliente());
-                String promotoresID="(";
+                String query="(";
+                String proyectosID="";
                 for(Proyecto proyecto: proyectoList){
-                    if(proyecto.getIdPromotor()!=null){
-                        promotoresID += String.valueOf(proyecto.getIdProyecto()) +",";
-                    }  
+                     proyectosID += String.valueOf(proyecto.getIdProyecto()) +",";
                 }
-                promotoresID=promotoresID.substring(0,promotoresID.length()-1);
-                promotoresID += ")";
-                String where="where ID_USUARIOS in " + promotoresID;
+                if(proyectosID.length()>0){
+                    query+=proyectosID.substring(0,proyectosID.length()-1);
+                }else{
+                    query="(0";
+                }
+
+                query += ")";
+                String where="where id_proyecto in " + query;
+                List<Actividad> actividades=new Allservices().QueryActividadDAO(where);
+                String promotoresID="";
+                query="(";
+                for(Actividad pro: actividades){
+                     if(pro.getIdUser()!=null){
+                         promotoresID += String.valueOf(pro.getIdUser()) +",";
+                     }     
+                }
+                if(promotoresID.length()>0){
+                    query+=promotoresID.substring(0,promotoresID.length()-1);
+                }else{
+                    query="(0";
+                }
+                
+                query+=")";
+                where="where id_usuarios in " + query;
                 promotores=new Allservices().QueryUsuariosDAO(where);
             }
             
@@ -126,6 +147,7 @@
                     <th>Proyecto</th>
                     <th>Avance</th>
                     <th></th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -137,6 +159,7 @@
                     <td><%= pro.getNombre()%></td>
                     <td><%= pro.getAvance() %> %</td>
                     <td><button href="#myModal" id="btnActividad" data-id="<%= pro.getIdProyecto() %>" data-toggle="modal" type="button" class="btn btn-link">Actividades</button></td>
+                    <td><button href="#modalPromotor" id="btnPromotor" data-id="<%= pro.getIdProyecto() %>" data-toggle="modal" type="button" class="btn btn-link">Promotores</button></td>
                   </tr>
                   <%}%>
                 </tbody>
@@ -151,6 +174,7 @@
                     <th>Proyecto</th>
                     <th>Avance</th>
                     <th></th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -162,6 +186,7 @@
                     <td><%= pro.getNombre()%></td>
                     <td><%= pro.getAvance() %> %</td>
                     <td><button href="#myModal" id="btnActividad" data-id="<%= pro.getIdProyecto() %>" data-toggle="modal" type="button" class="btn btn-link">Actividades</button></td>
+                    <td><button href="#modalPromotor" id="btnPromotor" data-id="<%= pro.getIdProyecto() %>" data-toggle="modal" type="button" class="btn btn-link">Promotores</button></td>
                   </tr>
                   <%}%>
                 </tbody>
@@ -221,13 +246,42 @@
                             }
                             
                             tr+="</td>";
-                            tr+="<td>";
+                            if(item.avance==100.00){
+                                tr+="<td class='bg-success'>"
+                            }else{
+                              tr+="<td>";  
+                            }
                             tr+=item.avance+" %";
                             tr+="</td>";
                             tr+="</tr>";
                         });
                         
                         $("#actividades_tr").html(tr);
+                    })
+                    .done(function() {
+                    })
+                    .fail(function(error) {
+                      console.log("Error" + error);
+                    })
+                });
+                
+                $( "#btnPromotor" ).click(function(e) {
+                   var restURL="http://"+URLdomain+"/Gespro/rest/avance/avance-promotor";
+                   restURL+="?proyecto="+$(this).attr('data-id');
+                   $.get(restURL, function(data) {
+                        var tr="";
+                        data.map(function(item) {
+                            tr+="<tr>";
+                            tr+="<th scope='row'>";
+                            tr+=item.promotor;
+                            tr+="</th>";
+                            tr+="<td class='bg-info text-center'>";
+                            tr+=item.avance+" %";
+                            tr+="</td>";
+                            tr+="</tr>";
+                        });
+                        
+                        $("#promotor_tr").html(tr);
                     })
                     .done(function() {
                     })
@@ -336,7 +390,7 @@
                         <th>Actividad</th>
                         <th>Descripción</th>
                         <th>Checkin</th>
-                        <th class="text-right">Avance</th>
+                        <th>Avance</th>
                       </tr>
                     </thead>
                     <tbody id="actividades_tr">
@@ -350,12 +404,31 @@
             </div><!-- /.modal-dialog -->
           </div><!-- /.modal -->
           
-          <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm">
+       <div class="modal fade" id="modalPromotor">
+        <div class="modal-dialog">
               <div class="modal-content">
-                No hay avances!! :(
-              </div>
-            </div>
-          </div>
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  <h3 class="modal-title">Promotores</h3>
+                </div>
+                <div class="modal-body">
+                          <h5 class="text-center">Avances por promotor de el proyecto seleccionado.</h5>
+                  <table class="table table-striped" id="tblGrid">
+                    <thead id="tblHead">
+                      <tr>
+                        <th>#Promotor</th>
+                        <th class="bg-info text-center">Avance</th>
+                      </tr>
+                    </thead>
+                    <tbody id="promotor_tr">
+                    </tbody>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default " data-dismiss="modal">Close</button>
+                </div>			
+              </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+          </div><!-- /.modal -->
     </body>
 </html>

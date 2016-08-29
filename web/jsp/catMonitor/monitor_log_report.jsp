@@ -387,6 +387,18 @@ if(request.getParameter("idProyecto")!=null){
             </div>
             <!-- Fin de Contenido-->
         </div>
-
+        <script type="text/javascript" src="../../js/slick-carousel/slick.min.js"></script>
+        <script type="text/javascript" src="../../js/slick-carousel/slick-lightbox.min.js"></script>
+        <script type="text/javascript">
+          $( document ).ready(function() {
+            $("select.flexselect").flexselect();
+            $('.slick-gallery').slick();
+            $('.slick-gallery').slickLightbox({
+               src: 'src',
+               itemSelector: '.thumbnail img',
+               caption: 'caption'
+            });
+          });
+        </script>
     </body>
 </html>

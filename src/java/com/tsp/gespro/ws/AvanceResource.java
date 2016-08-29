@@ -8,8 +8,11 @@ import com.google.gson.Gson;
 import com.tsp.gespro.Services.ActividadFullObject;
 import com.tsp.gespro.Services.Allservices;
 import com.tsp.gespro.Services.DataUbicacion;
+import com.tsp.gespro.Services.PromotorAvance;
 import com.tsp.gespro.hibernate.dao.ActividadDAO;
 import com.tsp.gespro.hibernate.pojo.Actividad;
+import com.tsp.gespro.hibernate.pojo.Usuarios;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.Context;
@@ -289,10 +292,10 @@ public class AvanceResource {
         
         //Obtengo la lista de actividades de el proyecto.
         if(proyecto!=null && proyecto!=""){
-             String where = "WHERE id_user=" + proyecto;
+             String where = "WHERE id_proyecto=" + proyecto;
              actividades = allservices.QueryActividadDAO(where);
         }else{
-            actividades = new ActividadDAO().getLista();
+            actividades=new ActividadDAO().lista();
         }
        
 
@@ -301,82 +304,39 @@ public class AvanceResource {
         List<ActividadFullObject> actividadesFull;
         actividadesFull = allservices.getActividadesFull(actividades);
 
-        // Agrupamos los avances por ciudad.
-        ArrayList<String> listaDeCiudades = new ArrayList();
-       
+        // Agrupamos los avances por promotor.
+        ArrayList<String> promotoresList = new ArrayList();
+        List<PromotorAvance> avancePromotor=new ArrayList<PromotorAvance>();
         for (ActividadFullObject actividadFull : actividadesFull) {
-            DataUbicacion ubi=actividadFull.getUbicacion();
-            if(ubi!=null){
-              String ciudad=actividadFull.getUbicacion().getCiudad();
-              if(ciudad!=null && ciudad!=""){
-                if (!listaDeCiudades.contains(ciudad)) {
-                  listaDeCiudades.add(actividadFull.getUbicacion().getCiudad());
+            Usuarios promotor=actividadFull.getPromotor();
+            if(promotor!=null){
+              String name=promotor.getUserName();
+              if(name!="" && name!=null){
+                if (!promotoresList.contains(name)) {
+                  promotoresList.add(name);
+                  System.out.print("Promotor : "+name);
                  }
               }
             } 
         }
         
-        String ciudadesJson="";
-        int indice = -1;
-        for (String ciudad : listaDeCiudades) {
-            indice++;
+        for (String promo : promotoresList) {
             float sumaDeAvance = 0;
             int contador = 0;
             for (ActividadFullObject actividadFull : actividadesFull) {
-                if (ciudad.equalsIgnoreCase(actividadFull.getUbicacion().getCiudad())) {
+                if (promo.equalsIgnoreCase(actividadFull.getPromotor().getUserName())) {
                     contador++;
                     sumaDeAvance += actividadFull.getActividad().getAvance();
                 }
             }
-            ciudadesJson += "\""+ciudad+"\":"+sumaDeAvance/(contador);
-            if (listaDeCiudades.size() == indice+1) {
-            } else {
-                ciudadesJson += ",";
-            }
+            PromotorAvance obj=new PromotorAvance();
+            obj.setPromotor(promo);
+            obj.setAvance(sumaDeAvance/(contador));
+            avancePromotor.add(obj);
         }
         
-        // Agrupamos los avances por ciudad.
-        ArrayList<String> listaDeEstados = new ArrayList();
-
-        for (ActividadFullObject actividadFull : actividadesFull) {
-            DataUbicacion ubi=actividadFull.getUbicacion();
-            if(ubi!=null){
-                String estado=actividadFull.getUbicacion().getEstado();
-                if(estado!=null && estado!=""){
-                    if (!listaDeEstados.contains(estado)) {
-                        listaDeEstados.add(actividadFull.getUbicacion().getEstado());
-                    }
-                }
-            } 
-        }
-        
-        String estadosJson="";
-        indice = -1;
-        for (String estado : listaDeEstados) {
-            indice++;
-            float sumaDeAvance = 0;
-            int contador = 0;
-            for (ActividadFullObject actividadFull : actividadesFull) {
-                if (estado.equalsIgnoreCase(actividadFull.getUbicacion().getEstado())) {
-                    contador++;
-                    sumaDeAvance += actividadFull.getActividad().getAvance();
-                }
-            }
-            estadosJson += "\""+estado+"\":"+sumaDeAvance/(contador);
-            if (listaDeEstados.size() == indice+1) {
-            } else {
-                estadosJson += ",";
-            }
-        }
-     System.out.print("Ciudades : " +ciudadesJson);
-     System.out.print("Estados : " +estadosJson);
-
-     String json = "{\"ciudades\":{";
-     json+=ciudadesJson;
-     json+="},";
-     json+="\"regiones\":{";
-     json+=estadosJson;
-     json+="}}";
+     Gson gson=new Gson();
+     String json=gson.toJson(avancePromotor);
      System.out.print("Response : " +json);
 
      return json;

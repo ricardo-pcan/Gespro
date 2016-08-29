@@ -16,7 +16,9 @@ import com.tsp.gespro.hibernate.pojo.Proyecto;
 import com.tsp.gespro.hibernate.dao.UsuariosDAO;
 import com.tsp.gespro.hibernate.pojo.Actividad;
 import com.tsp.gespro.hibernate.dao.ActividadDAO;
+import com.tsp.gespro.hibernate.dao.CampoAdicionalClienteDAO;
 import com.tsp.gespro.hibernate.dao.ClienteDAO;
+import com.tsp.gespro.hibernate.dao.ClientesClientesDAO;
 import com.tsp.gespro.hibernate.dao.ProyectoDAO;
 import com.tsp.gespro.hibernate.dao.PuntoDAO;
 import com.tsp.gespro.hibernate.pojo.Cobertura;
@@ -24,10 +26,11 @@ import com.tsp.gespro.hibernate.pojo.Coberturaproyecto;
 import com.tsp.gespro.hibernate.pojo.Producto;
 import com.tsp.gespro.hibernate.pojo.Punto;
 
-import com.tsp.gespro.hibernate.dao.FotoActividadDAO;
-import com.tsp.gespro.hibernate.pojo.FotoActividad;
+import com.tsp.gespro.hibernate.dao.ConceptoRegistroFotograficoDAO;
+import com.tsp.gespro.hibernate.pojo.ConceptoRegistroFotografico;
 import java.util.ArrayList;
 import com.tsp.gespro.hibernate.dao.CoberturaProyectoDAO;
+import com.tsp.gespro.hibernate.pojo.CampoAdicionalClienteValor;
 import com.tsp.gespro.hibernate.pojo.Cliente;
 
 import org.hibernate.Session;
@@ -41,21 +44,22 @@ public class Allservices {
     private static ProductoDAO productoDAO;
     private static ActividadDAO actividadDAO;
     private static CoberturaProyectoDAO coberturaproyectoDAO;
-    private static FotoActividadDAO fotoactividadDAO;
+    private static ConceptoRegistroFotograficoDAO conceptoregistrofotograficoDAO;
+    private static CampoAdicionalClienteDAO campoadicionalcliente;
 
     public Allservices() {
     }
     
-    public List queryFotoActividad(String where){  
+    public List queryConceptoRegistroFotografico(String where){  
         
-            List<FotoActividad> lista = null;  
+            List<ConceptoRegistroFotografico> lista = null;  
             Session session = null;
 
         try 
         { 
             session = HibernateUtil.getSessionFactory().openSession(); 
             Transaction tx = session.beginTransaction(); 
-            String query = "from FotoActividad "+where;
+            String query = "from ConceptoRegistroFotografico "+where;
             lista = session.createQuery(query).list(); 
         }
         finally 
@@ -159,6 +163,23 @@ public class Allservices {
             session = HibernateUtil.getSessionFactory().openSession();
             Transaction tx = session.beginTransaction();
             String query = "from Proyecto " + where;
+            lista = session.createQuery(query).list();
+        } finally {
+            session.close();
+        }
+        
+        return lista;
+    }
+    
+    public List<CampoAdicionalClienteValor> queryCampoAdicionalClienteValorDAO(String where) {
+
+        List<CampoAdicionalClienteValor> lista = null;
+        Session session = null;
+
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            Transaction tx = session.beginTransaction();
+            String query = "from CampoAdicionalClienteValor " + where;
             lista = session.createQuery(query).list();
         } finally {
             session.close();
@@ -284,6 +305,27 @@ public class Allservices {
         return lista; 
     }
     
+    public List queryClientesMatrizDAO(){  
+        
+            List<Cliente> lista = null;  
+            Session session = null;
+
+        try 
+        { 
+            String idClientes= new ClientesClientesDAO().ClientesIdMatriz();
+            session = HibernateUtil.getSessionFactory().openSession(); 
+            Transaction tx = session.beginTransaction(); 
+            String query = "from Cliente WHERE id_cliente IN  ("+idClientes+")";
+            lista = session.createQuery(query).list();
+        }
+        finally 
+        { 
+            session.close(); 
+        }  
+
+        return lista; 
+    }
+        
     public List getActividadesFull(List<Actividad> listaActividades){  
         // Lista de objeto con los objectos de actividades, punto y proyeco
         // Por actividad.

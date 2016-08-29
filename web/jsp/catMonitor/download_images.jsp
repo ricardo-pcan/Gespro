@@ -27,7 +27,7 @@
         folderZip.mkdir();
     }
         
-    String ubicacionImagenesProspectos = appConfig.getApp_content_path() +"pictures/proyectos/"+objActividad.getIdProyecto()+"/actividades/"+objActividad.getIdActividad()+"/";
+    String ubicacionImagenesProspectos = appConfig.getApp_content_path() +"proyectos/"+objActividad.getIdProyecto()+"/actividades/"+objActividad.getIdActividad()+"/";
     String filezipName= appConfig.getApp_content_path() +"files/Actividad"+objActividad.getIdActividad()+"pictures.zip";
 
     FileOutputStream fos = null;

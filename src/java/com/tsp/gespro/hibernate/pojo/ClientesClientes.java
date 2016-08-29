@@ -1,5 +1,5 @@
 package com.tsp.gespro.hibernate.pojo;
-// Generated 28/08/2016 01:00:35 AM by Hibernate Tools 3.2.1.GA
+// Generated 28/08/2016 10:31:12 PM by Hibernate Tools 3.2.1.GA
 
 
 
@@ -9,28 +9,23 @@ package com.tsp.gespro.hibernate.pojo;
 public class ClientesClientes  implements java.io.Serializable {
 
 
-     private int id;
+     private Integer id;
      private Integer clienteId;
      private Integer clienteSucursalId;
 
     public ClientesClientes() {
     }
 
-	
-    public ClientesClientes(int id) {
-        this.id = id;
-    }
-    public ClientesClientes(int id, Integer clienteId, Integer clienteSucursalId) {
-       this.id = id;
+    public ClientesClientes(Integer clienteId, Integer clienteSucursalId) {
        this.clienteId = clienteId;
        this.clienteSucursalId = clienteSucursalId;
     }
    
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
     public Integer getClienteId() {
