@@ -32,7 +32,10 @@ import com.tsp.gespro.jdbc.SgfensPedidoDaoImpl;
 import com.tsp.gespro.jdbc.SgfensPedidoProductoDaoImpl;
 import com.tsp.gespro.jdbc.UsuariosDaoImpl;
 import com.tsp.gespro.bo.UsuarioBO;
+import com.tsp.gespro.hibernate.dao.CampoAdicionalClienteDAO;
 import com.tsp.gespro.hibernate.dao.UsuariosDAO;
+import com.tsp.gespro.hibernate.pojo.CampoAdicionalCliente;
+import com.tsp.gespro.hibernate.pojo.CampoAdicionalClienteValor;
 import com.tsp.gespro.util.DateManage;
 import com.tsp.gespro.util.Encrypter;
 import com.tsp.gespro.util.StringManage;
@@ -269,6 +272,8 @@ public class ReportBO {
                 fieldList.add(getDataInfo("LATITUD","Latitud","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("PROMOTOR","Promotor","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("PROYECTOS","Proyectos","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("CAMPOS ADICIONALES","Campos Adicionales","","",""+DATA_STRING,""));
+                
                 break;
 
             case PRODUCTO_REPORT:
@@ -499,7 +504,7 @@ public class ReportBO {
             }else{
                 promotorName = "-Sin Asignar-";
             }
-            hashData.put( ( String ) dataInfo.get(12).get("field"), getRealData(dataInfo.get(11), "" + promotorName ) );
+            hashData.put( ( String ) dataInfo.get(12).get("field"), getRealData(dataInfo.get(12), "" + promotorName ) );
 
             // Get the projects
             List<Proyecto> list_projects = servicesObject.queryProyectoDAO( "P where P.idCliente = " + dto.getIdCliente() );
@@ -510,8 +515,19 @@ public class ReportBO {
                     projectsName += " " + project.getNombre();
                 }
             }
-            hashData.put( ( String ) dataInfo.get(13).get("field"), getRealData(dataInfo.get(11), "" + projectsName ) );
+            hashData.put( ( String ) dataInfo.get(13).get("field"), getRealData(dataInfo.get(13), "" + projectsName ) );
 
+            // Get campos adicionales
+            CampoAdicionalClienteDAO campoAdicionalDAO = new CampoAdicionalClienteDAO();
+            List<CampoAdicionalClienteValor> listaClienteValor = servicesObject.queryCampoAdicionalClienteValorDAO( "where idCliente = " + dto.getIdCliente() );
+            String camposAdicionales = "";
+            
+            for( CampoAdicionalClienteValor campoAdicionalValor : listaClienteValor ) {
+                CampoAdicionalCliente campoadicionalcliente = campoAdicionalValor.getCampoAdicionalCliente();
+                camposAdicionales += campoadicionalcliente.getEtiqueta() + " : " + campoAdicionalValor.getValor() + "\n";
+            }
+            
+            hashData.put( ( String ) dataInfo.get(14).get("field"), getRealData(dataInfo.get(14), "" + camposAdicionales ) );
 
             dataList.add(hashData);
 

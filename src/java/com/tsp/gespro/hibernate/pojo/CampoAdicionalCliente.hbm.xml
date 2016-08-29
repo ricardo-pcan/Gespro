@@ -20,7 +20,7 @@
         <property name="obligatorio" type="java.lang.Integer">
             <column name="OBLIGATORIO" />
         </property>
-        <set name="campoAdicionalClienteValors" table="campo_adicional_cliente_valor" inverse="true" lazy="true" fetch="select">
+        <set name="campoAdicionalClienteValors" table="campo_adicional_cliente_valor" inverse="true" lazy="false" fetch="select">
             <key>
                 <column name="ID_CAMPO_ADICIONAL_CLIENTE" />
             </key>
