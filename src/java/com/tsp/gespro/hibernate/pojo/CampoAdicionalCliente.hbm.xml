@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 1/08/2016 04:33:47 AM by Hibernate Tools 4.3.1 -->
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 29/08/2016 07:07:27 AM by Hibernate Tools 3.2.1.GA -->
 <hibernate-mapping>
-    <class name="com.tsp.gespro.hibernate.pojo.CampoAdicionalCliente" table="campo_adicional_cliente" catalog="gespro" optimistic-lock="version">
-        <id name="idCampoAdicionalCliente" type="int">
+    <class name="com.tsp.gespro.hibernate.pojo.CampoAdicionalCliente" table="campo_adicional_cliente" catalog="gespro">
+        <id name="idCampoAdicionalCliente" type="java.lang.Integer">
             <column name="ID_CAMPO_ADICIONAL_CLIENTE" />
-            <generator class="assigned" />
+            <generator class="identity" />
         </id>
         <property name="idUsuario" type="java.lang.Integer">
             <column name="ID_USUARIO" />
@@ -20,7 +20,13 @@
         <property name="obligatorio" type="java.lang.Integer">
             <column name="OBLIGATORIO" />
         </property>
-        <set name="campoAdicionalClienteValors" table="campo_adicional_cliente_valor" inverse="true" lazy="false" fetch="select">
+        <set name="campoAdicionalClienteValors" inverse="true">
+            <key>
+                <column name="ID_CAMPO_ADICIONAL_CLIENTE" />
+            </key>
+            <one-to-many class="com.tsp.gespro.hibernate.pojo.CampoAdicionalClienteValor" />
+        </set>
+        <set name="campoAdicionalClienteValors_1" inverse="true">
             <key>
                 <column name="ID_CAMPO_ADICIONAL_CLIENTE" />
             </key>

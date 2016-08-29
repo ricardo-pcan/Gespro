@@ -1,5 +1,5 @@
 package com.tsp.gespro.hibernate.pojo;
-// Generated 1/08/2016 04:33:46 AM by Hibernate Tools 4.3.1
+// Generated 29/08/2016 07:07:26 AM by Hibernate Tools 3.2.1.GA
 
 
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import java.util.Set;
 public class CampoAdicionalProspecto  implements java.io.Serializable {
 
 
-     private int idCampoAdicionalProspecto;
+     private Integer idCampoAdicionalProspecto;
      private Integer idUsuario;
      private String etiqueta;
      private Integer tipoDato;
@@ -21,12 +21,7 @@ public class CampoAdicionalProspecto  implements java.io.Serializable {
     public CampoAdicionalProspecto() {
     }
 
-	
-    public CampoAdicionalProspecto(int idCampoAdicionalProspecto) {
-        this.idCampoAdicionalProspecto = idCampoAdicionalProspecto;
-    }
-    public CampoAdicionalProspecto(int idCampoAdicionalProspecto, Integer idUsuario, String etiqueta, Integer tipoDato, Integer obligatorio, Set campoAdicionalProspectoValors) {
-       this.idCampoAdicionalProspecto = idCampoAdicionalProspecto;
+    public CampoAdicionalProspecto(Integer idUsuario, String etiqueta, Integer tipoDato, Integer obligatorio, Set campoAdicionalProspectoValors) {
        this.idUsuario = idUsuario;
        this.etiqueta = etiqueta;
        this.tipoDato = tipoDato;
@@ -34,11 +29,11 @@ public class CampoAdicionalProspecto  implements java.io.Serializable {
        this.campoAdicionalProspectoValors = campoAdicionalProspectoValors;
     }
    
-    public int getIdCampoAdicionalProspecto() {
+    public Integer getIdCampoAdicionalProspecto() {
         return this.idCampoAdicionalProspecto;
     }
     
-    public void setIdCampoAdicionalProspecto(int idCampoAdicionalProspecto) {
+    public void setIdCampoAdicionalProspecto(Integer idCampoAdicionalProspecto) {
         this.idCampoAdicionalProspecto = idCampoAdicionalProspecto;
     }
     public Integer getIdUsuario() {

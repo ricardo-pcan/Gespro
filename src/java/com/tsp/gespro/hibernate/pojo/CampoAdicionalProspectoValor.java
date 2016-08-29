@@ -1,5 +1,5 @@
 package com.tsp.gespro.hibernate.pojo;
-// Generated 1/08/2016 04:33:46 AM by Hibernate Tools 4.3.1
+// Generated 29/08/2016 07:07:26 AM by Hibernate Tools 3.2.1.GA
 
 
 
@@ -9,7 +9,7 @@ package com.tsp.gespro.hibernate.pojo;
 public class CampoAdicionalProspectoValor  implements java.io.Serializable {
 
 
-     private int idCampoAdicionalProspectoValor;
+     private Integer idCampoAdicionalProspectoValor;
      private CampoAdicionalProspecto campoAdicionalProspecto;
      private String valor;
      private Integer idProspecto;
@@ -17,22 +17,17 @@ public class CampoAdicionalProspectoValor  implements java.io.Serializable {
     public CampoAdicionalProspectoValor() {
     }
 
-	
-    public CampoAdicionalProspectoValor(int idCampoAdicionalProspectoValor) {
-        this.idCampoAdicionalProspectoValor = idCampoAdicionalProspectoValor;
-    }
-    public CampoAdicionalProspectoValor(int idCampoAdicionalProspectoValor, CampoAdicionalProspecto campoAdicionalProspecto, String valor, Integer idProspecto) {
-       this.idCampoAdicionalProspectoValor = idCampoAdicionalProspectoValor;
+    public CampoAdicionalProspectoValor(CampoAdicionalProspecto campoAdicionalProspecto, String valor, Integer idProspecto) {
        this.campoAdicionalProspecto = campoAdicionalProspecto;
        this.valor = valor;
        this.idProspecto = idProspecto;
     }
    
-    public int getIdCampoAdicionalProspectoValor() {
+    public Integer getIdCampoAdicionalProspectoValor() {
         return this.idCampoAdicionalProspectoValor;
     }
     
-    public void setIdCampoAdicionalProspectoValor(int idCampoAdicionalProspectoValor) {
+    public void setIdCampoAdicionalProspectoValor(Integer idCampoAdicionalProspectoValor) {
         this.idCampoAdicionalProspectoValor = idCampoAdicionalProspectoValor;
     }
     public CampoAdicionalProspecto getCampoAdicionalProspecto() {
