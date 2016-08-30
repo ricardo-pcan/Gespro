@@ -9,6 +9,8 @@
        cacvdao.guardarCambios(request.getParameterMap());
        out.print("<--EXITO-->" + "Se guardó correctamente. ");
     }catch(Exception ex){
+        ex.printStackTrace();
+         out.print("<--hola-->" + ex.getMessage());
         out.print("<--ERROR-->" + ex.getMessage());
     }
            

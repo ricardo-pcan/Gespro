@@ -71,6 +71,12 @@ public class EtiquetaFormularioClienteDAO {
     public static String PAIS="pais";
     public static String PAIS_DEFAULT="País";
     public static boolean PAIS_REQUERIDO_DEFAULT=true;
+    public static String MATRIZ="matriz";
+    public static String MATRIZ_DEFAULT="¿Eres matriz?";
+    public static boolean MATRIZ_REQUERIDO_DEFAULT=true;
+    public static String CLIENTE="cliente";
+    public static String CLIENTE_DEFAULT="Cliente";
+    public static boolean CLIENTE_REQUERIDO_DEFAULT=false;
     
     
     public EtiquetaFormularioClienteDAO(){

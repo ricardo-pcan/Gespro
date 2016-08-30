@@ -95,64 +95,7 @@
         <jsp:include page="../include/jsFunctions.jsp"/>
 
                             <script type="text/javascript">
-                                    //Recarga de BD dinámicamente el listado de clientes de la empresa
-            function  recargarSelectClientes(idEmpresa) {
-            $.ajax({
-                                    type: "POST",
-                                    url: "catSucursales_ajax.jsp",
-                                    data: {mode: 'recargar_select_clientes', id_empresa: idEmpresa},
-                    beforeSend: function (objeto) {
-                    $("#action_buttons").fadeOut("slow");
-                                    $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
-                                    $("#ajax_loading").fadeIn("slow");
-                    },
-                                    success: function (datos) {
-                                    if(datos.indexOf("--EXITO-->", 0) > 0) {
-                    $("#div_select_cliente").html(datos);
-                                    $("#ajax_loading").fadeOut("slow");
-                                    $("#action_buttons").fadeIn("slow");
-                                    iniciarFlexSelect();
-                                    } else {
-                    $("#ajax_loading").html(datos);
-                                    $("#action_buttons").fadeIn("slow");
-                            }
-                    }
-            });
-            }
-
-
-                    function selectCliente(idCliente) {
-            $.ajax({
-                            type: "POST",
-                            url: "catSucursales_ajax.jsp",
-                            data: { mode: 'select_matriz', id_cliente : idCliente },
-                    beforeSend: function(objeto){
-                    $("#action_buttons").fadeOut("slow");
-                    $("#ajax_loading").html('<div style=""><center>Procesando...<br/><img src="../../images/ajax_loader.gif" alt="Cargando.." /></center></div>');
-                    $("#ajax_loading").fadeIn("slow");
-                            },
-                    success:  function(datos){
-            if (datos.indexOf("--EXITO--> ", 0) > 0){
-                    strJSONCliente = $.trim(datos.replace('<!--EXITO-->', ''));
-                    $("#ajax_loading").fadeOut("slow");
-                    $("#action_buttons").fadeIn("slow");
-                    } else {
-                    $("#ajax_loading").html(datos);
-                    $("#action_buttons").fadeIn("slow");
-                    }
-                    }
-                    });
-                    }
-
-                    function iniciarFlexSelect() {
-                    $("#matriz").flexselect({
-                    jsFunction: function (id) {
-                    selectCliente(id);
-                    }
-                    });
-                    $("select.flexselect").flexselect();
-                    }
-                    //****-----------------FIN ACCIONES DE SELECCION CLIENTE
+                                    
 
 
                     function grabar(){
@@ -165,7 +108,7 @@
                             var obligatorio = $("#" + etiqueta.replace(" ", "") + "ObligatorioAdicional").val();
                     var idAdicional = $("#" + etiqueta.replace(" ", "") + "IdAdicional").val();
                     var valorAdicional = $("#" + etiqueta.replace(" ",  "") +  "IdValor").val();
-                    var  idSucursal  =  $("#idEmpresa").val();
+                    var  idSucursal  =  $("#idEmpresa").val()?$("#idEmpresa").val():0;
                     var  adicionalSucursal  =  {idAdicional: idAdicional,  idSucursal: idSucursal,  etiqueta: etiqueta,  obligatorio: obligatorio,  tipo: tipo,  valor: valorAdicional};
                     adicionalesSucursalValidacion.push(adicionalSucursal);
                     }
@@ -281,7 +224,6 @@
             }
             
              $(document).ready(function() {
-                recargarSelectClientes(<%= idEmpresa%>);
                 //Si se recibio el parametro para que el modo sea en forma de popup
             <%= mode.equals("3") ? "mostrarFormPopUpMode();" : ""%>
             });
@@ -451,38 +393,7 @@
                                         <input maxlength="30" type="text" id="nombreSucursal" name="nombreSucursal" style="width:300px"
                                                value="<%=empresasDto != null && !mode.equals("") ? empresaBO.getEmpresa().getNombreComercial() : ""%>"/>                                        
                                     </p>
-                                    <br/>
-                                    <p>
-                                        <%
-                                            EtiquetaFormularioSucursal matriz = camposSucursal.get(EtiquetaFormularioSucursalDAO.MATRIZ);
-                                            if (matriz == null) {
-                                                matriz = new EtiquetaFormularioSucursal();
-                                                matriz.setCampo(EtiquetaFormularioSucursalDAO.MATRIZ);
-                                                matriz.setEtiqueta(EtiquetaFormularioSucursalDAO.MATRIZ_DEFAULT);
-                                                matriz.setObligatorio(EtiquetaFormularioSucursalDAO.MATRIZ_REQUERIDO_DEFAULT ? 1 : 0);
-                                                matriz.setIdUsuario(user.getUser().getIdUsuarios());
-                                                camposSucursal.put(matriz.getCampo(), matriz);
-                                            }
-                                            obligatorioVal = "";
-                                            if (matriz.getObligatorio() == 1) {
-                                                obligatorioVal = "1";
-                                            } else {
-                                                obligatorioVal = "0";
-                                            }
-                                            out.print("<input type=\"hidden\" id=\"matrizObligatorio\" value=\"" + obligatorioVal + "\"/>");
-                                            out.print("<input type=\"hidden\" id=\"matrizHidden\" value=\"" + matriz.getEtiqueta() + "\"/>");
-                                            out.print("<input type=\"hidden\" id=\"matrizCampo\" value=\"" + matriz.getCampo() + "\"/>");
-                                            out.print("<input type=\"hidden\" id=\"matrizId\" value=\"" + matriz.getIdEtiquetaFormularioSucursal() + "\"/>");
-                                        %>
-                                        <label id="matrizLabel"><%
-                                            if (matriz.getObligatorio() == 1) {
-                                                out.print("*");
-                                            }
-                                            out.print(matriz.getEtiqueta());
-                                            %>:</label><br/>
-                                    <div id="div_select_cliente" name="div_select_cliente" style="display: inline;" >
-                                    </div>
-                                    </p>  
+                                    <br/>  
                                     <br/>                                    
                                     <p>
                                         <label>Estatus:</label>

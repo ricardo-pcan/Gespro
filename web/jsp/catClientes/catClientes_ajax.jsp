@@ -60,12 +60,6 @@
     String celular="";
     String email="";
     String contacto="";
-    int tipo=0;
-    if(request.getParameter("tipo")!=null){
-         tipo= Integer.parseInt(request.getParameter("tipo"));
-    }
-    out.print("tipo : "+tipo);
-    int idC=0;
     double latitud = 0;
     double longitud = 0;
     
@@ -77,13 +71,19 @@
     String nombreComercial="";
     
     int idSucursalEmpresaAsignado = idEmpresa;
+    int tipo=1;
+    
+    
+    if(request.getParameter("tipo")!=null){
+        tipo = Integer.parseInt(request.getParameter("tipo"));
+    }
     
     /*
     * Recepción de valores
     */
     mode = request.getParameter("mode")!=null?request.getParameter("mode"):"";
     try{
-        idCliente = Integer.parseInt(request.getParameter("idCliente"));    
+        idCliente = Integer.parseInt(request.getParameter("idCliente"));
     }catch(NumberFormatException ex){}
     try{
         idClienteCategoria = Integer.parseInt(request.getParameter("idClienteCategoria"));
@@ -224,7 +224,44 @@
                     /**
                      * Creamos el registro de Cliente de maneta express (con ID_ESTATUS = 3)
                      */
-                    if(idCliente>0){//edita express
+                    if(idCliente>0){
+                        
+                        if(tipo==1){
+                          String where="where cliente_id="+idCliente+" AND cliente_sucursal_id="+idCliente;
+                          int relacion=new ClientesClientesDAO().exist(where);
+                          if(relacion==0){
+                              ClientesClientes relacionClientes=new ClientesClientes();
+                              relacionClientes.setClienteId(idCliente);
+                              relacionClientes.setClienteSucursalId(idCliente);
+                              ClientesClientesDAO obj=new ClientesClientesDAO();
+                              obj.guardar(relacionClientes);
+                          }else{
+                              ClientesClientesDAO obj=new ClientesClientesDAO();
+                              ClientesClientes relacionClientes=obj.getById(relacion);;
+                              relacionClientes.setClienteId(idCliente);
+                              relacionClientes.setClienteSucursalId(idCliente);
+                              obj.actualizar(relacionClientes);
+                          }
+                        }else{
+                          int idC= Integer.parseInt(request.getParameter("idC"));
+                          String where="where cliente_id="+idCliente+" AND cliente_sucursal_id="+idC;
+                          int relacion=new ClientesClientesDAO().exist(where);
+                          if(relacion==0){
+                              ClientesClientes relacionClientes=new ClientesClientes();
+                              relacionClientes.setClienteId(idCliente);
+                              relacionClientes.setClienteSucursalId(idC);
+                              ClientesClientesDAO obj=new ClientesClientesDAO();
+                              obj.guardar(relacionClientes);
+                          }else{
+                              ClientesClientesDAO obj=new ClientesClientesDAO();
+                              ClientesClientes relacionClientes=obj.getById(relacion);;
+                              relacionClientes.setClienteId(idCliente);
+                              relacionClientes.setClienteSucursalId(idC);
+                              obj.actualizar(relacionClientes);
+                          }
+                        }
+                        
+                        //edita express
                         ClienteBO clienteBO = new ClienteBO(idCliente,user.getConn());
                         Cliente clienteDto = clienteBO.getCliente();
                         
@@ -308,42 +345,7 @@
                             cliPersonalizados.setIdCliente(idCliente);
                             campoContenidoDaoImpl.insert(cliPersonalizados);
                         }*/
-                        
-                        
-                        if(tipo==1){
-                          String where="where cliente_id="+idCliente+" AND cliente_sucursal_id="+idCliente;
-                          int relacion=new ClientesClientesDAO().exist(where);
-                          if(relacion==0){
-                              ClientesClientes relacionClientes=new ClientesClientes();
-                              relacionClientes.setClienteId(idCliente);
-                              relacionClientes.setClienteSucursalId(idCliente);
-                              ClientesClientesDAO obj=new ClientesClientesDAO();
-                              obj.guardar(relacionClientes);
-                          }else{
-                              ClientesClientesDAO obj=new ClientesClientesDAO();
-                              ClientesClientes relacionClientes=obj.getById(relacion);;
-                              relacionClientes.setClienteId(idCliente);
-                              relacionClientes.setClienteSucursalId(idCliente);
-                              obj.actualizar(relacionClientes);
-                          }
-                        }else{
-                          idC= Integer.parseInt(request.getParameter("idC"));
-                          String where="where cliente_id="+idCliente+" AND cliente_sucursal_id="+idC;
-                          int relacion=new ClientesClientesDAO().exist(where);
-                          if(relacion==0){
-                              ClientesClientes relacionClientes=new ClientesClientes();
-                              relacionClientes.setClienteId(idCliente);
-                              relacionClientes.setClienteSucursalId(idC);
-                              ClientesClientesDAO obj=new ClientesClientesDAO();
-                              obj.guardar(relacionClientes);
-                          }else{
-                              ClientesClientesDAO obj=new ClientesClientesDAO();
-                              ClientesClientes relacionClientes=obj.getById(relacion);;
-                              relacionClientes.setClienteId(idCliente);
-                              relacionClientes.setClienteSucursalId(idC);
-                              obj.actualizar(relacionClientes);
-                          }
-                        }
+                        /////**--
                         
                         try{
                             new ClienteDaoImpl(user.getConn()).update(clienteDto.createPk(), clienteDto);
@@ -628,6 +630,11 @@
                     Cliente clienteDto = clienteBO.getCliente();
 
                     clienteDto.setIdEstatus(estatus);
+                    /*if (matriz > 0) {
+                        clienteDto.setMatriz(matriz);
+                    } else {
+                        clienteDto.setMatrizNull(true);
+                    }*/
                     clienteDto.setIdEmpresa(idSucursalEmpresaAsignado);
                     /*clienteDto.setRfcCliente(rfc);
                     clienteDto.setRazonSocial(razonSocial);
@@ -650,46 +657,65 @@
                     //clienteDto.setCelular(celular);
                     clienteDto.setCorreo(email);
                     clienteDto.setContacto(contacto);
-                  
+                    
+                    //clienteDto.setLatitud(latitud);
+                    //clienteDto.setLongitud(longitud);
+                    
+                    //clienteDto.setReferencia(referencia);
+                    
+                    /*String diasVisita = "";
+                    if(!lunesReporte.trim().equals(""))
+                        diasVisita += lunesReporte+", ";
+                    if(!martesReporte.trim().equals(""))
+                        diasVisita += martesReporte+", ";
+                    if(!miercolesReporte.trim().equals(""))
+                        diasVisita += miercolesReporte+", ";
+                    if(!juevesReporte.trim().equals(""))
+                        diasVisita += juevesReporte+", ";
+                    if(!viernesReporte.trim().equals(""))
+                        diasVisita += viernesReporte+", ";
+                    if(!sabadoReporte.trim().equals(""))
+                        diasVisita += sabadoReporte+", ";
+                    if(!domingoReporte.trim().equals(""))
+                        diasVisita += domingoReporte+", ";
+                    
+                    clienteDto.setDiasVisita(diasVisita);
+                    clienteDto.setPerioricidad(periodoVisita);                    
+                    clienteDto.setSincronizacionMicrosip(2);                    
+                    clienteDto.setPermisoVentaCredito(permisoVentaCredito);*/
                     clienteDto.setNombreComercial(nombreComercial);
                     clienteDto.setIdCategoria(idClienteCategoria);
+                    /*
+                    clienteDto.setClave(claveCliente);
                     
-                        if(tipo==1){
-                          String where="where cliente_id="+idCliente+" AND cliente_sucursal_id="+idCliente;
-                          int relacion=new ClientesClientesDAO().exist(where);
-                          if(relacion==0){
-                              ClientesClientes relacionClientes=new ClientesClientes();
-                              relacionClientes.setClienteId(idCliente);
-                              relacionClientes.setClienteSucursalId(idCliente);
-                              ClientesClientesDAO obj=new ClientesClientesDAO();
-                              obj.guardar(relacionClientes);
-                          }else{
-                              ClientesClientesDAO obj=new ClientesClientesDAO();
-                              ClientesClientes relacionClientes=obj.getById(relacion);;
-                              relacionClientes.setClienteId(idCliente);
-                              relacionClientes.setClienteSucursalId(idCliente);
-                              obj.actualizar(relacionClientes);
-                          }
-                        }else{
-                          idC= Integer.parseInt(request.getParameter("idC"));
-                          String where="where  cliente_id="+idCliente+" AND cliente_sucursal_id="+idC;
-                          int relacion=new ClientesClientesDAO().exist(where);
-                          if(relacion==0){
-                              ClientesClientes relacionClientes=new ClientesClientes();
-                              relacionClientes.setClienteId(idCliente);
-                              relacionClientes.setClienteSucursalId(idC);
-                              ClientesClientesDAO obj=new ClientesClientesDAO();
-                              obj.guardar(relacionClientes);
-                          }else{
-                              ClientesClientesDAO obj=new ClientesClientesDAO();
-                              ClientesClientes relacionClientes=obj.getById(relacion);;
-                              relacionClientes.setClienteId(idCliente);
-                              relacionClientes.setClienteSucursalId(idC);
-                              obj.actualizar(relacionClientes);
-                          }
-                        }
+                    /////**--Insertamos los registros de datos personalizados:                    
+                    /*ClienteCampoContenidoDaoImpl campoContenidoDaoImpl = new ClienteCampoContenidoDaoImpl(user.getConn());
+                    ClienteCampoAdicionalBO clienteCampoContenidoBO = new ClienteCampoAdicionalBO(user.getConn());
+                    clienteCampoContenidoBO.deleteCamposAdicionalesCliente(idCliente);
+                    for(ClienteCampoContenido cliPersonalizados : clienteCampoContenidos){
+                        cliPersonalizados.setIdCliente(idCliente);
+                        campoContenidoDaoImpl.insert(cliPersonalizados);
+                    }*/
+                   
+/**********                    //Relacion con vendedor                    
+                    if (idVendedor>0){
+                            //ClienteVendedorBO clienteVendedorBO = new SGClienteVendedorBO(idCliente,user.getConn());
+                            RelacionClienteVendedor clienteVendedorDto = new RelacionClienteVendedorDaoImpl(user.getConn()).findByPrimaryKey(idCliente);
 
+                           if (clienteVendedorDto!=null){
+                                //si ya existe registro, lo actualizamos
+                                clienteVendedorDto.setIdUsuario(idVendedor);
+                                new RelacionClienteVendedorDaoImpl(user.getConn()).update(clienteVendedorDto.createPk(), clienteVendedorDto);
+                           }else{
+                                // si no existe registro, lo creamos
+                                clienteVendedorDto = new RelacionClienteVendedor();
 
+                                clienteVendedorDto.setIdCliente(idCliente);
+                                clienteVendedorDto.setIdUsuario(idVendedor);
+                                new RelacionClienteVendedorDaoImpl(user.getConn()).insert(clienteVendedorDto);
+                           }
+                       }
+***********/
                     try{
                         new ClienteDaoImpl(user.getConn()).update(clienteDto.createPk(), clienteDto);
 
@@ -722,7 +748,12 @@
                     //clienteDto.setIdCliente(idClienteNuevo);
 
                     clienteDto.setIdEstatus(estatus);
-
+                    /*if (matriz > 0) {
+                        clienteDto.setMatriz(matriz);
+                    } else {
+                        clienteDto.setMatrizNull(true);
+                    }*/
+                    
                     /*clienteDto.setRfcCliente(rfc);
                     clienteDto.setRazonSocial(razonSocial);
                     clienteDto.setNombreCliente(nombre);
@@ -783,43 +814,43 @@
                      * Realizamos el insert
                      */
                     ClientePk clientePk = clientesDaoImpl.insert(clienteDto);
-                    idCliente=clientePk.getIdCliente();
-                    
-                        if(tipo==1){
-                          String where="where cliente_id="+idCliente+" AND cliente_sucursal_id="+idCliente;
-                          int relacion=new ClientesClientesDAO().exist(where);
-                          if(relacion==0){
-                              ClientesClientes relacionClientes=new ClientesClientes();
-                              relacionClientes.setClienteId(idCliente);
-                              relacionClientes.setClienteSucursalId(idCliente);
-                              ClientesClientesDAO obj=new ClientesClientesDAO();
-                              obj.guardar(relacionClientes);
-                          }else{
-                              ClientesClientesDAO obj=new ClientesClientesDAO();
-                              ClientesClientes relacionClientes=obj.getById(relacion);;
-                              relacionClientes.setClienteId(idCliente);
-                              relacionClientes.setClienteSucursalId(idCliente);
-                              obj.actualizar(relacionClientes);
-                          }
-                        }else{
-                          idC= Integer.parseInt(request.getParameter("idC"));
-                          String where="where  cliente_id="+idCliente+" AND cliente_sucursal_id="+idC;
-                          int relacion=new ClientesClientesDAO().exist(where);
-                          if(relacion==0){
-                              ClientesClientes relacionClientes=new ClientesClientes();
-                              relacionClientes.setClienteId(idCliente);
-                              relacionClientes.setClienteSucursalId(idC);
-                              ClientesClientesDAO obj=new ClientesClientesDAO();
-                              obj.guardar(relacionClientes);
-                          }else{
-                              ClientesClientesDAO obj=new ClientesClientesDAO();
-                              ClientesClientes relacionClientes=obj.getById(relacion);;
-                              relacionClientes.setClienteId(idCliente);
-                              relacionClientes.setClienteSucursalId(idC);
-                              obj.actualizar(relacionClientes);
-                          }
-                        }
+                    int clienteid=clientePk.getIdCliente();
+                    if(tipo==1){
 
+                      String where="where cliente_id="+clienteid+" AND cliente_sucursal_id="+clienteid;
+                      int relacion=new ClientesClientesDAO().exist(where);
+                      if(relacion==0){
+                          ClientesClientes relacionClientes=new ClientesClientes();
+                          relacionClientes.setClienteId(clienteid);
+                          relacionClientes.setClienteSucursalId(clienteid);
+                          ClientesClientesDAO obj=new ClientesClientesDAO();
+                          obj.guardar(relacionClientes);
+                      }else{
+                          ClientesClientesDAO obj=new ClientesClientesDAO();
+                          ClientesClientes relacionClientes=obj.getById(relacion);;
+                          relacionClientes.setClienteId(clienteid);
+                          relacionClientes.setClienteSucursalId(clienteid);
+                          obj.actualizar(relacionClientes);
+                      }
+                    }else{
+                      int idC= Integer.parseInt(request.getParameter("idC"));
+                      String where="where cliente_id="+clienteid+" AND cliente_sucursal_id="+idC;
+                      int relacion=new ClientesClientesDAO().exist(where);
+                      if(relacion==0){
+                          ClientesClientes relacionClientes=new ClientesClientes();
+                          relacionClientes.setClienteId(clienteid);
+                          relacionClientes.setClienteSucursalId(idC);
+                          ClientesClientesDAO obj=new ClientesClientesDAO();
+                          obj.guardar(relacionClientes);
+                      }else{
+                          ClientesClientesDAO obj=new ClientesClientesDAO();
+                          ClientesClientes relacionClientes=obj.getById(relacion);;
+                          relacionClientes.setClienteId(clienteid);
+                          relacionClientes.setClienteSucursalId(idC);
+                          obj.actualizar(relacionClientes);
+                      }
+                    }
+                        
                     
                     /////**--Insertamos los registros de datos personalizados:
                     /*if(clientePk.getIdCliente() > 0){
@@ -842,6 +873,17 @@
                         new RelacionClienteVendedorDaoImpl(user.getConn()).insert(clienteVendedorDto);
                    }
                     
+                    //Consumo de Creditos Operacion
+                    /*try{
+                        BitacoraCreditosOperacionBO bcoBO = new BitacoraCreditosOperacionBO(user.getConn());
+                        bcoBO.registraDescuento(user.getUser(), 
+                                BitacoraCreditosOperacionBO.CONSUMO_ACCION_REGISTRO_CLIENTE, 
+                                null, clienteDto.getIdCliente(), 0, 0, 
+                                "Registro de Cliente", null, true);
+                    }catch(Exception ex){
+                        ex.printStackTrace();
+                    }*/
+
                     out.print("<!--EXITO-->Registro creado satisfactoriamente.<br/>:"+clienteDto.getIdCliente());
 
                 }catch(Exception e){

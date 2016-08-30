@@ -4,6 +4,8 @@
     Author     : ISCesarMartinez poseidon24@hotmail.com
 --%>
 
+<%@page import="com.tsp.gespro.hibernate.pojo.ClientesClientes"%>
+<%@page import="com.tsp.gespro.hibernate.dao.ClientesClientesDAO"%>
 <%@page import="com.tsp.gespro.dto.ClientePk"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
@@ -69,6 +71,12 @@
     String nombreComercial="";
     
     int idSucursalEmpresaAsignado = idEmpresa;
+    int tipo=1;
+    
+    
+    if(request.getParameter("tipo")!=null){
+        tipo = Integer.parseInt(request.getParameter("tipo"));
+    }
     
     /*
     * Recepción de valores
@@ -216,7 +224,44 @@
                     /**
                      * Creamos el registro de Cliente de maneta express (con ID_ESTATUS = 3)
                      */
-                    if(idCliente>0){//edita express
+                    if(idCliente>0){
+                        
+                        if(tipo==1){
+                          String where="where cliente_id="+idCliente+" AND cliente_sucursal_id="+idCliente;
+                          int relacion=new ClientesClientesDAO().exist(where);
+                          if(relacion==0){
+                              ClientesClientes relacionClientes=new ClientesClientes();
+                              relacionClientes.setClienteId(idCliente);
+                              relacionClientes.setClienteSucursalId(idCliente);
+                              ClientesClientesDAO obj=new ClientesClientesDAO();
+                              obj.guardar(relacionClientes);
+                          }else{
+                              ClientesClientesDAO obj=new ClientesClientesDAO();
+                              ClientesClientes relacionClientes=obj.getById(relacion);;
+                              relacionClientes.setClienteId(idCliente);
+                              relacionClientes.setClienteSucursalId(idCliente);
+                              obj.actualizar(relacionClientes);
+                          }
+                        }else{
+                          int idC= Integer.parseInt(request.getParameter("idC"));
+                          String where="where cliente_id="+idCliente+" AND cliente_sucursal_id="+idC;
+                          int relacion=new ClientesClientesDAO().exist(where);
+                          if(relacion==0){
+                              ClientesClientes relacionClientes=new ClientesClientes();
+                              relacionClientes.setClienteId(idCliente);
+                              relacionClientes.setClienteSucursalId(idC);
+                              ClientesClientesDAO obj=new ClientesClientesDAO();
+                              obj.guardar(relacionClientes);
+                          }else{
+                              ClientesClientesDAO obj=new ClientesClientesDAO();
+                              ClientesClientes relacionClientes=obj.getById(relacion);;
+                              relacionClientes.setClienteId(idCliente);
+                              relacionClientes.setClienteSucursalId(idC);
+                              obj.actualizar(relacionClientes);
+                          }
+                        }
+                        
+                        //edita express
                         ClienteBO clienteBO = new ClienteBO(idCliente,user.getConn());
                         Cliente clienteDto = clienteBO.getCliente();
                         
@@ -585,6 +630,11 @@
                     Cliente clienteDto = clienteBO.getCliente();
 
                     clienteDto.setIdEstatus(estatus);
+                    /*if (matriz > 0) {
+                        clienteDto.setMatriz(matriz);
+                    } else {
+                        clienteDto.setMatrizNull(true);
+                    }*/
                     clienteDto.setIdEmpresa(idSucursalEmpresaAsignado);
                     /*clienteDto.setRfcCliente(rfc);
                     clienteDto.setRazonSocial(razonSocial);
@@ -698,7 +748,12 @@
                     //clienteDto.setIdCliente(idClienteNuevo);
 
                     clienteDto.setIdEstatus(estatus);
-
+                    /*if (matriz > 0) {
+                        clienteDto.setMatriz(matriz);
+                    } else {
+                        clienteDto.setMatrizNull(true);
+                    }*/
+                    
                     /*clienteDto.setRfcCliente(rfc);
                     clienteDto.setRazonSocial(razonSocial);
                     clienteDto.setNombreCliente(nombre);
@@ -759,6 +814,43 @@
                      * Realizamos el insert
                      */
                     ClientePk clientePk = clientesDaoImpl.insert(clienteDto);
+                    int clienteid=clientePk.getIdCliente();
+                    if(tipo==1){
+
+                      String where="where cliente_id="+clienteid+" AND cliente_sucursal_id="+clienteid;
+                      int relacion=new ClientesClientesDAO().exist(where);
+                      if(relacion==0){
+                          ClientesClientes relacionClientes=new ClientesClientes();
+                          relacionClientes.setClienteId(clienteid);
+                          relacionClientes.setClienteSucursalId(clienteid);
+                          ClientesClientesDAO obj=new ClientesClientesDAO();
+                          obj.guardar(relacionClientes);
+                      }else{
+                          ClientesClientesDAO obj=new ClientesClientesDAO();
+                          ClientesClientes relacionClientes=obj.getById(relacion);;
+                          relacionClientes.setClienteId(clienteid);
+                          relacionClientes.setClienteSucursalId(clienteid);
+                          obj.actualizar(relacionClientes);
+                      }
+                    }else{
+                      int idC= Integer.parseInt(request.getParameter("idC"));
+                      String where="where cliente_id="+clienteid+" AND cliente_sucursal_id="+idC;
+                      int relacion=new ClientesClientesDAO().exist(where);
+                      if(relacion==0){
+                          ClientesClientes relacionClientes=new ClientesClientes();
+                          relacionClientes.setClienteId(clienteid);
+                          relacionClientes.setClienteSucursalId(idC);
+                          ClientesClientesDAO obj=new ClientesClientesDAO();
+                          obj.guardar(relacionClientes);
+                      }else{
+                          ClientesClientesDAO obj=new ClientesClientesDAO();
+                          ClientesClientes relacionClientes=obj.getById(relacion);;
+                          relacionClientes.setClienteId(clienteid);
+                          relacionClientes.setClienteSucursalId(idC);
+                          obj.actualizar(relacionClientes);
+                      }
+                    }
+                        
                     
                     /////**--Insertamos los registros de datos personalizados:
                     /*if(clientePk.getIdCliente() > 0){

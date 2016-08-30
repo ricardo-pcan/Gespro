@@ -56,6 +56,7 @@ public class CampoAdicionalClienteValorDAO {
                         counter = 0;
                         cacv.setValor(lineParts.length>1?lineParts[1]:"");
                         saveObject(cacv);
+                        cacv=new CampoAdicionalClienteValor();
                         break;
                 }
                 counter++;
@@ -65,11 +66,14 @@ public class CampoAdicionalClienteValorDAO {
     }
 
     public void saveObject(CampoAdicionalClienteValor cacv) {
+        
         CampoAdicionalClienteValor campoExistente = getByIdAndCliente(cacv.getCampoAdicionalCliente().getIdCampoAdicionalCliente(), cacv.getIdCliente());
+        
         if (campoExistente != null) {
             cacv.setIdCampoAdicionalClienteValor(campoExistente.getIdCampoAdicionalClienteValor());
         }
-        if (cacv.getIdCampoAdicionalClienteValor() > 0) {
+       
+        if (cacv.getIdCampoAdicionalClienteValor()!=null && cacv.getIdCampoAdicionalClienteValor() > 0) {
             actualizar(cacv);
         } else {
             guardar(cacv);

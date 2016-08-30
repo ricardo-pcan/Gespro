@@ -51,6 +51,7 @@ public class CampoAdicionalProspectoDAO {
                         cac.setTipoDato(Integer.parseInt(lineParts[1]));
                         cac.setIdUsuario(idUsuario);
                         saveObject(cac);
+                        cac=new CampoAdicionalProspecto();
                         break;
                 }
                 counter++;
@@ -63,7 +64,7 @@ public class CampoAdicionalProspectoDAO {
         if (campoExistente != null) {
             cac.setIdCampoAdicionalProspecto(campoExistente.getIdCampoAdicionalProspecto());
         }        
-        if (cac.getIdCampoAdicionalProspecto() > 0) {
+        if (cac.getIdCampoAdicionalProspecto()!=null && cac.getIdCampoAdicionalProspecto() > 0) {
             actualizar(cac);
         } else {
             guardar(cac);

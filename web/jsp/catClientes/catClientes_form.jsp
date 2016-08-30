@@ -244,6 +244,8 @@
                                                     adicionalesCliente.push(adicionalCliente);
                                                 }
                                             });
+                                            console.log ("Probando :");
+                                            console.log(adicionalesCliente);
                                             $.ajax({
                                                 type: "POST",
                                                 url: "ajaxAdicionalesCliente.jsp",
@@ -694,9 +696,9 @@
                                     <br/>
                                     <div id="contenedor-cliente">
                                         <p>
-                                            <jsp:useBean id="clienteModel" class="com.tsp.gespro.Services.Allservices"/>
+                                            <jsp:useBean id="clienteModel" class="com.tsp.gespro.hibernate.dao.ClienteDAO"/>
                                             <label>Cliente:</label><br/>
-                                            <c:set var="clientes" value="${clienteModel.queryClientesMatrizDAO()}"/>
+                                            <c:set var="clientes" value="${clienteModel.lista()}"/>
                                             <select id="idC" name="idC" style="width:300px;">
                                                 <option value="0">Seleccione un cliente</option>
                                                 <c:forEach items="${clientes}" var="cliente">

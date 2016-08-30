@@ -307,7 +307,7 @@ public class Allservices {
     
     public List queryClientesMatrizDAO(){  
         
-            List<Cliente> lista = null;  
+            List<Cliente> lista = new ArrayList<>();  
             Session session = null;
 
         try 

@@ -6,6 +6,8 @@
 
 
 
+<%@page import="com.tsp.gespro.dto.Roles"%>
+<%@page import="com.tsp.gespro.jdbc.RolesDaoImpl"%>
 <%@page import="com.tsp.gespro.dto.Empresa"%>
 <%@page import="com.tsp.gespro.bo.EmpresaBO"%>
 <%@page import="com.tsp.gespro.jdbc.EmpresaPermisoAplicacionDaoImpl"%>
@@ -15,7 +17,8 @@
 <%
     EmpresaBO empresaBO = new EmpresaBO(user.getConn());
     EmpresaPermisoAplicacion empresaPermisoAplicacionDto = new EmpresaPermisoAplicacionDaoImpl(user.getConn()).findByPrimaryKey(empresaBO.getEmpresaMatriz(user.getUser().getIdEmpresa()).getIdEmpresa());
-
+    RolesDaoImpl rolesDaoImpl=new RolesDaoImpl(user.getConn());
+    Roles rol=rolesDaoImpl.findByPrimaryKey(user.getUser().getIdRoles());
     String verificadorSesionGuiaCerrada = "0";
     try {
         if (session.getAttribute("sesionCerrada") != null) {
@@ -28,12 +31,19 @@
 <a href="javascript:;" id="show_menu">&raquo;</a>
 <div id="left_menu">
     <a href="javascript:;" id="hide_menu">&laquo;</a>
-    <ul id="main_menu">
-        <% if (user.isPermisoVerMenu()) {
-
-        %>
+    <ul id="main_menu">        
+        <% if (user.isPermisoVerMenu()) {            
+            if(rol.getNombre().equals("CLIENTE")){
+        %>        
         <li><a href="../../jsp/inicio/main.jsp" id="idInicioLeftContent"><img src="../../images/icon_home.png" alt="Inicio"/>Inicio</a></li>
         <li><a href="../../jsp/catMonitor/monitor.jsp" id="monitor"><img src="../../images/icon_home.png" alt="Inicio"/>Monitor</a></li>
+        <li><a href="../../jsp/catMonitor/monitor_log.jsp" id="monitor"><img src="../../images/icon_home.png" alt="Inicio"/>MonitorLog</a></li>
+        <%
+            }else{
+        %>
+        <li><a href="../../jsp/inicio/main.jsp" id="idInicioLeftContent"><img src="../../images/icon_home.png" alt="Inicio"/>Inicio</a></li>
+        
+
 
 
         <li style="position: relative; z-index: 99;">
@@ -44,7 +54,6 @@
                 <li><a href="../../jsp/catImagenPersonal/catImagenPersonal_list.jsp"><img src="../../images/icon_imagenPersonal.png"/>Logo</a></li>                        
                 <li><a href="../../jsp/catLicencias/catLicencias_list.jsp"><img src="../../images/license.png"/>Licencias</a></li>         
                 <li><a href="../../jsp/catUsuarios/catUsuarios_list.jsp"><img src="../../images/icon_users.png"/>Usuarios</a></li>
-                <li><a href="../../jsp/catUsuariosMonitor/lista.jsp"><img src="../../images/icon_users.png"/>Usuarios monitor</a></li>
                 <li><a href="../../jsp/catSucursales/catSucursales_list.jsp"><img src="../../images/icon_sucursales.png"/>Sucursales</a></li>
                 <li><a href="../../jsp/catMonedas/lista.jsp"><img src="../../images/icon_reloj.png"/>Moneda</a></li>
                 <li><a href="../../jsp/catZonaHoraria/catZonaHoraria_form.jsp"><img src="../../images/icon_reloj.png"/>Zona Horaria</a></li>
@@ -52,7 +61,8 @@
                 <li><a href="../../jsp/catConfiguracionCampos/lista.jsp"><img src="../../images/icon_sar_config.png"/>Configuración de campos</a></li>
             </ul>	
         </li>
-        
+        <li><a href="../../jsp/catMonitor/monitor.jsp" id="monitor"><img src="../../images/icon_home.png" alt="Inicio"/>Monitor</a></li>
+        <li><a href="../../jsp/catMonitor/monitor_log.jsp" id="monitor_log"><img src="../../images/icon_home.png" alt="Inicio"/>MonitorLog</a></li>
         <li>
             <a href="" id="idAdministracionLeftContent"><img src="../../images/icon_validaXML.png" alt="Proyectos"/>Proyectos</a>
             <ul>
@@ -139,7 +149,8 @@
             </ul>                            
         </li>-->
 
-        <%}%>
+        <%}
+        }%>
     </ul>
 
     <br class="clear"/>

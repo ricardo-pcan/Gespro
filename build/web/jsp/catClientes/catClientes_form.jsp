@@ -4,6 +4,8 @@
     Author     : ISCesarMartinez poseidon24@hotmail.com
 --%>
 
+<%@page import="com.tsp.gespro.hibernate.dao.ClientesClientesDAO"%>
+<%@page import="com.tsp.gespro.hibernate.pojo.ClientesClientes"%>
 <%@page import="com.tsp.gespro.hibernate.pojo.CampoAdicionalClienteValor"%>
 <%@page import="com.tsp.gespro.hibernate.dao.CampoAdicionalClienteValorDAO"%>
 <%@page import="java.util.List"%>
@@ -34,7 +36,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 <jsp:useBean id="helperEtiquetaCliente" class="com.tsp.gespro.hibernate.dao.EtiquetaFormularioClienteDAO"/>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
 //Verifica si el cliente tiene acceso a este topico
     if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace(request.getContextPath(), ""))) {
@@ -85,9 +88,15 @@
 
         ClienteBO clienteBO = new ClienteBO(user.getConn());
         Cliente clientesDto = null;
+        ClientesClientes relacionC=null;
         if (idCliente > 0) {
             clienteBO = new ClienteBO(idCliente, user.getConn());
             clientesDto = clienteBO.getCliente();
+            String where="where cliente_id="+idCliente;
+            int relacion=new ClientesClientesDAO().exist(where);
+            if(relacion!=0){
+                relacionC=new ClientesClientesDAO().getById(relacion);
+            }
             /*
             StringTokenizer tokensDias = new StringTokenizer(StringManage.getValidString(clientesDto.getDiasVisita()),",");
             String seleccion = "";
@@ -203,7 +212,7 @@
                             var obligatorio = $("#" + etiqueta.replace(" ", "") + "ObligatorioAdicional").val();
                             var idAdicional = $("#" + etiqueta.replace(" ", "") + "IdAdicional").val();
                             var valorAdicional = $("#" + etiqueta.replace(" ", "") + "IdValor").val();
-                            var idCliente = $("#idCliente").val();
+                            var idCliente = $("#idCliente").val()?$("#idCliente").val():0;
                             var adicionalCliente = {idAdicional: idAdicional, idCliente: idCliente, etiqueta: etiqueta, obligatorio: obligatorio, tipo: tipo, valor: valorAdicional};
                             adicionalesClienteValidacion.push(adicionalCliente);
                         }
@@ -235,6 +244,8 @@
                                                     adicionalesCliente.push(adicionalCliente);
                                                 }
                                             });
+                                            console.log ("Probando :");
+                                            console.log(adicionalesCliente);
                                             $.ajax({
                                                 type: "POST",
                                                 url: "ajaxAdicionalesCliente.jsp",
@@ -344,6 +355,29 @@
             }
 
             $(document).ready(function () {
+                
+            function ocultarTipoCliente(){
+                $("#contenedor-cliente").hide("slow");
+            }
+            function seleccionarTipoCliente( tipoCliente ){
+                ocultarTipoCliente();
+                if (tipoCliente == "1") {
+                    $("#contenedor-cliente").hide("slow");
+                    $("#tipo").val(1);// Matriz
+                }
+                if (tipoCliente == "0") {
+                    $("#contenedor-cliente").show("slow");
+                    $("#tipo").val(0);// Sucursal
+                }
+              
+            }
+            
+            $('input[name=tipoCliente]').change(function() {
+                var tipo = $(this).val();
+                seleccionarTipoCliente( tipo );
+            });
+            ocultarTipoCliente();
+                
                 //Si se recibio el parametro para que el modo sea en forma de popup
             <%= mode.equals("3") ? "mostrarFormPopUpMode();" : ""%>
             });
@@ -386,6 +420,7 @@
                     $('#sabadoReporte').attr('checked', false);
                 }
             }
+           
 
         </script>
     </head>
@@ -652,7 +687,27 @@
                                         </select>                                        
                                     </p>  
                                     <br/>
-
+                                    <p>
+                                        <label>* ¿Eres matriz?:</label><br/>
+                                        <input type="radio" name="tipoCliente" value="1"> Sí
+                                        <input type="radio" name="tipoCliente" value="0"> No
+                                        <input type="hidden" id="tipo"/>
+                                    </p>
+                                    <br/>
+                                    <div id="contenedor-cliente">
+                                        <p>
+                                            <jsp:useBean id="clienteModel" class="com.tsp.gespro.hibernate.dao.ClienteDAO"/>
+                                            <label>Cliente:</label><br/>
+                                            <c:set var="clientes" value="${clienteModel.lista()}"/>
+                                            <select id="idC" name="idC" style="width:300px;">
+                                                <option value="0">Seleccione un cliente</option>
+                                                <c:forEach items="${clientes}" var="cliente">
+                                                    <option value="${cliente.idCliente}">${cliente.nombreComercial}</option>
+                                                </c:forEach>
+                                            </select><br>
+                                        </p>
+                                        <br/>
+                                    </div>
                                     <p>
                                         <input type="checkbox" class="checkbox" <%=clientesDto != null ? (clientesDto.getIdEstatus() == 1 ? "checked" : "") : "checked"%> id="estatus" name="estatus" value="1"> <%
                                             EtiquetaFormularioCliente activo = camposCliente.get(EtiquetaFormularioClienteDAO.ACTIVO);

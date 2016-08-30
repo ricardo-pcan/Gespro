@@ -51,6 +51,7 @@ public class CampoAdicionalSucursalDAO {
                         cac.setTipoDato(Integer.parseInt(lineParts[1]));
                         cac.setIdUsuario(idUsuario);
                         saveObject(cac);
+                        cac=new CampoAdicionalSucursal();
                         break;
                 }
                 counter++;
@@ -63,7 +64,7 @@ public class CampoAdicionalSucursalDAO {
         if (campoExistente != null) {
             cac.setIdCampoAdicionalSucursal(campoExistente.getIdCampoAdicionalSucursal());
         }        
-        if (cac.getIdCampoAdicionalSucursal() > 0) {
+        if (cac.getIdCampoAdicionalSucursal()!=null && cac.getIdCampoAdicionalSucursal() > 0) {
             actualizar(cac);
         } else {
             guardar(cac);
