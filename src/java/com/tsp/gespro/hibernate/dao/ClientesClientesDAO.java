@@ -3,13 +3,8 @@
  * and open the template in the editor.
  */
 package com.tsp.gespro.hibernate.dao;
-
-import com.tsp.gespro.Services.Allservices;
-import com.tsp.gespro.hibernate.pojo.Cliente;
 import com.tsp.gespro.hibernate.pojo.ClientesClientes;
 import com.tsp.gespro.hibernate.pojo.HibernateUtil;
-import java.util.AbstractList;
-import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -124,7 +119,7 @@ public class ClientesClientesDAO {
      * Verifica si ya existe un registro similar, de ser así, regresa el id
      * de lo contrario, regresa un 0.
      ***/
-    public int exist(String where) throws HibernateException 
+    public List exist(String where) throws HibernateException 
     { 
         List<ClientesClientes> lista = null; 
         int id=0;
@@ -133,21 +128,16 @@ public class ClientesClientesDAO {
         { 
             iniciaOperacion(); 
             lista = sesion.createQuery("from ClientesClientes "+where).list();
-            if(lista!=null){
-                if(lista.size()>0){
-                    return lista.get(0).getId();
-                }
-            }
         }
         finally 
         { 
             sesion.close(); 
         }  
 
-        return id; 
+        return lista; 
     }
    
-    public String ClientesIdMatriz() throws HibernateException 
+    public String clientesIdMatriz() throws HibernateException 
     { 
         List<ClientesClientes> lista = null; 
         String idClientes="";
@@ -156,12 +146,13 @@ public class ClientesClientesDAO {
         { 
             iniciaOperacion(); 
             lista = sesion.createQuery("from ClientesClientes where cliente_id=cliente_sucursal_id ").list();
-            if(lista!=null){
+            if(lista!=null && lista.size()>0){
               for(ClientesClientes obj: lista){
                   idClientes+=obj.getClienteId()+",";
-              }  
+              }
+              idClientes+=idClientes.substring(0,idClientes.length()-1);
             }
-            idClientes+=idClientes.substring(0,idClientes.length()-1);
+            
         }
         finally 
         { 
@@ -169,6 +160,41 @@ public class ClientesClientesDAO {
         }  
 
         return idClientes; 
+    }
+    
+    
+    public void crearRelacionClientes(int idCliente,int idClienteSucursal, int tipo){
+        
+        // Eliminamos todos los registros existentes con estos clientes.
+        String where="where cliente_id="+idCliente+" AND cliente_sucursal_id="+idCliente;
+        where+="OR cliente_id="+idCliente;
+        List<ClientesClientes> relacionesExistentes= exist(where);
+        for(ClientesClientes relacion:relacionesExistentes){
+            System.out.print("Borrando " + relacion.getId());
+            eliminar(relacion.getId());
+        }
+        
+        System.out.print("Params");
+        System.out.print(idCliente);
+        System.out.print(idClienteSucursal);
+        System.out.print(tipo);
+        // Si es 1 quiere decir, que es matriz
+       if(tipo==1){
+            System.out.print("Entra a uno");
+            ClientesClientes relacionClientes=new ClientesClientes();
+            relacionClientes.setClienteId(idCliente);
+            relacionClientes.setClienteSucursalId(idCliente);
+            guardar(relacionClientes);
+       }
+       
+       // Si es 0 quiere decir que no es matriz y tienen su sucursal matriz.
+       if(tipo==0){
+           System.out.print("Entra a 0");
+            ClientesClientes relacionClientes=new ClientesClientes();
+            relacionClientes.setClienteId(idCliente);
+            relacionClientes.setClienteSucursalId(idClienteSucursal);
+            guardar(relacionClientes);
+        }
     }
      
     private void iniciaOperacion() throws HibernateException 

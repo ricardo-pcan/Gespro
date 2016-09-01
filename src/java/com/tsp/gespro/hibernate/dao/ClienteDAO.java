@@ -116,6 +116,35 @@ public class ClienteDAO {
     { 
         return lista(); 
     }    
+    
+    public List clientesMatrices() throws HibernateException 
+    { 
+        List<Cliente> lista = null;  
+        ClientesClientesDAO relacion=new ClientesClientesDAO();
+        String idMatrices=relacion.clientesIdMatriz();
+        
+        try 
+        { 
+            iniciaOperacion(); 
+            if(!idMatrices.equals("")){
+                String where="where id_cliente in ";
+                where+="("+idMatrices+")";
+                lista = sesion.createQuery("from Cliente "+where).list(); 
+            }
+            
+        }
+        finally 
+        { 
+            sesion.close(); 
+        }  
+
+        return lista; 
+    }
+  
+    public List getClientesMatrices()
+    { 
+        return clientesMatrices(); 
+    }    
      
     private void iniciaOperacion() throws HibernateException 
     { 

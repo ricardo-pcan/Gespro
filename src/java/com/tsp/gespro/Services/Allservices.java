@@ -304,28 +304,7 @@ public class Allservices {
 
         return lista; 
     }
-    
-    public List queryClientesMatrizDAO(){  
-        
-            List<Cliente> lista = new ArrayList<>();  
-            Session session = null;
-
-        try 
-        { 
-            String idClientes= new ClientesClientesDAO().ClientesIdMatriz();
-            session = HibernateUtil.getSessionFactory().openSession(); 
-            Transaction tx = session.beginTransaction(); 
-            String query = "from Cliente WHERE id_cliente IN  ("+idClientes+")";
-            lista = session.createQuery(query).list();
-        }
-        finally 
-        { 
-            session.close(); 
-        }  
-
-        return lista; 
-    }
-        
+      
     public List getActividadesFull(List<Actividad> listaActividades){  
         // Lista de objeto con los objectos de actividades, punto y proyeco
         // Por actividad.
