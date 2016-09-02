@@ -797,12 +797,19 @@ public class ReportBO {
         HashMap<String,String> hashData = new HashMap<String, String>();
         ArrayList<HashMap> dataInfo = getFieldList(ACTIVIDAD_REPORT);
         int cont = 1;
+        
         for(Actividad actividad:actividades){
 
             String usuario = (new UsuariosDAO()).getById(actividad.getIdUser()).getUserName();
             String proyecto = (new ProyectoDAO()).getById(actividad.getIdProyecto()).getNombre();
+            String proyecto_avance = (new ProyectoDAO()).getById(actividad.getIdProyecto()).getAvance()+"";
             String punto = (new PuntoDAO()).getById(actividad.getIdPunto()).getLugar();
-            String producto = (new ProductoDAO()).getById(actividad.getIdProducto()).getNombre();
+            String producto = "";
+            if(actividad.getIdProducto()!=null){
+                producto = (new ProductoDAO()).getById(actividad.getIdProducto()).getNombre();
+            }else{
+                producto = "-";
+            }
             String actividadtipo = actividad.getTipoActividad() == 1 ? "Entrega" : "Actividad";
             String cantidad = actividad.getCantidad() != null  ? actividad.getCantidad().toString() : "-";
             String recibio = actividad.getRecibio() != null  ? actividad.getRecibio().toString() : "-";
@@ -810,7 +817,7 @@ public class ReportBO {
             String comentarios = actividad.getComentarios() != null  ? actividad.getComentarios().toString() : "-";
             String estatus = actividad.getAvance()== 100  ? "Terminada" : "En desarrollo";
             if(cont == 1){
-                hashData.put((String)dataInfo.get(0).get("field"), getRealData(dataInfo.get(0), "" + proyecto)); ;
+                hashData.put((String)dataInfo.get(0).get("field"), getRealData(dataInfo.get(0), "" + proyecto+" ("+proyecto_avance+"%)")); ;
                 cont ++;
             }
             //Agregamos la informacion al reporte por cada proyecto

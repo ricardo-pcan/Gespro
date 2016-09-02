@@ -195,8 +195,8 @@ UsuariosDAO usuarioModel = new UsuariosDAO();
                                         <tr>
                                             <th>ID Proyecto</th>
                                             <th>Nombre</th>
-                                            <th>Fecha de Inicio</th>
-                                            <th>Fecha Programada</th>
+                                            <th>Fecha de Comienzo</th>
+                                            <th>Fecha Programada Final</th>
                                             <th>Fecha de Creación</th>
                                             <th>Cliente</th>
                                             <th>Avance %</th>
@@ -232,7 +232,7 @@ UsuariosDAO usuarioModel = new UsuariosDAO();
                                                 <a href="proyectos_tasks.jsp?idProyecto=<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/icon_logistica.png" alt="editar" class="help" title="Ver Actividades"/></a>
                                                 <a href="reparto.jsp?idProyecto=<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/clipboard_report_bar_16_ns.png" alt="editar" class="help" title="Ver Reparto"/></a>
                                                 <% if(proyecto.getStatus() == 1) { %>
-                                                <a href="changes_proyecto_ajax.jsp?idProyecto=<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/icon_delete.png" alt="editar" class="help" title="Ver Reparto"/></a>
+                                                <a href="changes_proyecto_ajax.jsp?idProyecto=<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/icon_delete.png" alt="Dar de baja" class="help" title="Dar de Baja"/></a>
                                                 <a href="rutas_validadas.jsp?idProyecto=<% out.print(proyecto.getIdProyecto()); %>"><img src="../../images/icon_mapa.png" alt="editar" class="help" title="Ver Puntos"/></a>
                                                 <% } %>
                                                 </td>
