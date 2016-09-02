@@ -4,13 +4,13 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:useBean id="user" scope="session" class="com.tsp.gespro.bo.UsuarioBO"/>
 <%
-    CampoAdicionalClienteValorDAO cacvdao=new CampoAdicionalClienteValorDAO();    
+    CampoAdicionalClienteValorDAO cacvdao=new CampoAdicionalClienteValorDAO(); 
+    
     try{
        cacvdao.guardarCambios(request.getParameterMap());
        out.print("<--EXITO-->" + "Se guardó correctamente. ");
     }catch(Exception ex){
         ex.printStackTrace();
-         out.print("<--hola-->" + ex.getMessage());
         out.print("<--ERROR-->" + ex.getMessage());
     }
            
