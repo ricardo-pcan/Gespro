@@ -354,11 +354,9 @@
                 ocultarTipoCliente();
                 if (tipoCliente == "1") {
                     $("#contenedor-cliente").hide("slow");
-                    $("#tipo").val(1);// Matriz
                 }
                 if (tipoCliente == "0") {
                     $("#contenedor-cliente").show("slow");
-                    $("#tipo").val(0);// Sucursal
                 }
               
             }
@@ -445,7 +443,6 @@
                                         Cliente
                                         <%}%>
                                     </span>
-                                    <input type="hidden" id="matriz"/>
                                 </div>
                                 <br class="clear"/>
                                 <div class="content">

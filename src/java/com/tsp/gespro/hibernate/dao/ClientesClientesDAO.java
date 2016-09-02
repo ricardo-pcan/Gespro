@@ -164,23 +164,17 @@ public class ClientesClientesDAO {
     
     
     public void crearRelacionClientes(int idCliente,int idClienteSucursal, int tipo){
-        
+
         // Eliminamos todos los registros existentes con estos clientes.
         String where="where cliente_id="+idCliente+" AND cliente_sucursal_id="+idCliente;
         where+="OR cliente_id="+idCliente;
         List<ClientesClientes> relacionesExistentes= exist(where);
         for(ClientesClientes relacion:relacionesExistentes){
-            System.out.print("Borrando " + relacion.getId());
             eliminar(relacion.getId());
         }
-        
-        System.out.print("Params");
-        System.out.print(idCliente);
-        System.out.print(idClienteSucursal);
-        System.out.print(tipo);
+
         // Si es 1 quiere decir, que es matriz
        if(tipo==1){
-            System.out.print("Entra a uno");
             ClientesClientes relacionClientes=new ClientesClientes();
             relacionClientes.setClienteId(idCliente);
             relacionClientes.setClienteSucursalId(idCliente);
@@ -189,7 +183,6 @@ public class ClientesClientesDAO {
        
        // Si es 0 quiere decir que no es matriz y tienen su sucursal matriz.
        if(tipo==0){
-           System.out.print("Entra a 0");
             ClientesClientes relacionClientes=new ClientesClientes();
             relacionClientes.setClienteId(idCliente);
             relacionClientes.setClienteSucursalId(idClienteSucursal);

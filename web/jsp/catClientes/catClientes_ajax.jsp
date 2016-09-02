@@ -72,11 +72,9 @@
     
     int idSucursalEmpresaAsignado = idEmpresa;
     int tipo=2;
-    if(request.getParameter("matriz")!=null){
-        tipo = Integer.parseInt(request.getParameter("tipo"));
+    if(request.getParameter("tipoCliente")!=null){
+        tipo = Integer.parseInt(request.getParameter("tipoCliente"));
     }
-    out.print("Matriz");
-    out.print(tipo);
     /*
     * Recepción de valores
     */
@@ -230,12 +228,12 @@
                         
                         // tipo 1 significa que es matriz.
                         if(tipo==1){
-                         obj.crearRelacionClientes(idCliente, idCliente,1);
+                         obj.crearRelacionClientes(idCliente, idCliente,tipo);
                         }
                         // tipo 0 significa que es sucursal.
                         if(tipo==0){
                           int idC= Integer.parseInt(request.getParameter("idC"));
-                          obj.crearRelacionClientes(idCliente,idC,1);
+                          obj.crearRelacionClientes(idCliente,idC,tipo);
                         }
                         
                         //edita express
@@ -409,7 +407,18 @@
                             }
                         }*/
                         /////**--
-
+                         // Guardar relación clientes con sus sucursal matriz.
+                        ClientesClientesDAO obj=new ClientesClientesDAO();
+                        
+                        // tipo 1 significa que es matriz.
+                        if(tipo==1){
+                         obj.crearRelacionClientes(clienteDto.getIdCliente(),clienteDto.getIdCliente(),tipo);
+                        }
+                        // tipo 0 significa que es sucursal.
+                        if(tipo==0){
+                          int idC= Integer.parseInt(request.getParameter("idC"));
+                          obj.crearRelacionClientes(clienteDto.getIdCliente(),idC,tipo);
+                        }    
                         //Relacion con vendedor
                         if (idVendedor > 0){
                             RelacionClienteVendedor clienteVendedorDto = new RelacionClienteVendedor();
@@ -470,12 +479,12 @@
 
             // tipo 1 significa que es matriz.
             if(tipo==1){
-             obj.crearRelacionClientes(clienteDto.getIdCliente(),clienteDto.getIdCliente(),1);
+             obj.crearRelacionClientes(clienteDto.getIdCliente(),clienteDto.getIdCliente(),tipo);
             }
             // tipo 0 significa que es sucursal.
             if(tipo==0){
               int idC= Integer.parseInt(request.getParameter("idC"));
-              obj.crearRelacionClientes(clienteDto.getIdCliente(),idC,1);
+              obj.crearRelacionClientes(clienteDto.getIdCliente(),idC,tipo);
             }
 
             try{
@@ -624,12 +633,12 @@
                     
                     // tipo 1 significa que es matriz.
                     if(tipo==1){
-                     obj.crearRelacionClientes(idCliente,idCliente,1);
+                     obj.crearRelacionClientes(idCliente,idCliente,tipo);
                     }
                     // tipo 0 significa que es sucursal.
                     if(tipo==0){
                       int idC= Integer.parseInt(request.getParameter("idC"));
-                      obj.crearRelacionClientes(idCliente,idC,1);
+                      obj.crearRelacionClientes(idCliente,idC,tipo);
                     }
                     /*if (matriz > 0) {
                         clienteDto.setMatriz(matriz);
@@ -821,12 +830,12 @@
 
                     // tipo 1 significa que es matriz.
                     if(tipo==1){
-                     obj.crearRelacionClientes(clientePk.getIdCliente(), clientePk.getIdCliente(),1);
+                     obj.crearRelacionClientes(clientePk.getIdCliente(), clientePk.getIdCliente(),tipo);
                     }
                     // tipo 0 significa que es sucursal.
                     if(tipo==0){
                       int idC= Integer.parseInt(request.getParameter("idC"));
-                      obj.crearRelacionClientes(clientePk.getIdCliente(),idC,1);
+                      obj.crearRelacionClientes(clientePk.getIdCliente(),idC,tipo);
                     }
                         
                         
