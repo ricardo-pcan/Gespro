@@ -327,7 +327,7 @@ int idEmpresaMatriz = empresaBO.getEmpresaMatriz(user.getUser().getIdEmpresa()).
                                     </p>
                                     <br/>
                                     <p>
-                                        <label>* Fecha Programada:</label><br/>
+                                        <label>* Fecha Programada Final:</label><br/>
                                         <input maxlength="10" type="text" id="fechaProgramada" name="fechaProgramada" style="width:300px;"
                                                value="${not empty obj.fechaProgramada ? obj.fechaProgramada : ""}"
                                                data-validation-error-msg="El simbolo es requerido,ingrese uno."

@@ -94,7 +94,7 @@ if (user == null || !user.permissionToTopicByURL(request.getRequestURI().replace
                                             <th>Usuario</th>
                                             <th>Lugar</th>
                                             <th>Tipo</th>
-                                            <th>Realizada</th>
+                                            <th>Fecha Realizada Final</th>
                                             <th>Producto</th>
                                             <th>Cantidad</th>
                                             <th>Recibio</th>
