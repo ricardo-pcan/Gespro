@@ -320,6 +320,7 @@ public class ReportBO {
                 break;
             case ACTIVIDAD_REPORT:
                 fieldList.add(getDataInfo("PROYECTO","Proyecto","","",""+DATA_STRING,""));
+                fieldList.add(getDataInfo("AVANCE_PROYECTO","Avance Proyecto","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("ACTIVIDAD","Actividad","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("DESCRIPCION","Descripción","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("PROMOTOR","Promotor","","",""+DATA_STRING,""));
@@ -815,23 +816,24 @@ public class ReportBO {
             String recibio = actividad.getRecibio() != null  ? actividad.getRecibio().toString() : "-";
             String checkin = actividad.getCheckin() != null  ? actividad.getCheckin().toString() : "-";
             String comentarios = actividad.getComentarios() != null  ? actividad.getComentarios().toString() : "-";
-            String estatus = actividad.getAvance()== 100  ? "Terminada" : "En desarrollo";
+            String estatus = actividad.getCheckin() != null  ? "Terminada" : "En desarrollo";
             if(cont == 1){
-                hashData.put((String)dataInfo.get(0).get("field"), getRealData(dataInfo.get(0), "" + proyecto+" ("+proyecto_avance+"%)")); ;
+                hashData.put((String)dataInfo.get(0).get("field"), getRealData(dataInfo.get(0), "" + proyecto)); ;
+                hashData.put((String)dataInfo.get(1).get("field"), getRealData(dataInfo.get(1), "" +proyecto_avance+" %")); ;
                 cont ++;
             }
             //Agregamos la informacion al reporte por cada proyecto
-            hashData.put((String)dataInfo.get(1).get("field"), getRealData(dataInfo.get(1), "" + actividad.getActividad())); ;
-            hashData.put((String)dataInfo.get(2).get("field"), getRealData(dataInfo.get(2), "" + actividad.getDescripcion()));
-            hashData.put((String)dataInfo.get(3).get("field"), getRealData(dataInfo.get(3), "" + usuario));
-            hashData.put((String)dataInfo.get(4).get("field"), getRealData(dataInfo.get(4), "" + punto));
-            hashData.put((String)dataInfo.get(5).get("field"), getRealData(dataInfo.get(5), "" + actividadtipo));
-            hashData.put((String)dataInfo.get(6).get("field"), getRealData(dataInfo.get(6), "" + checkin));
-            hashData.put((String)dataInfo.get(7).get("field"), getRealData(dataInfo.get(7), "" + producto));
-            hashData.put((String)dataInfo.get(8).get("field"), getRealData(dataInfo.get(8), "" + cantidad));
-            hashData.put((String)dataInfo.get(9).get("field"), getRealData(dataInfo.get(9), "" + recibio));
-            hashData.put((String)dataInfo.get(10).get("field"), getRealData(dataInfo.get(10), "" + comentarios));
-            hashData.put((String)dataInfo.get(11).get("field"), getRealData(dataInfo.get(11), "" + estatus));
+            hashData.put((String)dataInfo.get(2).get("field"), getRealData(dataInfo.get(2), "" + actividad.getActividad())); ;
+            hashData.put((String)dataInfo.get(3).get("field"), getRealData(dataInfo.get(3), "" + actividad.getDescripcion()));
+            hashData.put((String)dataInfo.get(4).get("field"), getRealData(dataInfo.get(4), "" + usuario));
+            hashData.put((String)dataInfo.get(5).get("field"), getRealData(dataInfo.get(5), "" + punto));
+            hashData.put((String)dataInfo.get(6).get("field"), getRealData(dataInfo.get(6), "" + actividadtipo));
+            hashData.put((String)dataInfo.get(7).get("field"), getRealData(dataInfo.get(7), "" + checkin));
+            hashData.put((String)dataInfo.get(8).get("field"), getRealData(dataInfo.get(8), "" + producto));
+            hashData.put((String)dataInfo.get(9).get("field"), getRealData(dataInfo.get(9), "" + cantidad));
+            hashData.put((String)dataInfo.get(10).get("field"), getRealData(dataInfo.get(10), "" + recibio));
+            hashData.put((String)dataInfo.get(11).get("field"), getRealData(dataInfo.get(11), "" + comentarios));
+            hashData.put((String)dataInfo.get(12).get("field"), getRealData(dataInfo.get(12), "" + estatus));
 
             dataList.add(hashData);
 
