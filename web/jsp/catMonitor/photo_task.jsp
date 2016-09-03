@@ -43,12 +43,11 @@
     // Si el id viene que el request parsearlo a integer.
 
     List <FotoActividad> fotografias = services.queryFotoActividad("where idActividad = "+objActividad.getIdActividad());
-    String listImages ="<div class='multiple-items'>"
-            + "<button type='button' data-role='none' class='slick-prev slick-arrow' aria-label='Previous' role='button' style='display: block;'>Previous</button>";
+    String listImages ="<div class='multiple-items'>";
     if(fotografias.size()>0){
         for(FotoActividad foto: fotografias){
             listImages+="<div class='show_foto'>";
-            listImages+="<img src='"+ubicacionImagenesProspectos+foto.getFoto()+"'>";
+            listImages+="<img src='file:///"+ubicacionImagenesProspectos+foto.getFoto()+"'>";
             listImages+="</div>";
         }
     }else{

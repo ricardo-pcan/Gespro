@@ -21,6 +21,8 @@ import com.tsp.gespro.hibernate.dao.ClienteDAO;
 import com.tsp.gespro.hibernate.dao.ClientesClientesDAO;
 import com.tsp.gespro.hibernate.dao.ProyectoDAO;
 import com.tsp.gespro.hibernate.dao.PuntoDAO;
+import com.tsp.gespro.hibernate.dao.FotoActividadDAO;
+import com.tsp.gespro.hibernate.pojo.FotoActividad;
 import com.tsp.gespro.hibernate.pojo.Cobertura;
 import com.tsp.gespro.hibernate.pojo.Coberturaproyecto;
 import com.tsp.gespro.hibernate.pojo.Producto;
@@ -80,6 +82,26 @@ public class Allservices {
             session = HibernateUtil.getSessionFactory().openSession(); 
             Transaction tx = session.beginTransaction(); 
             String query = "from Cobertura "+where;
+            lista = session.createQuery(query).list(); 
+        }
+        finally 
+        { 
+            session.close(); 
+        }  
+
+        return lista; 
+    }
+    
+    public List queryFotoActividad(String where){  
+        
+            List<FotoActividad> lista = null;  
+            Session session = null;
+
+        try 
+        { 
+            session = HibernateUtil.getSessionFactory().openSession(); 
+            Transaction tx = session.beginTransaction(); 
+            String query = "from FotoActividad "+where;
             lista = session.createQuery(query).list(); 
         }
         finally 
