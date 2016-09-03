@@ -62,14 +62,14 @@
         String filename = "";
         File tempDir = null;
         if (os.indexOf("win") >= 0) {
-            filename = "C:\\temp\\gespro\\imagenes" + System.currentTimeMillis() + ".zip";
-            tempDir = new File("C:\\temp\\gespro");
+            tempDir = new File(configuration.getApp_content_path() + "tmp\\");
+            filename = tempDir.getAbsolutePath() + "imagenes" + System.currentTimeMillis() + ".zip";
         } else {
-            filename = "/tmp/gespro/imagenes" + System.currentTimeMillis() + ".zip";
-            tempDir = new File("/tmp/gespro/");
+            tempDir = new File(configuration.getApp_content_path() + "tmp/");
+            filename = tempDir.getAbsolutePath() + "imagenes" + System.currentTimeMillis() + ".zip";
         }
         if (!tempDir.exists()) {
-            tempDir.mkdir();
+            tempDir.mkdirs();
         }
         
         //
