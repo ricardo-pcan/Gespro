@@ -265,6 +265,28 @@ public class Allservices {
         return lista; 
     }
     
+     
+     public List getProyectoByEmpresa(String empresa){  
+        
+            List<Proyecto> lista = new ArrayList<>();  
+
+        try 
+        { 
+            List<Cliente> clientes=queryClienteDAO("where ID_EMPRESA="+empresa);
+            List<Proyecto> proyectosByCliente=new ArrayList<>();
+            for(Cliente obj:clientes){
+                proyectosByCliente=queryProyectoDAO("where id_cliente="+obj.getIdCliente());
+                for(Proyecto proyectoItem:proyectosByCliente){
+                    lista.add(proyectoItem);
+                }
+            }
+        }
+        catch(Exception e){
+            System.out.println("Error : " + e.getMessage());
+        }
+        return lista; 
+    }
+    
      public List queryRepartoDAO(String where){  
         
             List<Reparto> lista = null;  
@@ -304,6 +326,26 @@ public class Allservices {
 
         return lista; 
     }
+    
+    public List queryClienteDAO(String where){  
+        
+            List<Cliente> lista = null;  
+            Session session = null;
+
+        try 
+        { 
+            session = HibernateUtil.getSessionFactory().openSession(); 
+            Transaction tx = session.beginTransaction(); 
+            String query = "from Cliente "+where;
+            lista = session.createQuery(query).list(); 
+        }
+        finally 
+        { 
+            session.close(); 
+        }  
+
+        return lista; 
+    }
       
     public List getActividadesFull(List<Actividad> listaActividades){  
         // Lista de objeto con los objectos de actividades, punto y proyeco
@@ -329,6 +371,10 @@ public class Allservices {
         
         //Ubicacion
         DataUbicacion ubicacion=new DataUbicacion();
+        
+        //  Producto
+        Producto producto=new Producto();
+        ProductoDAO productoDAO=new ProductoDAO();
         
         // Cliente Geocode google
         ClientGoogleServicesAPI api=new ClientGoogleServicesAPI();
@@ -362,6 +408,10 @@ public class Allservices {
                actividadFull.setCliente(cliente);
            }
            
+           if(obj.getIdProducto()!=null){
+               producto=productoDAO.getById(obj.getIdProducto());
+               actividadFull.setProducto(producto);
+           }
            // Agregar ubicacion
            //Tipo de punto : ciudad 2 , Cliente 1, lugar 3
            // Si es diferente de 2 sacar estado y ciudad por lt y lng.
