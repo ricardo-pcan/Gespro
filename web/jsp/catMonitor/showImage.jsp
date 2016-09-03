@@ -24,7 +24,7 @@
          
          Configuration appConfig = new Configuration();
          
-         String ubicacionImagenesProspectos = appConfig.getApp_content_path() +"proyectos\\"+p+"\\actividades\\"+a+"\\"+i;
+         String ubicacionImagenesProspectos = appConfig.getApp_content_path() +"\\proyectos\\"+p+"\\actividades\\"+a+"\\"+i;
          
          String archivoImagen= ubicacionImagenesProspectos;
          File fileImagen = new File(archivoImagen);
