@@ -326,7 +326,7 @@ public class ReportBO {
                 fieldList.add(getDataInfo("PROMOTOR","Promotor","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("LUGAR","Lugar","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("TIPO","Tipo","","",""+DATA_STRING,""));
-                fieldList.add(getDataInfo("REALIZADA","Fecha Realizada","","",""+DATA_DATE,""));
+                fieldList.add(getDataInfo("REALIZADA","Fecha Realizada Final,"","",""+DATA_DATE,""));
                 fieldList.add(getDataInfo("PRODUCTO","Producto","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("CANTIDAD","Cantidad","","",""+DATA_STRING,""));
                 fieldList.add(getDataInfo("RECIBIO","Recibio","","",""+DATA_STRING,""));
